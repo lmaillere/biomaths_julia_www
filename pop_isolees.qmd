@@ -1,3 +1,13 @@
 ---
 title: "Populations isolées"
 ---
+
+
+## Le modèle de Malthus {#sec-malthus}
+
+Nous considérons le modèle proposé par @malthus :
+$$
+\dot x = (n-m)x,
+$$ {#eq-malthus}
+avec $n$ le taux de natalité, et $m$ le taux de mortalité.
+

@@ -18,7 +18,7 @@
     "href": "pop_isolees.html",
     "title": "Populations isolées",
     "section": "",
-    "text": "Reusehttps://creativecommons.org/licenses/by-nc/4.0/"
+    "text": "Nous considérons le modèle proposé par Malthus (1798) : \n\\dot x = (n-m)x,\n\\tag{1} avec n le taux de natalité, et m le taux de mortalité."
   },
   {
     "objectID": "pop_interactions.html",
@@ -33,5 +33,12 @@
     "title": "Populations exploitées",
     "section": "",
     "text": "Reusehttps://creativecommons.org/licenses/by-nc/4.0/"
+  },
+  {
+    "objectID": "pop_isolees.html#sec-malthus",
+    "href": "pop_isolees.html#sec-malthus",
+    "title": "Populations isolées",
+    "section": "",
+    "text": "Nous considérons le modèle proposé par Malthus (1798) : \n\\dot x = (n-m)x,\n\\tag{1} avec n le taux de natalité, et m le taux de mortalité."
   }
 ]
