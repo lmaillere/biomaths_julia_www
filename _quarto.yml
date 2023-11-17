@@ -33,7 +33,8 @@ license: CC BY-NC
 
 bibliography: references.bib
 
-jupyter: julia
+jupyter: julia-1.9
 
 execute:
  cache: true
+ output: false

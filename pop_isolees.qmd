@@ -11,3 +11,109 @@ $$
 $$ {#eq-malthus}
 avec $n$ le taux de natalité, et $m$ le taux de mortalité.
 
+### Préliminaires
+
+Pour simuler ce modèle, c'est à dire intégrer numériquement les solutions au problème de Cauchy correspondant à l'@eq-malthus avec $x(0)=x_0\geq0$, nous allons utiliser les routines de `DifferentialEquations.jl` avec une méthode utilisant des tableaux statiques pour la rapidité d'exécution (package `StaticArrays.jl`). Nous utiliserons aussi le package `Plots.jl` pour les représentations graphiques et `LatexStrings.jl` pour les mathématiques sur les graphiques.
+
+```{julia}
+using Plots, DifferentialEquations, StaticArrays, LaTeXStrings
+```
+
+### Conditions initiales, paramètres et temps
+
+Nous définissions la condition initiale de la simulation, et l'assignons dans un vecteur statique `etat0` :
+
+```{julia}
+x0 = 0.1
+etat0 = @SVector [x0]
+```
+
+Nous définissons les paramètres, et les encapsulons dans un vecteur de paramètres :
+
+```{julia}
+n = 3.0     # natalité
+m = 2.0     # morrtalité
+par_malthus = [n, m] # packing
+```
+
+Enfin, les propriétés du temps d'intégration :
+```{julia}
+tspan = (0.0, 5.0)
+tstep = 0.1
+```
+
+### Système dynamique
+
+On définit le modèle comme une fonction renvoyant la dérivée de $x$ (comme `SVector`) en fonction de l'état, de paramètres, et du temps. L'ordre des arguments est important, c'est sous cette forme que les routines d'intégration attendent le modèle.
+
+```{julia}
+function malthus(u, p, t)
+    n, m = p        # unpacking
+    x = u[1]        # use x notation
+    dx = (n-m)x     # no need for multiplication 
+    @SVector [dx]   # return derivative as SVector
+end
+```
+
+### Intégration
+
+On commence par définir le problème de Cauchy à intégrer, comme un `ODEProblem` avec arguments: le modèle, la condition initiale, les bornes d'intégration, les paramètres ainsi que l'option `saveat = tstep` permettant de récupérer la solution tout les `tstep` pas de temps (il y a plein d'options de sortie de l'intégration, dont même une fonction du temps !)
+
+```{julia}
+prob_malthus = ODEProblem(malthus,          # modèle
+                          etat0,            # condition initiale
+                          tspan,            # tspan
+                          par_malthus,      # paramètres
+                          saveat = tstep)   # option de sortie
+```
+
+On intègre le modèle via `solve`, défini par `DifferentialEquations.jl` pour des `struct` de type `ODEProblem` :
+
+```{julia}
+sol_malthus = solve(prob_malthus)
+```
+
+Le type de solution renvoyée par le solveur est assez complexe et comprend de nombreux champs informatifs sur le calcul. On peut accéder au temps de simulation via `sol_malthus.t` :
+
+```{julia}
+#| output: true
+first(sol_malthus.t, 3)
+```
+
+ainsi qu'aux valeurs de la variable $x$ calculées le long du temps via `sol_matlhus.u` :
+
+```{julia}
+#| output: true
+first(sol_malthus.u, 3)
+```
+
+Même si ce n'est pas indispensable, il est possible de transformer la solution renvoyée facilement en `DataFrame`, qui peut permettre des manipulations plus faciles.
+
+```{julia}
+using DataFrames
+
+sol_malthus = DataFrame(sol_malthus)
+rename!(sol_malthus, :timestamp => :time, :value1 => :x)
+```
+
+si bien que :
+
+```{julia}
+#| output: true
+first(sol_malthus, 3)
+```
+\
+On peut représenter graphiquement la simulation de la croissance de la population au cours du temps (ici via le dataframe).
+
+```{julia}
+#| output: true
+plot(sol_malthus.time, sol_malthus.x,
+    palette = :tab10,
+    linewidth = 2,
+    title = "Modèle de Malthus",
+    label = "population " * L"x",  # latex strings, makrdown latex is off in labels
+    ylabel = "densité de population \$x(t)\$", # latex markdown is ok in axis label
+    xlabel = "temps \$t\$",
+    margin = .5Plots.cm,
+    topmargin = 1.5Plots.cm)
+```
