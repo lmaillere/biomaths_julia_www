@@ -1,19 +1,39 @@
 project:
   type: website
+  output-dir: docs
 
 website:
-  title: "biomaths_julia_www"
-  navbar:
-    left:
-      - href: index.qmd
-        text: Home
+  title: "Biomaths & Python"
+  sidebar:
+    style: floating
+    contents:
+      - index.qmd
+      - pop_isolees.qmd
+      - pop_exploitees.qmd
+      - pop_interactions.qmd
       - about.qmd
+  page-footer: "Copyright 2023, Ludovic Mailleret"
+  repo-url: https://github.com/lmaillere/biomaths_www
+  repo-actions: [edit, issue]
+  
+highlight-style: pygments
+
+reference-location: margin
 
 format:
   html:
     theme: cosmo
     css: styles.css
     toc: true
+    code-fold: false
+    code-tools: true
+    html-math-method: katex
 
+license: CC BY-NC 
 
+bibliography: references.bib
 
+jupyter: julia
+
+execute:
+ cache: true
