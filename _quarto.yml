@@ -3,7 +3,7 @@ project:
   output-dir: docs
 
 website:
-  title: "Biomaths & Python"
+  title: "Biomaths & Julia"
   sidebar:
     style: floating
     contents:
