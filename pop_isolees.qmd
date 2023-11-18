@@ -133,22 +133,25 @@ Il n'y a pas de difficulté particulière par rapport aux simulations précedent
 
 Il faut cependant définir les paramètres du modèle @eq-logistic :
 ```{julia}
-r = 1.0     # natalité
+#| code-fold: true
+r = 1.0      # natalité
 K = 10.0     # morrtalité
 par_logistic = [r, K] # packing
 ```
 
 ainsi que le nouveau système dynamique :
 ```{julia}
+#| code-fold: true
 function logistic(u, p, t)
-    r, K = p        # unpacking
-    x = u[1]        # use x notation
-    dx = r*x*(1-x/K)     # return derivative
+    r, K = p            # unpacking
+    x = u[1]            # use x notation
+    dx = r*x*(1-x/K)    # return derivative
 end
 ```
 
 et le problème de Cauchy correspondant :
 ```{julia}
+#| code-fold: true
 prob_logistic = ODEProblem(logistic,        # modèle
                           x0,               # condition initiale
                           tspan,            # tspan
@@ -158,26 +161,89 @@ prob_logistic = ODEProblem(logistic,        # modèle
 
 On simule et on transforme la solution en dataframe :
 ```{julia}
+#| code-fold: true
 sol_logistic = solve(prob_logistic)
 
 sol_logistic = DataFrame(sol_logistic)
 rename!(sol_logistic, :timestamp => :time, :value => :x)
 ```
 
-On trace la solution :
+On trace la solution, en rajoutant les équilibres stable ($x=K$) et instable ($x=0$) :
 ```{julia}
+#| code-fold: true
 #| output: true
+# solution
 plot(sol_logistic.time, sol_logistic.x,
     palette = :tab10,
     linewidth = 2,
     title = "\n Modèle logistique \$r=$r, K=$K\$",
     label = "population \$x\$",  
+    legend = :right,
     ylabel = "densité de population \$x(t)\$", 
     xlabel = "temps \$t\$",
     margin = .5Plots.cm,
     topmargin = 1Plots.cm)
+
+# équilibre 0
+plot!(sol_logistic.time, zeros(length(sol_logistic.time)),
+      color = "red",
+      linewidth = 1,
+      linealpha = .5,
+      label = "équilibre instable")
+
+# équilibre 1
+plot!(sol_logistic.time, ones(length(sol_logistic.time)).*K,
+      color = "green",
+      linewidth = 1,
+      linealpha = .5,
+      label = "équilibre stable")
+
 ```
 \
+
+
+## Effets Allee {#sec-allee}
+
+On s'intéresse à un modèle de dynamique de population avec "effets Allee forts", souvent attribué à @gruntfest1997^[mais de nombreuses variations de cette forme polynomiale existent dans la littérature depuis @bazykin1985] :
+
+$$
+\dot x = r x \left(\frac{x}{\epsilon}-1\right)\left(1-\frac{x}{K}\right),
+$$ {#eq-allee}
+avec $r$ le taux de croissance intrinsèque de la population (par analogie avec la logistique), $K$ la capacité de charge de l'environnement et $\epsilon$ le seuil en dessous duquel la population n'est pas viable ('seuil de Allee'). 
+
+Nous souhaitons illustrer la bistabilité caractéristique du comportement de ce modèle à partir de la simulation depuis plusieurs conditions initiales.
+
+Commençons par définir le modèle et les paramètres (en conservant les $r$ et $K$ précédents):
+```{julia}
+#| code-fold: true
+epsilon = 2                 # seuil de Allee
+par_allee = [r, K, epsilon] # packing
+
+function allee(u, p, t)
+    r, K, epsilon = p        # unpacking
+    x = u[1]                 # use x notation
+    dx = r*x*(x/epsilon - 1)*(1 - x/K)     # return derivative
+end
+```
+
+Nous définissons une fonction qui réalise la simulation en un seul appel:
+
+```{julia}
+function int_allee(x0, tspan = tspan, param = par_allee)
+    prob_allee = ODEProblem(allee,          # modèle
+                          x0,               # condition initiale
+                          tspan,            # tspan
+                          param,            # paramètres
+                          saveat = tstep)   # option de sortie
+    
+    sol_allee = solve(prob_allee)
+    sol_allee = DataFrame(sol_allee)
+    rename!(sol_allee, :timestamp => :time, :value => :x)
+end
+```
+
+
+
 and that's it !
 
 Passons aux [populations exploitées](pop_exploitees.qmd).
