@@ -187,14 +187,16 @@ plot(sol_logistic.time, sol_logistic.x,
 # équilibre 0
 plot!(sol_logistic.time, zeros(length(sol_logistic.time)),
       color = "red",
-      linewidth = 1,
+      linewidth = 2,
+      linestyle = :dash,
       linealpha = .5,
       label = "équilibre instable")
 
 # équilibre 1
 plot!(sol_logistic.time, ones(length(sol_logistic.time)).*K,
       color = "green",
-      linewidth = 1,
+      linewidth = 2,
+      linestyle = :dash,
       linealpha = .5,
       label = "équilibre stable")
 
@@ -218,6 +220,7 @@ Commençons par définir le modèle et les paramètres (en conservant les $r$ et
 #| code-fold: true
 epsilon = 2                 # seuil de Allee
 par_allee = [r, K, epsilon] # packing
+tspan_allee = (0.0, 3.0)
 
 function allee(u, p, t)
     r, K, epsilon = p        # unpacking
@@ -229,7 +232,7 @@ end
 Nous définissons une fonction qui réalise la simulation en un seul appel:
 
 ```{julia}
-function int_allee(x0, tspan = tspan, param = par_allee)
+function int_allee(x0, tspan = tspan_allee, param = par_allee)
     prob_allee = ODEProblem(allee,          # modèle
                           x0,               # condition initiale
                           tspan,            # tspan
@@ -242,7 +245,56 @@ function int_allee(x0, tspan = tspan, param = par_allee)
 end
 ```
 
+```{julia}
+#| output: true
+int_allee(2.1).time
+```
 
+```{julia}
+#| output: true
+x0step = 1.35
+x0vec = x0step:x0step:K
+```
+
+```{julia}
+#| output: true
+# custom color palette
+init_cgrad = palette([:steelblue, :lightblue], length(x0vec))
+
+# initialisation du graphique
+P = plot(legend= :right,
+          palette = init_cgrad)
+
+# boucle de plot avec intégration pour differentes conditions initiales
+for x0 in x0vec
+    plot!(P, int_allee(x0).time, int_allee(x0).x,
+          linewidth = 2,
+          label = "")
+end
+
+# équilibres
+plot!(P, int_allee(0).time, zeros(length(int_allee(0).time)),
+      color = "green",
+      linewidth = 2,
+      linestyle = :dash,
+      linealpha = .5,
+      label = "équilibre stable")
+plot!(P, int_allee(0).time, ones(length(int_allee(0).time)).*epsilon,
+      color = "red",
+      linewidth = 2,
+      linestyle = :dash,
+      linealpha = .5,
+      label = "équilibre instable")
+plot!(P, int_allee(0).time, ones(length(int_allee(0).time)).*K,
+      color = "green",
+      linewidth = 2,
+      linestyle = :dash,
+      linealpha = .5,
+      label = "")
+
+display(P)      # actually shows the plot P
+```
+\
 
 and that's it !
 
