@@ -229,7 +229,7 @@ function allee(u, p, t)
 end
 ```
 
-Nous définissons une fonction qui réalise la simulation en un seul appel:
+Nous définissons une fonction qui réalise une simulation en un seul appel :
 
 ```{julia}
 function int_allee(x0, tspan = tspan_allee, param = par_allee)
@@ -245,25 +245,27 @@ function int_allee(x0, tspan = tspan_allee, param = par_allee)
 end
 ```
 
+Nous définissons un vecteur de conditions initiales différentes :
 ```{julia}
-#| output: true
-int_allee(2.1).time
-```
-
-```{julia}
-#| output: true
 x0step = 1.35
 x0vec = x0step:x0step:K
 ```
 
+
+Finalement on réalise la figure, en initiant un graphique `P` et en faisant une boucle pour tracer chacune des simulations correspondant aux différentes conditions initiales :
 ```{julia}
 #| output: true
 # custom color palette
 init_cgrad = palette([:steelblue, :lightblue], length(x0vec))
 
 # initialisation du graphique
-P = plot(legend= :right,
-          palette = init_cgrad)
+P = plot(palette = init_cgrad,
+         title = "\n Modèle à effets Allee \$r=$r, K=$K\$, \$ϵ=$epsilon\$",
+         legend = :right,
+         ylabel = "densité de population \$x(t)\$", 
+         xlabel = "temps \$t\$",
+         margin = .5Plots.cm,
+         topmargin = 1Plots.cm)
 
 # boucle de plot avec intégration pour differentes conditions initiales
 for x0 in x0vec
@@ -295,8 +297,6 @@ plot!(P, int_allee(0).time, ones(length(int_allee(0).time)).*K,
 display(P)      # actually shows the plot P
 ```
 \
-
-and that's it !
 
 Passons aux [populations exploitées](pop_exploitees.qmd).
 
