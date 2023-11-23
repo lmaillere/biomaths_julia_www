@@ -93,5 +93,79 @@ plot!(P1, sol_tord_ois.time, sol_tord_ois.y ./ 2,
       linewidth = 2,
       label = "oiseaux \$y/2\$",)
 ```
+\
 
-On observe ici des *bifurcations dynamiques* avec le passage de la population de tordeuse d'une branche d'équilibre stable à l'autre sur le diagramme de bifurcation, qui créé un comportement de type cycle d'hysteresis. La situation se comprend bien sur le diagramme de bifurcations $(y, x)$.
+On observe ici des *bifurcations dynamiques* avec le passage de la population de tordeuse d'une branche d'équilibre stable à l'autre, qui créé un comportement de type cycle d'hysteresis. La situation se comprend bien sur le diagramme de bifurcations $(y, x)$. On retrace le diagramme de bifurcations.
+
+```{julia}
+#| code-fold: true
+using Symbolics, Polynomials
+
+@variables X
+D = Differential(X)
+
+# lieu des équilibres positifs
+Y = r/(α*X)*(1-X/K)*(h^2+X^2)
+
+# dénominateur de la dérivée
+dnumerator = Symbolics.arguments(Symbolics.value(simplify(expand_derivatives(D(Y)))))[1]
+
+# on récupère les coefficients X^k du polynôme
+coefs_dict = Symbolics.value(dnumerator).dict
+dd = Dict(Symbolics.degree(first(kv)) => kv[2] for kv ∈ coefs_dict)
+# on rajoute dans le dictionnaire le coefficient constant
+dd[0] = substitute(dnumerator, Dict(X=>0))
+
+# on définit le polynôme à partir du dictionnaire
+dnumpoly = SparsePolynomial(dd, :X)
+
+# on calcule les racines en filtrant les racines entre 0 et K via une fonction anonyme s-> K > s > 0
+droots = filter(s -> K > s > 0, roots(dnumpoly))
+
+# vecteur pour le tracé du diagramme de bifurcation
+xplot1 = 0.08:.01:droots[1]
+xplot2 = droots[1]:.01:droots[2]
+xplot3 = droots[2]:.01:K
+yeq1 = r.*(1 .-xplot1./K) ./ (α.*xplot1).*(h^2 .+xplot1.^2)
+yeq2 = r.*(1 .-xplot2./K) ./ (α.*xplot2).*(h^2 .+xplot2.^2)
+yeq3 = r.*(1 .-xplot3./K) ./ (α.*xplot3).*(h^2 .+xplot3.^2)
+
+# diagramme de bifurcations
+Pbif = plot(yeq1, xplot1,
+            linewidth = 2,
+            color = mygreen,
+            label = "équilibres stables",
+            legend = :left,
+            xlabel = "population d'oiseaux \$y\$",
+            ylabel = "population de tordeuses \$x\$",
+            title = "Diagramme de bifurcations pour le modèle de tordeuses",
+            margin = .5Plots.cm,
+            topmargin = 1Plots.cm)
+
+plot!(Pbif, yeq2, xplot2,
+      linewidth = 2,
+      color = myred,
+      label = "équilibres instables")
+
+plot!(Pbif, yeq3, xplot3,
+      linewidth = 2,
+      color = mygreen,
+      label = "")
+
+plot!(Pbif, [0, maximum(yeq1)], [0, 0], 
+      color = myred,
+      lw = 2,
+      label = "")
+```
+
+On trace sur ce diagramme la trajectoire simulée plus haut :
+```{julia}
+#| output: true
+plot!(Pbif, sol_tord_ois.y, sol_tord_ois.x,
+      color = myblue,
+      linewidth = 2,
+      linealpha = 0.5,
+      label = "trajectoire")
+```
+
+## Le modèle de Lotka Volterra
