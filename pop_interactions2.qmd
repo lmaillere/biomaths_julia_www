@@ -15,7 +15,7 @@ $$
 \end{array}\right.
 $$ {#eq-rma}
 
-### Dynamiques et plan de phase
+### Dynamiques 
 
 Il n'y a pas de difficulté particulière à la simulation par rapport au modèle de Lotka Volterra. 
 
@@ -39,7 +39,7 @@ m = 1.0
 par_rma = [r, K, c, h, b, m]
 
 # temps d'integration 
-tspan = (0.0, 60.0)
+tspan = (0.0, 55.0)
 tstep = .01
 
 # définition du modèle
@@ -63,7 +63,7 @@ sol_rma = DataFrame(sol_rma)
 rename!(sol_rma, :timestamp => :time, :value1 => :x, :value2 => :y)
 ```
 
-Nous utiliserons ici le package de visualisation graphique `Makie.jl`^[entièrement écrit en `Julia`, présenté comme "[le futur](https://medium.com/coffee-in-a-klein-bottle/visualizing-data-with-julia-using-makie-7685d7850f06)". Une bonne [introduction à Makie](https://juliadatascience.io/DataVisualizationMakie).] à la place de `Plots.jl`. `Makie.jl` permet un contrôle très approfondi du graphiqe. Commençons par tracer les dynamiques contre le temps dans une figure simple.
+Nous utiliserons ici le package de visualisation graphique `Makie.jl`^[entièrement écrit en `Julia`, présenté comme "[le futur](https://medium.com/coffee-in-a-klein-bottle/visualizing-data-with-julia-using-makie-7685d7850f06)". Une bonne [introduction à Makie](https://juliadatascience.io/DataVisualizationMakie).] à la place de `Plots.jl`. `Makie.jl` permet un contrôle très approfondi du graphique. Commençons par tracer les dynamiques contre le temps dans une figure simple.
 
 Nous utiliserons le backend `CairoMakie` pour la visualisation en 2D. 
 ```{julia}
@@ -73,10 +73,12 @@ using CairoMakie
 Un peu comme `Matplotlib` en `Python`, `Makie` définit un triplet `FigureAxisPlot` : la figure est le conteneur de (éventuellement) plusieurs systèmes d'axes qui contiennent chacun un ou plusieurs graphique. 
 ```{julia}
 #| output: true
+#| label: fig-dyn-rma
+#| fig-cap: Ma première figure avec `Makie.jl` 
 # on crée la figure
 fig1 = Figure(backgroundcolor = :transparent,
-              resolution = (600,400),
-              fontsize = 18)  # size
+              resolution = (600,400),   # size
+              fontsize = 18)  
 
 # on crée un système d'axes en position [1,1] dans la figure
 ax1 = Axis(fig1[1,1],
@@ -102,3 +104,143 @@ axislegend(position = :lt)
 # on affiche la figure
 fig1
 ```
+
+### Dynamiques et plan de phase
+
+Nous allons maintenant tracer un graphique plus complexe comprenant en colonne de droite les dynamiques des proies et des prédateurs sur deux lignes et en colonne de gauche le plan de phase. préparons la figure et les systèmes d'axes.
+
+```{julia}
+#| output: true
+# figure
+fig2 = Figure(backgroundcolor = :transparent,
+              resolution = (800,500),   # size
+              fontsize = 20,
+              font = "CMU Serif")  
+
+# 3 systèmes d'axes
+ax21 = Axis(fig2[1,1],
+            title = "Dynamiques")
+
+ax22 = Axis(fig2[2,1],
+            xlabel = "temps")
+
+ax23 = Axis(fig2[:,2],
+            xlabel = "proies",
+            ylabel = "prédateurs",
+            title = "Plan de phase")
+
+# on agrandi un peu la deuxième colonne de la figure
+colsize!(fig2.layout, 2, Auto(1.5))
+
+# ajout d'un titre
+supertitle = Label(fig2[0, :], "Modèle de Rosenzweig MacArthur", fontsize = 30)
+# et d'un label d'axes commun à la première colonne
+sideinfo = Label(fig2[1:2, 0], "densités de populations", rotation = pi/2)
+
+# on affiche la figure
+fig2
+```
+
+On rajoute les dynamiques.
+```{julia}
+#| output: true
+lines!(ax21, sol_rma.time, sol_rma.x,
+       color = Cycled(1),  # pick color 1 in the colorcycle
+       linewidth = 2,
+       linestyle = :solid,
+       label = L"x")
+axislegend(ax21, position = :lt, labelsize = 14)
+
+lines!(ax22, sol_rma.time, sol_rma.y,
+       color = Cycled(2),
+       linewidth = 2,
+       linestyle = :solid,
+       label = L"y")
+axislegend(ax22, position = :lt, labelsize = 14)
+
+
+fig2
+```
+
+Passons maintenant au plan de phase.
+```{julia}
+#| output: true
+#| label: fig-rma-pplane
+#| fig-cap: Une figure plus complexe avec `Makie.jl`
+# trajectoire
+lines!(ax23, sol_rma.x, sol_rma.y,
+       color = Cycled(1),
+       linewidth = 2,
+       linestyle = :solid,
+       label = L"trajectoire $$")
+
+# calcul des isoclines nulles
+x = LinRange(0.0, K+.1, 30)
+y = x
+
+# isoclines nulles de xdot
+null_x_x = ones(length(y)).*0        # x = 0 isocline nulle de xdot
+null_x_y = r./c.*(h.+x).*(1 .-x./K)  # y = f(x) isocline nulle de xdot
+
+# isoclines nulles de ydot
+null_y_y = ones(length(y)).*0           # y = 0 isocline nulle de ydot
+null_y_x = ones(length(y)).*m.*h./(b-m) # x = mh/(b-m) isocline nulle de ydot
+
+# tracé des isoclines nulle de x
+lines!(ax23, null_x_x, y,
+       color = Cycled(2),
+       linewidth = 2,
+       linestyle = :solid)
+
+lines!(ax23, x, null_x_y, 
+       color = Cycled(2),
+       linewidth = 2,
+       linestyle = :solid,
+       label = L"nullcline de $x$")
+
+# tracé des isoclines nulle de y
+lines!(ax23, x, null_y_y, 
+       color = Cycled(3),
+       linewidth = 2,
+       linestyle = :solid)
+lines!(ax23, null_y_x, y,
+       color = Cycled(3),
+       linewidth = 2,
+       linestyle = :solid,
+       label = L"nullcline de $y$")
+
+# tracé des équilibres
+scatter!(ax23, 0, 0,
+         color = Cycled(4),
+         label = L"équilibres$$")
+scatter!(ax23, K, 0,
+         color = Cycled(4))
+
+eq_coex = [m*h/(b-m), r/c*(h+m*h/(b-m))*(1-m*h/(b-m)/K)]
+
+scatter!(ax23, eq_coex[1], eq_coex[2],
+         color = Cycled(4))
+
+# champs de vecteur
+scale = 10
+xrange = range(1, 10, length=11)  
+yrange = range(1. ,10, length=11)
+
+derx = [rma([x y], par_rma, 0)[1]/scale for x in xrange, y in yrange]
+dery = [rma([x y], par_rma, 0)[2]/scale for x in xrange, y in yrange]
+
+arrows!(ax23, xrange, yrange, derx, dery, 
+        color = :lightgray, 
+        arrowsize = 10, 
+        label = L"vector field$$")
+
+axislegend(ax23, position = :rt, labelsize = 14)
+
+fig2
+```
+
+
+
+### Diagramme de bifurcations
+
+lorem ipsum
