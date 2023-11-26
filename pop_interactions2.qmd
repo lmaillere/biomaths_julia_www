@@ -3,7 +3,24 @@ title: "Populations en interaction (2)"
 ---
 
 
+
+## Le modèle de Rosenzweig MacArthur {#sec-rma}
+
+Nous considérons le modèle de dynamique de populations attribué à Rosenzweig et MacArthur (voir @Rosenzweig1963, @Turchin2003, @Smith2008).
+
+$$
+\left\{\begin{array}{l}
+\dot x = \displaystyle rx\left(1-\frac{x}{K}\right) - c \frac{x}{h+x} y\\[.3cm]
+\dot y = b\displaystyle \frac{x}{h+x} y - m y
+\end{array}\right.
+$$ {#eq-rma}
+
+### Dynamiques et plan de phase
+
+Il n'y a pas de difficulté particulière à la simulation par rapport au modèle de Lotka Volterra. 
+
 ```{julia}
+#| code-fold: true
 using DifferentialEquations, DataFrames
 
 # conditions initiales
@@ -13,50 +30,75 @@ etat0 = [x0, y0]
 
 # paramètres
 r = 1.0
+K = 10.0 
 c = 1.0
-b = 1.0
+h = 2.0
+b = 2.0
 m = 1.0
-par_lovo = [r, c, b, m]
 
-# integration plus longue
-tspan = (0.0, 30.0)
+par_rma = [r, K, c, h, b, m]
+
+# temps d'integration 
+tspan = (0.0, 60.0)
 tstep = .01
 
 # définition du modèle
-function lovo(u, par, t)
-    r, c, b, m = par
+function rma(u, par, t)
+    r, K, c, h, b, m = par
     x = u[1]
     y = u[2]
-    dx = r*x - c*x*y
-    dy = b*x*y - m*y
+
+    dx = r*x*(1-x/K) - c*x/(h+x)*y
+    dy = b*x/(h+x)*y - m*y
+    
     [dx, dy]
 end
 
 # problème
-prob_lovo = ODEProblem(lovo, etat0, tspan, par_lovo, saveat = tstep)
+prob_rma = ODEProblem(rma, etat0, tspan, par_rma, saveat = tstep)
 # intégration
-sol_lovo = solve(prob_lovo, reltol = 1e-6)
+sol_rma = solve(prob_rma, reltol = 1e-6)
 # dataframe
-sol_lovo = DataFrame(sol_lovo)
-rename!(sol_lovo, :timestamp => :time, :value1 => :x, :value2 => :y)
+sol_rma = DataFrame(sol_rma)
+rename!(sol_rma, :timestamp => :time, :value1 => :x, :value2 => :y)
 ```
 
+Nous utiliserons ici le package de visualisation graphique `Makie.jl`^[entièrement écrit en `Julia`, présenté comme "[le futur](https://medium.com/coffee-in-a-klein-bottle/visualizing-data-with-julia-using-makie-7685d7850f06)". Une bonne [introduction à Makie](https://juliadatascience.io/DataVisualizationMakie).] à la place de `Plots.jl`. `Makie.jl` permet un contrôle très approfondi du graphiqe. Commençons par tracer les dynamiques contre le temps dans une figure simple.
+
+Nous utiliserons le backend `CairoMakie` pour la visualisation en 2D. 
 ```{julia}
-function int_prem(x, y, par = par_lovo)
-      r, c, b, m = par
-      -r*log(y) + c*y - m*log(x) + b*x
-end
+using CairoMakie
 ```
 
+Un peu comme `Matplotlib` en `Python`, `Makie` définit un triplet `FigureAxisPlot` : la figure est le conteneur de (éventuellement) plusieurs systèmes d'axes qui contiennent chacun un ou plusieurs graphique. 
 ```{julia}
 #| output: true
-using GLMakie
+# on crée la figure
+fig1 = Figure(backgroundcolor = :transparent,
+              resolution = (600,400),
+              fontsize = 18)  # size
 
-xsurf = .2: .1: 3
-ysurf = .2:.1: 3
-zsurf = [int_prem(x, y, par_lovo) for x in xsurf, y in ysurf]
+# on crée un système d'axes en position [1,1] dans la figure
+ax1 = Axis(fig1[1,1],
+           xlabel = "temps",
+           ylabel = "densités de populations",
+           title = "Modèle de Rosenzweig MacArthur")
 
-surface(xsurf, ysurf, zsurf, 
-        axis = (type=Axis3,xlabel = "proies \$x\$",
-        ylabel = "prédateurs \$y\$"))
+# on trace la population x contre le temps sur le système d'axe ax1
+lines!(ax1, sol_rma.time, sol_rma.x,
+       linewidth = 2,
+       linestyle = :solid,
+       label = L"x(t)")
+
+# population y
+lines!(ax1, sol_rma.time, sol_rma.y,
+       linewidth = 2,
+       linestyle = :solid,
+       label = L"y(t)")
+
+# légende
+axislegend(position = :lt)
+
+# on affiche la figure
+fig1
 ```
