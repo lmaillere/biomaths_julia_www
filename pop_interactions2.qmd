@@ -158,6 +158,7 @@ lines!(ax22, sol_rma.time, sol_rma.y,
        label = L"y")
 axislegend(ax22, position = :lt, labelsize = 14)
 
+hidexdecorations!(ax21, ticks = false)
 
 fig2
 ```
@@ -236,9 +237,12 @@ arrows!(ax23, xrange, yrange, derx, dery,
 
 axislegend(ax23, position = :rt, labelsize = 14)
 
+# reduce default spacing for columns and rows
+colgap!(fig2.layout, 20)
+rowgap!(fig2.layout, 20)
+
 fig2
 ```
-
 
 
 ### Diagramme de bifurcations

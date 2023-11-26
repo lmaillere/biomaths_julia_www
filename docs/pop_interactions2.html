@@ -257,7 +257,7 @@ div.csl-indent {
 <section id="dynamiques" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="dynamiques">Dynamiques</h3>
 <p>Il n’y a pas de difficulté particulière à la simulation par rapport au modèle de Lotka Volterra.</p>
-<div class="cell" data-execution_count="1">
+<div class="cell" data-execution_count="2">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">DifferentialEquations</span>, <span class="bu">DataFrames</span></span>
@@ -304,11 +304,11 @@ div.csl-indent {
 </div>
 <div class="page-columns page-full"><p>Nous utiliserons ici le package de visualisation graphique <code>Makie.jl</code><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> à la place de <code>Plots.jl</code>. <code>Makie.jl</code> permet un contrôle très approfondi du graphique. Commençons par tracer les dynamiques contre le temps dans une figure simple.</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;entièrement écrit en <code>Julia</code>, présenté comme “<a href="https://medium.com/coffee-in-a-klein-bottle/visualizing-data-with-julia-using-makie-7685d7850f06">le futur</a>”. Une bonne <a href="https://juliadatascience.io/DataVisualizationMakie">introduction à Makie</a>.</p></li></div></div>
 <p>Nous utiliserons le backend <code>CairoMakie</code> pour la visualisation en 2D.</p>
-<div class="cell" data-execution_count="2">
+<div class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CairoMakie</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Un peu comme <code>Matplotlib</code> en <code>Python</code>, <code>Makie</code> définit un triplet <code>FigureAxisPlot</code> : la figure est le conteneur de (éventuellement) plusieurs systèmes d’axes qui contiennent chacun un ou plusieurs graphique.</p>
-<div class="cell" data-execution_count="3">
+<div class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># on crée la figure</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>fig1 <span class="op">=</span> <span class="fu">Figure</span>(backgroundcolor <span class="op">=</span> <span class="op">:</span>transparent,</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>              resolution <span class="op">=</span> (<span class="fl">600</span>,<span class="fl">400</span>),   <span class="co"># size</span></span>
@@ -337,7 +337,7 @@ div.csl-indent {
 <span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="co"># on affiche la figure</span></span>
 <span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>fig1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="228">
+<div class="cell-output cell-output-display" data-execution_count="43">
 <div id="fig-dyn-rma" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="pop_interactions2_files/figure-html/fig-dyn-rma-output-1.svg" class="img-fluid figure-img"></p>
@@ -350,7 +350,7 @@ div.csl-indent {
 <section id="dynamiques-et-plan-de-phase" class="level3">
 <h3 class="anchored" data-anchor-id="dynamiques-et-plan-de-phase">Dynamiques et plan de phase</h3>
 <p>Nous allons maintenant tracer un graphique plus complexe comprenant en colonne de droite les dynamiques des proies et des prédateurs sur deux lignes et en colonne de gauche le plan de phase. préparons la figure et les systèmes d’axes.</p>
-<div class="cell" data-execution_count="4">
+<div class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># figure</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>fig2 <span class="op">=</span> <span class="fu">Figure</span>(backgroundcolor <span class="op">=</span> <span class="op">:</span>transparent,</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>              resolution <span class="op">=</span> (<span class="fl">800</span>,<span class="fl">500</span>),   <span class="co"># size</span></span>
@@ -379,12 +379,12 @@ div.csl-indent {
 <span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="co"># on affiche la figure</span></span>
 <span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>fig2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="229">
+<div class="cell-output cell-output-display" data-execution_count="44">
 <p><img src="pop_interactions2_files/figure-html/cell-5-output-1.svg" class="img-fluid"></p>
 </div>
 </div>
 <p>On rajoute les dynamiques.</p>
-<div class="cell" data-execution_count="5">
+<div class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lines!</span>(ax21, sol_rma.time, sol_rma.x,</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>       color <span class="op">=</span> <span class="fu">Cycled</span>(<span class="fl">1</span>),  <span class="co"># pick color 1 in the colorcycle</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>       linewidth <span class="op">=</span> <span class="fl">2</span>,</span>
@@ -399,14 +399,15 @@ div.csl-indent {
 <span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>       label <span class="op">=</span> L<span class="st">"y"</span>)</span>
 <span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="fu">axislegend</span>(ax22, position <span class="op">=</span> <span class="op">:</span>lt, labelsize <span class="op">=</span> <span class="fl">14</span>)</span>
 <span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>fig2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="230">
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="fu">hidexdecorations!</span>(ax21, ticks <span class="op">=</span> <span class="cn">false</span>)</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>fig2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="45">
 <p><img src="pop_interactions2_files/figure-html/cell-6-output-1.svg" class="img-fluid"></p>
 </div>
 </div>
 <p>Passons maintenant au plan de phase.</p>
-<div class="cell" data-execution_count="6">
+<div class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># trajectoire</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines!</span>(ax23, sol_rma.x, sol_rma.y,</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>       color <span class="op">=</span> <span class="fu">Cycled</span>(<span class="fl">1</span>),</span>
@@ -476,8 +477,12 @@ div.csl-indent {
 <span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a>axislegend<span class="st">(ax23, position = :rt, labelsize = 14)</span></span>
 <span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a>fig2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="231">
+<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a><span class="co"># reduce default spacing for columns and rows</span></span>
+<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a><span class="fu">colgap!</span>(fig2.layout, <span class="fl">20</span>)</span>
+<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a><span class="fu">rowgap!</span>(fig2.layout, <span class="fl">20</span>)</span>
+<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a>fig2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="46">
 <div id="fig-rma-pplane" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="pop_interactions2_files/figure-html/fig-rma-pplane-output-1.svg" class="img-fluid figure-img"></p>
@@ -954,92 +959,96 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb7-168"><a href="#cb7-168" aria-hidden="true" tabindex="-1"></a><span class="ot">       label = L"y"</span><span class="ch">)</span></span>
 <span id="cb7-169"><a href="#cb7-169" aria-hidden="true" tabindex="-1"></a><span class="ot">axislegend</span><span class="ch">(</span><span class="ot">ax22, position = :lt, labelsize = 14</span><span class="ch">)</span></span>
 <span id="cb7-170"><a href="#cb7-170" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-171"><a href="#cb7-171" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-172"><a href="#cb7-172" aria-hidden="true" tabindex="-1"></a><span class="ot">fig2</span></span>
-<span id="cb7-173"><a href="#cb7-173" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
-<span id="cb7-174"><a href="#cb7-174" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-175"><a href="#cb7-175" aria-hidden="true" tabindex="-1"></a><span class="ot">Passons maintenant au plan de phase.</span></span>
-<span id="cb7-178"><a href="#cb7-178" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb7-179"><a href="#cb7-179" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
-<span id="cb7-180"><a href="#cb7-180" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-rma-pplane</span></span>
-<span id="cb7-181"><a href="#cb7-181" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Une figure plus complexe avec `Makie.jl`</span></span>
-<span id="cb7-182"><a href="#cb7-182" aria-hidden="true" tabindex="-1"></a><span class="co"># trajectoire</span></span>
-<span id="cb7-183"><a href="#cb7-183" aria-hidden="true" tabindex="-1"></a><span class="ot">lines!</span><span class="ch">(</span><span class="ot">ax23, sol_rma.x, sol_rma.y,</span></span>
-<span id="cb7-184"><a href="#cb7-184" aria-hidden="true" tabindex="-1"></a><span class="ot">       color = Cycled</span><span class="ch">(</span><span class="ot">1</span><span class="ch">)</span><span class="ot">,</span></span>
-<span id="cb7-185"><a href="#cb7-185" aria-hidden="true" tabindex="-1"></a><span class="ot">       linewidth = 2,</span></span>
-<span id="cb7-186"><a href="#cb7-186" aria-hidden="true" tabindex="-1"></a><span class="ot">       linestyle = :solid,</span></span>
-<span id="cb7-187"><a href="#cb7-187" aria-hidden="true" tabindex="-1"></a><span class="ot">       label = L"trajectoire </span><span class="wa">$$</span><span class="ot">"</span><span class="ch">)</span></span>
-<span id="cb7-188"><a href="#cb7-188" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-189"><a href="#cb7-189" aria-hidden="true" tabindex="-1"></a><span class="co"># calcul des isoclines nulles</span></span>
-<span id="cb7-190"><a href="#cb7-190" aria-hidden="true" tabindex="-1"></a><span class="ot">x = LinRange</span><span class="ch">(</span><span class="ot">0.0, K</span><span class="ch">+</span><span class="ot">.1, 30</span><span class="ch">)</span></span>
-<span id="cb7-191"><a href="#cb7-191" aria-hidden="true" tabindex="-1"></a><span class="ot">y = x</span></span>
-<span id="cb7-192"><a href="#cb7-192" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-193"><a href="#cb7-193" aria-hidden="true" tabindex="-1"></a><span class="co"># isoclines nulles de xdot</span></span>
-<span id="cb7-194"><a href="#cb7-194" aria-hidden="true" tabindex="-1"></a><span class="ot">null_x_x = ones</span><span class="ch">(</span><span class="ot">length</span><span class="ch">(</span><span class="ot">y</span><span class="ch">))</span><span class="ot">.*</span><span class="dv">0</span>        <span class="co"># x = 0 isocline nulle de xdot</span></span>
-<span id="cb7-195"><a href="#cb7-195" aria-hidden="true" tabindex="-1"></a>null_x_y = r.<span class="ot">/c.</span><span class="ch">*(</span><span class="ot">h.</span><span class="ch">+</span><span class="ot">x</span><span class="ch">)</span><span class="ot">.</span><span class="ch">*(</span><span class="ot">1 .-x./</span>K)  <span class="co"># y = f(x) isocline nulle de xdot</span></span>
-<span id="cb7-196"><a href="#cb7-196" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-197"><a href="#cb7-197" aria-hidden="true" tabindex="-1"></a><span class="co"># isoclines nulles de ydot</span></span>
-<span id="cb7-198"><a href="#cb7-198" aria-hidden="true" tabindex="-1"></a>null_y_y = ones(<span class="fu">length</span>(y)).*<span class="dv">0</span>           <span class="co"># y = 0 isocline nulle de ydot</span></span>
-<span id="cb7-199"><a href="#cb7-199" aria-hidden="true" tabindex="-1"></a>null_y_x = ones(<span class="fu">length</span>(y)).<span class="dt">*m</span>.<span class="dt">*h</span>.<span class="ot">/</span><span class="ch">(</span><span class="ot">b-m</span><span class="ch">)</span><span class="ot"> # x = mh/</span>(b-m) isocline nulle de ydot</span>
-<span id="cb7-200"><a href="#cb7-200" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-201"><a href="#cb7-201" aria-hidden="true" tabindex="-1"></a><span class="co"># tracé des isoclines nulle de x</span></span>
-<span id="cb7-202"><a href="#cb7-202" aria-hidden="true" tabindex="-1"></a>lines!(ax23, null_x_x, <span class="ot">y</span>,</span>
-<span id="cb7-203"><a href="#cb7-203" aria-hidden="true" tabindex="-1"></a>       color = Cycled(<span class="dv">2</span>),</span>
-<span id="cb7-204"><a href="#cb7-204" aria-hidden="true" tabindex="-1"></a>       linewidth = <span class="dv">2</span>,</span>
-<span id="cb7-205"><a href="#cb7-205" aria-hidden="true" tabindex="-1"></a>       linestyle = :solid)</span>
-<span id="cb7-206"><a href="#cb7-206" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-207"><a href="#cb7-207" aria-hidden="true" tabindex="-1"></a>lines!(ax23, x, null_x_y, </span>
-<span id="cb7-208"><a href="#cb7-208" aria-hidden="true" tabindex="-1"></a>       color = Cycled(<span class="dv">2</span>),</span>
-<span id="cb7-209"><a href="#cb7-209" aria-hidden="true" tabindex="-1"></a>       linewidth = <span class="dv">2</span>,</span>
-<span id="cb7-210"><a href="#cb7-210" aria-hidden="true" tabindex="-1"></a>       linestyle = :solid,</span>
-<span id="cb7-211"><a href="#cb7-211" aria-hidden="true" tabindex="-1"></a>       label = L<span class="ot">"</span><span class="st">nullcline de </span><span class="dt">$x</span><span class="wa">$"</span><span class="st">)</span></span>
-<span id="cb7-212"><a href="#cb7-212" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-213"><a href="#cb7-213" aria-hidden="true" tabindex="-1"></a><span class="st"># tracé des isoclines nulle de y</span></span>
-<span id="cb7-214"><a href="#cb7-214" aria-hidden="true" tabindex="-1"></a><span class="st">lines!(ax23, x, null_y_y, </span></span>
-<span id="cb7-215"><a href="#cb7-215" aria-hidden="true" tabindex="-1"></a><span class="st">       color = Cycled(3),</span></span>
-<span id="cb7-216"><a href="#cb7-216" aria-hidden="true" tabindex="-1"></a><span class="st">       linewidth = 2,</span></span>
-<span id="cb7-217"><a href="#cb7-217" aria-hidden="true" tabindex="-1"></a><span class="st">       linestyle = :solid)</span></span>
-<span id="cb7-218"><a href="#cb7-218" aria-hidden="true" tabindex="-1"></a><span class="st">lines!(ax23, null_y_x, y,</span></span>
-<span id="cb7-219"><a href="#cb7-219" aria-hidden="true" tabindex="-1"></a><span class="st">       color = Cycled(3),</span></span>
-<span id="cb7-220"><a href="#cb7-220" aria-hidden="true" tabindex="-1"></a><span class="st">       linewidth = 2,</span></span>
-<span id="cb7-221"><a href="#cb7-221" aria-hidden="true" tabindex="-1"></a><span class="st">       linestyle = :solid,</span></span>
-<span id="cb7-222"><a href="#cb7-222" aria-hidden="true" tabindex="-1"></a><span class="st">       label = L</span><span class="ot">"</span>nullcline de <span class="dt">$y</span><span class="wa">$"</span>)</span>
-<span id="cb7-223"><a href="#cb7-223" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-224"><a href="#cb7-224" aria-hidden="true" tabindex="-1"></a><span class="co"># tracé des équilibres</span></span>
-<span id="cb7-225"><a href="#cb7-225" aria-hidden="true" tabindex="-1"></a>scatter!(ax23, <span class="dv">0</span>, <span class="dv">0</span>,</span>
-<span id="cb7-226"><a href="#cb7-226" aria-hidden="true" tabindex="-1"></a>         color = Cycled(<span class="dv">4</span>),</span>
-<span id="cb7-227"><a href="#cb7-227" aria-hidden="true" tabindex="-1"></a>         label = L<span class="ot">"</span><span class="st">équilibres</span><span class="wa">$$</span><span class="ot">"</span>)</span>
-<span id="cb7-228"><a href="#cb7-228" aria-hidden="true" tabindex="-1"></a>scatter!(ax23, K, <span class="dv">0</span>,</span>
-<span id="cb7-229"><a href="#cb7-229" aria-hidden="true" tabindex="-1"></a>         color = Cycled(<span class="dv">4</span>))</span>
-<span id="cb7-230"><a href="#cb7-230" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-231"><a href="#cb7-231" aria-hidden="true" tabindex="-1"></a>eq_coex = [<span class="ot">m*h/</span><span class="ch">(</span><span class="ot">b-m</span><span class="ch">)</span><span class="ot">, r/c*</span>(h+<span class="ot">m*h/</span><span class="ch">(</span><span class="ot">b-m</span><span class="ch">))</span><span class="ot">*</span>(<span class="dv">1</span>-<span class="ot">m*h/</span><span class="ch">(</span><span class="ot">b-m</span><span class="ch">)</span><span class="ot">/K</span><span class="ch">)</span><span class="ot">]</span></span>
-<span id="cb7-232"><a href="#cb7-232" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-233"><a href="#cb7-233" aria-hidden="true" tabindex="-1"></a><span class="ot">scatter!</span><span class="ch">(</span><span class="ot">ax23, eq_coex</span><span class="ch">[</span><span class="bn">1</span><span class="ch">]</span><span class="ot">, eq_coex</span><span class="ch">[</span><span class="bn">2</span><span class="ch">]</span><span class="ot">,</span></span>
-<span id="cb7-234"><a href="#cb7-234" aria-hidden="true" tabindex="-1"></a><span class="ot">         color = Cycled</span><span class="ch">(</span><span class="ot">4</span><span class="ch">))</span></span>
-<span id="cb7-235"><a href="#cb7-235" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-236"><a href="#cb7-236" aria-hidden="true" tabindex="-1"></a><span class="co"># champs de vecteur</span></span>
-<span id="cb7-237"><a href="#cb7-237" aria-hidden="true" tabindex="-1"></a><span class="ot">scale = 10</span></span>
-<span id="cb7-238"><a href="#cb7-238" aria-hidden="true" tabindex="-1"></a><span class="ot">xrange = range</span><span class="ch">(</span><span class="ot">1, 10, length=11</span><span class="ch">)</span><span class="ot">  </span></span>
-<span id="cb7-239"><a href="#cb7-239" aria-hidden="true" tabindex="-1"></a><span class="ot">yrange = range</span><span class="ch">(</span><span class="ot">1. ,10, length=11</span><span class="ch">)</span></span>
-<span id="cb7-240"><a href="#cb7-240" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-241"><a href="#cb7-241" aria-hidden="true" tabindex="-1"></a><span class="ot">derx = </span><span class="ch">[</span><span class="bn">rma([x y</span><span class="ch">]</span><span class="ot">, par_rma, 0</span><span class="ch">)[</span><span class="bn">1</span><span class="ch">]</span><span class="ot">/scale for x in xrange, y in yrange]</span></span>
-<span id="cb7-242"><a href="#cb7-242" aria-hidden="true" tabindex="-1"></a><span class="ot">dery = </span><span class="ch">[</span><span class="bn">rma([x y</span><span class="ch">]</span><span class="ot">, par_rma, 0</span><span class="ch">)[</span><span class="bn">2</span><span class="ch">]</span><span class="ot">/scale for x in xrange, y in yrange]</span></span>
-<span id="cb7-243"><a href="#cb7-243" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-244"><a href="#cb7-244" aria-hidden="true" tabindex="-1"></a><span class="ot">arrows!</span><span class="ch">(</span><span class="ot">ax23, xrange, yrange, derx, dery, </span></span>
-<span id="cb7-245"><a href="#cb7-245" aria-hidden="true" tabindex="-1"></a><span class="ot">        color = :lightgray, </span></span>
-<span id="cb7-246"><a href="#cb7-246" aria-hidden="true" tabindex="-1"></a><span class="ot">        arrowsize = 10, </span></span>
-<span id="cb7-247"><a href="#cb7-247" aria-hidden="true" tabindex="-1"></a><span class="ot">        label = L"vector field</span><span class="wa">$$</span><span class="ot">"</span><span class="ch">)</span></span>
-<span id="cb7-248"><a href="#cb7-248" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-249"><a href="#cb7-249" aria-hidden="true" tabindex="-1"></a><span class="ot">axislegend</span><span class="ch">(</span><span class="ot">ax23, position = :rt, labelsize = 14</span><span class="ch">)</span></span>
-<span id="cb7-250"><a href="#cb7-250" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-251"><a href="#cb7-251" aria-hidden="true" tabindex="-1"></a><span class="ot">fig2</span></span>
-<span id="cb7-252"><a href="#cb7-252" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
-<span id="cb7-253"><a href="#cb7-253" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-254"><a href="#cb7-254" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-171"><a href="#cb7-171" aria-hidden="true" tabindex="-1"></a><span class="ot">hidexdecorations!</span><span class="ch">(</span><span class="ot">ax21, ticks = false</span><span class="ch">)</span></span>
+<span id="cb7-172"><a href="#cb7-172" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-173"><a href="#cb7-173" aria-hidden="true" tabindex="-1"></a><span class="ot">fig2</span></span>
+<span id="cb7-174"><a href="#cb7-174" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
+<span id="cb7-175"><a href="#cb7-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-176"><a href="#cb7-176" aria-hidden="true" tabindex="-1"></a><span class="ot">Passons maintenant au plan de phase.</span></span>
+<span id="cb7-179"><a href="#cb7-179" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb7-180"><a href="#cb7-180" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
+<span id="cb7-181"><a href="#cb7-181" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-rma-pplane</span></span>
+<span id="cb7-182"><a href="#cb7-182" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Une figure plus complexe avec `Makie.jl`</span></span>
+<span id="cb7-183"><a href="#cb7-183" aria-hidden="true" tabindex="-1"></a><span class="co"># trajectoire</span></span>
+<span id="cb7-184"><a href="#cb7-184" aria-hidden="true" tabindex="-1"></a><span class="ot">lines!</span><span class="ch">(</span><span class="ot">ax23, sol_rma.x, sol_rma.y,</span></span>
+<span id="cb7-185"><a href="#cb7-185" aria-hidden="true" tabindex="-1"></a><span class="ot">       color = Cycled</span><span class="ch">(</span><span class="ot">1</span><span class="ch">)</span><span class="ot">,</span></span>
+<span id="cb7-186"><a href="#cb7-186" aria-hidden="true" tabindex="-1"></a><span class="ot">       linewidth = 2,</span></span>
+<span id="cb7-187"><a href="#cb7-187" aria-hidden="true" tabindex="-1"></a><span class="ot">       linestyle = :solid,</span></span>
+<span id="cb7-188"><a href="#cb7-188" aria-hidden="true" tabindex="-1"></a><span class="ot">       label = L"trajectoire </span><span class="wa">$$</span><span class="ot">"</span><span class="ch">)</span></span>
+<span id="cb7-189"><a href="#cb7-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-190"><a href="#cb7-190" aria-hidden="true" tabindex="-1"></a><span class="co"># calcul des isoclines nulles</span></span>
+<span id="cb7-191"><a href="#cb7-191" aria-hidden="true" tabindex="-1"></a><span class="ot">x = LinRange</span><span class="ch">(</span><span class="ot">0.0, K</span><span class="ch">+</span><span class="ot">.1, 30</span><span class="ch">)</span></span>
+<span id="cb7-192"><a href="#cb7-192" aria-hidden="true" tabindex="-1"></a><span class="ot">y = x</span></span>
+<span id="cb7-193"><a href="#cb7-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-194"><a href="#cb7-194" aria-hidden="true" tabindex="-1"></a><span class="co"># isoclines nulles de xdot</span></span>
+<span id="cb7-195"><a href="#cb7-195" aria-hidden="true" tabindex="-1"></a><span class="ot">null_x_x = ones</span><span class="ch">(</span><span class="ot">length</span><span class="ch">(</span><span class="ot">y</span><span class="ch">))</span><span class="ot">.*</span><span class="dv">0</span>        <span class="co"># x = 0 isocline nulle de xdot</span></span>
+<span id="cb7-196"><a href="#cb7-196" aria-hidden="true" tabindex="-1"></a>null_x_y = r.<span class="ot">/c.</span><span class="ch">*(</span><span class="ot">h.</span><span class="ch">+</span><span class="ot">x</span><span class="ch">)</span><span class="ot">.</span><span class="ch">*(</span><span class="ot">1 .-x./</span>K)  <span class="co"># y = f(x) isocline nulle de xdot</span></span>
+<span id="cb7-197"><a href="#cb7-197" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-198"><a href="#cb7-198" aria-hidden="true" tabindex="-1"></a><span class="co"># isoclines nulles de ydot</span></span>
+<span id="cb7-199"><a href="#cb7-199" aria-hidden="true" tabindex="-1"></a>null_y_y = ones(<span class="fu">length</span>(y)).*<span class="dv">0</span>           <span class="co"># y = 0 isocline nulle de ydot</span></span>
+<span id="cb7-200"><a href="#cb7-200" aria-hidden="true" tabindex="-1"></a>null_y_x = ones(<span class="fu">length</span>(y)).<span class="dt">*m</span>.<span class="dt">*h</span>.<span class="ot">/</span><span class="ch">(</span><span class="ot">b-m</span><span class="ch">)</span><span class="ot"> # x = mh/</span>(b-m) isocline nulle de ydot</span>
+<span id="cb7-201"><a href="#cb7-201" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-202"><a href="#cb7-202" aria-hidden="true" tabindex="-1"></a><span class="co"># tracé des isoclines nulle de x</span></span>
+<span id="cb7-203"><a href="#cb7-203" aria-hidden="true" tabindex="-1"></a>lines!(ax23, null_x_x, <span class="ot">y</span>,</span>
+<span id="cb7-204"><a href="#cb7-204" aria-hidden="true" tabindex="-1"></a>       color = Cycled(<span class="dv">2</span>),</span>
+<span id="cb7-205"><a href="#cb7-205" aria-hidden="true" tabindex="-1"></a>       linewidth = <span class="dv">2</span>,</span>
+<span id="cb7-206"><a href="#cb7-206" aria-hidden="true" tabindex="-1"></a>       linestyle = :solid)</span>
+<span id="cb7-207"><a href="#cb7-207" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-208"><a href="#cb7-208" aria-hidden="true" tabindex="-1"></a>lines!(ax23, x, null_x_y, </span>
+<span id="cb7-209"><a href="#cb7-209" aria-hidden="true" tabindex="-1"></a>       color = Cycled(<span class="dv">2</span>),</span>
+<span id="cb7-210"><a href="#cb7-210" aria-hidden="true" tabindex="-1"></a>       linewidth = <span class="dv">2</span>,</span>
+<span id="cb7-211"><a href="#cb7-211" aria-hidden="true" tabindex="-1"></a>       linestyle = :solid,</span>
+<span id="cb7-212"><a href="#cb7-212" aria-hidden="true" tabindex="-1"></a>       label = L<span class="ot">"</span><span class="st">nullcline de </span><span class="dt">$x</span><span class="wa">$"</span><span class="st">)</span></span>
+<span id="cb7-213"><a href="#cb7-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-214"><a href="#cb7-214" aria-hidden="true" tabindex="-1"></a><span class="st"># tracé des isoclines nulle de y</span></span>
+<span id="cb7-215"><a href="#cb7-215" aria-hidden="true" tabindex="-1"></a><span class="st">lines!(ax23, x, null_y_y, </span></span>
+<span id="cb7-216"><a href="#cb7-216" aria-hidden="true" tabindex="-1"></a><span class="st">       color = Cycled(3),</span></span>
+<span id="cb7-217"><a href="#cb7-217" aria-hidden="true" tabindex="-1"></a><span class="st">       linewidth = 2,</span></span>
+<span id="cb7-218"><a href="#cb7-218" aria-hidden="true" tabindex="-1"></a><span class="st">       linestyle = :solid)</span></span>
+<span id="cb7-219"><a href="#cb7-219" aria-hidden="true" tabindex="-1"></a><span class="st">lines!(ax23, null_y_x, y,</span></span>
+<span id="cb7-220"><a href="#cb7-220" aria-hidden="true" tabindex="-1"></a><span class="st">       color = Cycled(3),</span></span>
+<span id="cb7-221"><a href="#cb7-221" aria-hidden="true" tabindex="-1"></a><span class="st">       linewidth = 2,</span></span>
+<span id="cb7-222"><a href="#cb7-222" aria-hidden="true" tabindex="-1"></a><span class="st">       linestyle = :solid,</span></span>
+<span id="cb7-223"><a href="#cb7-223" aria-hidden="true" tabindex="-1"></a><span class="st">       label = L</span><span class="ot">"</span>nullcline de <span class="dt">$y</span><span class="wa">$"</span>)</span>
+<span id="cb7-224"><a href="#cb7-224" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-225"><a href="#cb7-225" aria-hidden="true" tabindex="-1"></a><span class="co"># tracé des équilibres</span></span>
+<span id="cb7-226"><a href="#cb7-226" aria-hidden="true" tabindex="-1"></a>scatter!(ax23, <span class="dv">0</span>, <span class="dv">0</span>,</span>
+<span id="cb7-227"><a href="#cb7-227" aria-hidden="true" tabindex="-1"></a>         color = Cycled(<span class="dv">4</span>),</span>
+<span id="cb7-228"><a href="#cb7-228" aria-hidden="true" tabindex="-1"></a>         label = L<span class="ot">"</span><span class="st">équilibres</span><span class="wa">$$</span><span class="ot">"</span>)</span>
+<span id="cb7-229"><a href="#cb7-229" aria-hidden="true" tabindex="-1"></a>scatter!(ax23, K, <span class="dv">0</span>,</span>
+<span id="cb7-230"><a href="#cb7-230" aria-hidden="true" tabindex="-1"></a>         color = Cycled(<span class="dv">4</span>))</span>
+<span id="cb7-231"><a href="#cb7-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-232"><a href="#cb7-232" aria-hidden="true" tabindex="-1"></a>eq_coex = [<span class="ot">m*h/</span><span class="ch">(</span><span class="ot">b-m</span><span class="ch">)</span><span class="ot">, r/c*</span>(h+<span class="ot">m*h/</span><span class="ch">(</span><span class="ot">b-m</span><span class="ch">))</span><span class="ot">*</span>(<span class="dv">1</span>-<span class="ot">m*h/</span><span class="ch">(</span><span class="ot">b-m</span><span class="ch">)</span><span class="ot">/K</span><span class="ch">)</span><span class="ot">]</span></span>
+<span id="cb7-233"><a href="#cb7-233" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-234"><a href="#cb7-234" aria-hidden="true" tabindex="-1"></a><span class="ot">scatter!</span><span class="ch">(</span><span class="ot">ax23, eq_coex</span><span class="ch">[</span><span class="bn">1</span><span class="ch">]</span><span class="ot">, eq_coex</span><span class="ch">[</span><span class="bn">2</span><span class="ch">]</span><span class="ot">,</span></span>
+<span id="cb7-235"><a href="#cb7-235" aria-hidden="true" tabindex="-1"></a><span class="ot">         color = Cycled</span><span class="ch">(</span><span class="ot">4</span><span class="ch">))</span></span>
+<span id="cb7-236"><a href="#cb7-236" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-237"><a href="#cb7-237" aria-hidden="true" tabindex="-1"></a><span class="co"># champs de vecteur</span></span>
+<span id="cb7-238"><a href="#cb7-238" aria-hidden="true" tabindex="-1"></a><span class="ot">scale = 10</span></span>
+<span id="cb7-239"><a href="#cb7-239" aria-hidden="true" tabindex="-1"></a><span class="ot">xrange = range</span><span class="ch">(</span><span class="ot">1, 10, length=11</span><span class="ch">)</span><span class="ot">  </span></span>
+<span id="cb7-240"><a href="#cb7-240" aria-hidden="true" tabindex="-1"></a><span class="ot">yrange = range</span><span class="ch">(</span><span class="ot">1. ,10, length=11</span><span class="ch">)</span></span>
+<span id="cb7-241"><a href="#cb7-241" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-242"><a href="#cb7-242" aria-hidden="true" tabindex="-1"></a><span class="ot">derx = </span><span class="ch">[</span><span class="bn">rma([x y</span><span class="ch">]</span><span class="ot">, par_rma, 0</span><span class="ch">)[</span><span class="bn">1</span><span class="ch">]</span><span class="ot">/scale for x in xrange, y in yrange]</span></span>
+<span id="cb7-243"><a href="#cb7-243" aria-hidden="true" tabindex="-1"></a><span class="ot">dery = </span><span class="ch">[</span><span class="bn">rma([x y</span><span class="ch">]</span><span class="ot">, par_rma, 0</span><span class="ch">)[</span><span class="bn">2</span><span class="ch">]</span><span class="ot">/scale for x in xrange, y in yrange]</span></span>
+<span id="cb7-244"><a href="#cb7-244" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-245"><a href="#cb7-245" aria-hidden="true" tabindex="-1"></a><span class="ot">arrows!</span><span class="ch">(</span><span class="ot">ax23, xrange, yrange, derx, dery, </span></span>
+<span id="cb7-246"><a href="#cb7-246" aria-hidden="true" tabindex="-1"></a><span class="ot">        color = :lightgray, </span></span>
+<span id="cb7-247"><a href="#cb7-247" aria-hidden="true" tabindex="-1"></a><span class="ot">        arrowsize = 10, </span></span>
+<span id="cb7-248"><a href="#cb7-248" aria-hidden="true" tabindex="-1"></a><span class="ot">        label = L"vector field</span><span class="wa">$$</span><span class="ot">"</span><span class="ch">)</span></span>
+<span id="cb7-249"><a href="#cb7-249" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-250"><a href="#cb7-250" aria-hidden="true" tabindex="-1"></a><span class="ot">axislegend</span><span class="ch">(</span><span class="ot">ax23, position = :rt, labelsize = 14</span><span class="ch">)</span></span>
+<span id="cb7-251"><a href="#cb7-251" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-252"><a href="#cb7-252" aria-hidden="true" tabindex="-1"></a><span class="co"># reduce default spacing for columns and rows</span></span>
+<span id="cb7-253"><a href="#cb7-253" aria-hidden="true" tabindex="-1"></a><span class="ot">colgap!</span><span class="ch">(</span><span class="ot">fig2.layout, 20</span><span class="ch">)</span></span>
+<span id="cb7-254"><a href="#cb7-254" aria-hidden="true" tabindex="-1"></a><span class="ot">rowgap!</span><span class="ch">(</span><span class="ot">fig2.layout, 20</span><span class="ch">)</span></span>
 <span id="cb7-255"><a href="#cb7-255" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-256"><a href="#cb7-256" aria-hidden="true" tabindex="-1"></a><span class="co">### Diagramme de bifurcations</span></span>
-<span id="cb7-257"><a href="#cb7-257" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-258"><a href="#cb7-258" aria-hidden="true" tabindex="-1"></a><span class="ot">lorem ipsum</span></span>
+<span id="cb7-256"><a href="#cb7-256" aria-hidden="true" tabindex="-1"></a><span class="ot">fig2</span></span>
+<span id="cb7-257"><a href="#cb7-257" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
+<span id="cb7-258"><a href="#cb7-258" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-259"><a href="#cb7-259" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-260"><a href="#cb7-260" aria-hidden="true" tabindex="-1"></a><span class="co">### Diagramme de bifurcations</span></span>
+<span id="cb7-261"><a href="#cb7-261" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-262"><a href="#cb7-262" aria-hidden="true" tabindex="-1"></a><span class="ot">lorem ipsum</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
