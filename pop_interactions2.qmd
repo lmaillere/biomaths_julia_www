@@ -63,7 +63,7 @@ sol_rma = DataFrame(sol_rma)
 rename!(sol_rma, :timestamp => :time, :value1 => :x, :value2 => :y)
 ```
 
-Nous utiliserons ici le package de visualisation graphique `Makie.jl`^[entièrement écrit en `Julia`, présenté comme "[le futur](https://medium.com/coffee-in-a-klein-bottle/visualizing-data-with-julia-using-makie-7685d7850f06)". Une bonne [introduction à Makie](https://juliadatascience.io/DataVisualizationMakie).] à la place de `Plots.jl`. `Makie.jl` permet un contrôle très approfondi du graphique. Commençons par tracer les dynamiques contre le temps dans une figure simple.
+Nous utiliserons ici le package de visualisation graphique `Makie.jl`^[entièrement écrit en `Julia`, présenté comme "[le futur](https://medium.com/coffee-in-a-klein-bottle/visualizing-data-with-julia-using-makie-7685d7850f06)" de la représentation graphique avec `Julia`. Une bonne [introduction à Makie](https://juliadatascience.io/DataVisualizationMakie).] à la place de `Plots.jl`. `Makie.jl` permet un contrôle très approfondi du graphique. Commençons par tracer les dynamiques contre le temps dans une figure simple.
 
 Nous utiliserons le backend `CairoMakie` pour la visualisation en 2D. 
 ```{julia}
@@ -247,4 +247,95 @@ fig2
 
 ### Diagramme de bifurcations
 
-lorem ipsum
+Pour finir ce TP, nous allons tracer le diagramme de bifurcation du modèle de Rosenzweig MacArthur $y^*$ en fonction de $K$, en identifiant les bifurcations transcritique et de Hopf vues en cours, et en estimant et représentant les extremas du cycle limite apparaissant pour $K$ grand.
+
+Pour rappel, il y a 3 situations asymptotiques distinctes pour le modèle de Rosenzweig MacArthur :
+
+- si : $0<K<\displaystyle\frac{mh}{b-m}$ : les prédateurs s'éteignent et les proies convergent vers $K$, l'équilibre d'extinction des deux populations est instable.
+
+- si : $\displaystyle\frac{mh}{b-m} <K< h+\frac{2mh}{b-m}$ : proies et prédateurs co-existent à un équilibre globalement asymptotiquement stable, l'équilibre d'extinction des prédateurs est instable, l'équilibre d'extinction des deux populations est instable.
+
+- si : $h+\displaystyle\frac{2mh}{b-m}<K$: proies et prédateurs co-existent le long d'un cycle limite globalement asymptotiquement stable, l'équilibre d'extinction des prédateurs est instable, l'équilibre d'extinction des deux populations est instable.
+
+
+Dans un premier temps nous allons calculer et représenter les différents équilibres et leur stabilité dans le plan $(K, y)$, puis nous calculerons et rajouterons une représentation du cycle limite.
+
+#### Equilibres
+
+Nous faisons une boucle sur les valeurs de $K$ et calculons les équilibres.
+```{julia}
+K_step = 0.1
+
+# before transcritical
+K_plot1 = 0: K_step: m*h/(b-m)
+y_eq01 = ones(length(K_plot1)).*0
+
+# between transcritical and Hopf
+K_plot2 = m*h/(b-m): K_step: h+2*m*h/(b-m)
+y_eq02 = ones(length(K_plot2)).*0
+y_co2 = [r/c*(h+m*h/(b-m))*(1-m*h/(b-m)/K_p) for K_p in K_plot2]  # may have broadcasted
+
+# above Hopf
+K_plot3 = h+2*m*h/(b-m)-K_step/5: (K_step/10) :8
+y_eq03 = ones(length(K_plot3)).*0
+y_co3 = [r/c*(h+m*h/(b-m))*(1-m*h/(b-m)/K_p) for K_p in K_plot3]; # may have broadcasted
+```
+
+Et nous commençons le tracé de la figure :
+```{julia}
+#| code-fold: true
+#| output: true 
+fig3 = Figure(backgroundcolor = :transparent,
+              resolution = (600,400),   # size
+              fontsize = 18)  
+
+# on crée un système d'axes en position [1,1] dans la figure
+ax31 = Axis(fig3[1,1],
+           xlabel = L"$K$",
+           ylabel = L"densité de population $y^*$",
+           title = "Bifurcations pour le modèle de Rosenzweig MacArthur")
+
+# on trace la population x 
+# left of transcritical
+lines!(ax31, K_plot1, y_eq01,
+       color = Cycled(1),
+       linewidth = 2,
+       label = L"branche stable")
+
+# between transcritical and Hopf
+lines!(ax31, K_plot2, y_eq02,
+       color = Cycled(2),
+       linewidth = 2,
+       label = "branche instable")
+
+lines!(ax31, K_plot2, y_co2,
+       color = Cycled(1),
+       linewidth = 2)
+
+# right of Hopf
+lines!(ax31, K_plot3, y_eq03,
+       color = Cycled(2),
+       linewidth = 2)
+
+lines!(ax31, K_plot3, y_co3,
+       color = Cycled(2),
+       linewidth = 2)
+
+fig3
+```
+
+
+quick help to init
+
+prob = ODEProblem(mod, 1.0, tspan, saveat = .1)
+
+integrator = init(prob)
+
+sol2 = solve!(integrator)
+plot(sol2)
+
+reinit!(integrator, 2.0) #change initial condition
+sol3 = solve!(integrator)
+
+plot!(sol3)
+
