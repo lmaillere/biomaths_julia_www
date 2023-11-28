@@ -11,7 +11,7 @@
     "href": "about.html",
     "title": "A Propos",
     "section": "",
-    "text": "Ces pages ont été générées avec Quarto, et Julia (version 1.9.4).\nLes principaux packages utilisés sont DifferentialEquations.jl, et Plots.jl\n\n\n\n\n\nReusehttps://creativecommons.org/licenses/by-nc/4.0/"
+    "text": "Ces pages ont été générées avec Quarto, et Julia (version 1.9.4).\nLes principaux packages utilisés sont DifferentialEquations.jl, Plots.jl, DataFrames.jl, Makie.jl, Polynomials.jl et Symbolics.jl.\n\n\n\n\n\nReusehttps://creativecommons.org/licenses/by-nc/4.0/"
   },
   {
     "objectID": "pop_isolees.html",

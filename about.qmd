@@ -4,4 +4,4 @@ title: "A Propos"
 
 Ces pages ont été générées avec [Quarto](https://quarto.org/), et [Julia](https://julialang.org) (version 1.9.4). 
 
-Les principaux packages utilisés sont [DifferentialEquations.jl](https://docs.sciml.ai/DiffEqDocs/stable/), et [Plots.jl](https://docs.juliaplots.org/stable/)
+Les principaux packages utilisés sont [DifferentialEquations.jl](https://docs.sciml.ai/DiffEqDocs/stable/), [Plots.jl](https://docs.juliaplots.org/stable/), [DataFrames.jl](https://dataframes.juliadata.org/stable/), [Makie.jl](https://docs.makie.org/stable/), [Polynomials.jl](https://juliamath.github.io/Polynomials.jl/stable/) et [Symbolics.jl](https://symbolics.juliasymbolics.org/stable/).
