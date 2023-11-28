@@ -257,7 +257,7 @@ div.csl-indent {
 <section id="dynamiques" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="dynamiques">Dynamiques</h3>
 <p>Il n’y a pas de difficulté particulière à la simulation par rapport au modèle de Lotka Volterra.</p>
-<div class="cell" data-execution_count="1">
+<div class="cell" data-execution_count="2">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">DifferentialEquations</span>, <span class="bu">DataFrames</span></span>
@@ -304,11 +304,11 @@ div.csl-indent {
 </div>
 <div class="page-columns page-full"><p>Nous utiliserons ici le package de visualisation graphique <code>Makie.jl</code><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> à la place de <code>Plots.jl</code>. <code>Makie.jl</code> permet un contrôle très approfondi du graphique. Commençons par tracer les dynamiques contre le temps dans une figure simple.</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;entièrement écrit en <code>Julia</code>, présenté comme “<a href="https://medium.com/coffee-in-a-klein-bottle/visualizing-data-with-julia-using-makie-7685d7850f06">le futur</a>” de la représentation graphique avec <code>Julia</code>. Une bonne <a href="https://juliadatascience.io/DataVisualizationMakie">introduction à Makie</a>.</p></li></div></div>
 <p>Nous utiliserons le backend <code>CairoMakie</code> pour la visualisation en 2D.</p>
-<div class="cell" data-execution_count="2">
+<div class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CairoMakie</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Un peu comme <code>Matplotlib</code> en <code>Python</code>, <code>Makie</code> définit un triplet <code>FigureAxisPlot</code> : la figure est le conteneur de (éventuellement) plusieurs systèmes d’axes qui contiennent chacun un ou plusieurs graphique.</p>
-<div class="cell" data-execution_count="3">
+<div class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># on crée la figure</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>fig1 <span class="op">=</span> <span class="fu">Figure</span>(backgroundcolor <span class="op">=</span> <span class="op">:</span>transparent,</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>              resolution <span class="op">=</span> (<span class="fl">600</span>,<span class="fl">400</span>),   <span class="co"># size</span></span>
@@ -350,7 +350,7 @@ div.csl-indent {
 <section id="dynamiques-et-plan-de-phase" class="level3">
 <h3 class="anchored" data-anchor-id="dynamiques-et-plan-de-phase">Dynamiques et plan de phase</h3>
 <p>Nous allons maintenant tracer un graphique plus complexe comprenant en colonne de droite les dynamiques des proies et des prédateurs sur deux lignes et en colonne de gauche le plan de phase. préparons la figure et les systèmes d’axes.</p>
-<div class="cell" data-execution_count="4">
+<div class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># figure</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>fig2 <span class="op">=</span> <span class="fu">Figure</span>(backgroundcolor <span class="op">=</span> <span class="op">:</span>transparent,</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>              resolution <span class="op">=</span> (<span class="fl">800</span>,<span class="fl">500</span>),   <span class="co"># size</span></span>
@@ -384,7 +384,7 @@ div.csl-indent {
 </div>
 </div>
 <p>On rajoute les dynamiques.</p>
-<div class="cell" data-execution_count="5">
+<div class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lines!</span>(ax21, sol_rma.time, sol_rma.x,</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>       color <span class="op">=</span> <span class="fu">Cycled</span>(<span class="fl">1</span>),  <span class="co"># pick color 1 in the colorcycle</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>       linewidth <span class="op">=</span> <span class="fl">2</span>,</span>
@@ -407,7 +407,7 @@ div.csl-indent {
 </div>
 </div>
 <p>Passons maintenant au plan de phase.</p>
-<div class="cell" data-execution_count="6">
+<div class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># trajectoire</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines!</span>(ax23, sol_rma.x, sol_rma.y,</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>       color <span class="op">=</span> <span class="fu">Cycled</span>(<span class="fl">1</span>),</span>
@@ -505,7 +505,7 @@ div.csl-indent {
 <section id="equilibres" class="level4">
 <h4 class="anchored" data-anchor-id="equilibres">Equilibres</h4>
 <p>Nous faisons une boucle sur les valeurs de <span class="math inline">K</span> et calculons les équilibres.</p>
-<div class="cell" data-execution_count="7">
+<div class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>K_step <span class="op">=</span> <span class="fl">0.1</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># before transcritical</span></span>
@@ -523,7 +523,7 @@ div.csl-indent {
 <span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>y_co3 <span class="op">=</span> [r<span class="op">/</span><span class="fu">c*</span>(h<span class="op">+</span>m<span class="op">*</span>h<span class="op">/</span>(b<span class="op">-</span>m))<span class="fu">*</span>(<span class="fl">1</span><span class="op">-</span>m<span class="op">*</span>h<span class="op">/</span>(b<span class="op">-</span>m)<span class="op">/</span>K_p) for K_p <span class="kw">in</span> K_plot3]; <span class="co"># may have broadcasted</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Et nous commençons le tracé de la figure :</p>
-<div class="cell" data-execution_count="8">
+<div class="cell" data-execution_count="9">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fig3 <span class="op">=</span> <span class="fu">Figure</span>(backgroundcolor <span class="op">=</span> <span class="op">:</span>transparent,</span>
@@ -568,6 +568,13 @@ div.csl-indent {
 <p><img src="pop_interactions2_files/figure-html/cell-9-output-1.svg" class="img-fluid"></p>
 </div>
 </div>
+<p>quick help to init</p>
+<p>function mod(u, p, t) u end</p>
+<p>tspan = (0., 2.) prob = ODEProblem(mod, 1.0, tspan, saveat = .1)</p>
+<p>integrator = init(prob)</p>
+<p>sol2 = solve!(integrator) plot(sol2)</p>
+<p>reinit!(integrator, 2.0) #change initial condition sol3 = solve!(integrator)</p>
+<p>plot!(sol3)</p>
 
 
 <!-- -->
@@ -1198,6 +1205,26 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb9-339"><a href="#cb9-339" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-340"><a href="#cb9-340" aria-hidden="true" tabindex="-1"></a>fig3</span>
 <span id="cb9-341"><a href="#cb9-341" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-342"><a href="#cb9-342" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-343"><a href="#cb9-343" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-344"><a href="#cb9-344" aria-hidden="true" tabindex="-1"></a>quick help to init</span>
+<span id="cb9-345"><a href="#cb9-345" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-346"><a href="#cb9-346" aria-hidden="true" tabindex="-1"></a>function mod(u, p, t)</span>
+<span id="cb9-347"><a href="#cb9-347" aria-hidden="true" tabindex="-1"></a>    u</span>
+<span id="cb9-348"><a href="#cb9-348" aria-hidden="true" tabindex="-1"></a>end</span>
+<span id="cb9-349"><a href="#cb9-349" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-350"><a href="#cb9-350" aria-hidden="true" tabindex="-1"></a>tspan = (0., 2.)</span>
+<span id="cb9-351"><a href="#cb9-351" aria-hidden="true" tabindex="-1"></a>prob = ODEProblem(mod, 1.0, tspan, saveat = .1)</span>
+<span id="cb9-352"><a href="#cb9-352" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-353"><a href="#cb9-353" aria-hidden="true" tabindex="-1"></a>integrator = init(prob)</span>
+<span id="cb9-354"><a href="#cb9-354" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-355"><a href="#cb9-355" aria-hidden="true" tabindex="-1"></a>sol2 = solve!(integrator)</span>
+<span id="cb9-356"><a href="#cb9-356" aria-hidden="true" tabindex="-1"></a>plot(sol2)</span>
+<span id="cb9-357"><a href="#cb9-357" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-358"><a href="#cb9-358" aria-hidden="true" tabindex="-1"></a>reinit!(integrator, 2.0) #change initial condition</span>
+<span id="cb9-359"><a href="#cb9-359" aria-hidden="true" tabindex="-1"></a>sol3 = solve!(integrator)</span>
+<span id="cb9-360"><a href="#cb9-360" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-361"><a href="#cb9-361" aria-hidden="true" tabindex="-1"></a>plot!(sol3)</span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

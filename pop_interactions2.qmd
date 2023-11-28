@@ -325,17 +325,3 @@ fig3
 ```
 
 
-quick help to init
-
-prob = ODEProblem(mod, 1.0, tspan, saveat = .1)
-
-integrator = init(prob)
-
-sol2 = solve!(integrator)
-plot(sol2)
-
-reinit!(integrator, 2.0) #change initial condition
-sol3 = solve!(integrator)
-
-plot!(sol3)
-
