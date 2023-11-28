@@ -291,7 +291,7 @@ fig3 = Figure(backgroundcolor = :transparent,
 
 # on crée un système d'axes en position [1,1] dans la figure
 ax31 = Axis(fig3[1,1],
-           xlabel = L"$K$",
+           xlabel = L"capacité de charge $K$",
            ylabel = L"densité de population $y^*$",
            title = "Diagramme de bifurcations pour le\n modèle de Rosenzweig MacArthur")
 
@@ -372,7 +372,7 @@ for Kc in K_plot3               # loop on K values
 end
 ```
 
-#### Diagramme de bifurcation final
+#### Diagramme de bifurcations final
 
 Finalement, on inclut les branches calculées dans le diagramme de bifurcations.
 ```{julia}
@@ -393,3 +393,6 @@ axislegend(ax31, position = :lt, labelsize = 14)
 
 fig3
 ```
+\
+
+That’s all folks!
