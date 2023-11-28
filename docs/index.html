@@ -213,18 +213,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="installation-de-julia">Installation de Julia</h2>
 <p>La façon la plus simple d’installer <code>Julia</code> est d’utiliser <a href="https://github.com/JuliaLang/juliaup">juliaup</a>.</p>
 <p>Sur Linux :</p>
-<div class="cell" data-execution_count="1">
+<div class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>curl <span class="op">-</span>fsSL https<span class="op">://</span>install.julialang.org <span class="op">|</span> sh</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>et procéder à l’installation.</p>
-<p>Puis procéder à l’installation du package <code>IJulia</code>:</p>
-<div class="cell" data-execution_count="2">
+<p>Puis installer le package <code>IJulia</code>:</p>
+<div class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>julia</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> ]  <span class="co"># package mode</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>(<span class="pp">@v1</span><span class="fl">.9</span>) pkg<span class="op">&gt;</span> add IJulia</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Un noyau <code>Julia</code> est ensuite disponible dans votre <code>jupyter</code> favori ou via son propre système de notebook <code>Pluto.jl</code>:</p>
-<div class="cell" data-execution_count="3">
+<div class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> ]   <span class="co"># package mode</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>(<span class="pp">@v1</span><span class="fl">.9</span>) pkg<span class="op">&gt;</span> add Pluto</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="im">using</span> <span class="bu">Pluto  </span><span class="co"># hit backspace first to exit package mode</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -548,7 +548,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>et procéder à l'installation.</span>
 <span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>Puis procéder à l'installation du package <span class="in">`IJulia`</span>:</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>Puis installer le package <span class="in">`IJulia`</span>:</span>
 <span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
 <span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
 <span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>julia</span>
