@@ -467,7 +467,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <section id="commentaires" class="level3">
 <h3 class="anchored" data-anchor-id="commentaires">Commentaires</h3>
-<p>Le code de la fonction <code>int_tordeuse</code> est plus simple avec l’integrator interface qu’en redéfinissant le problème d’intégration à chaque fois. Néanmoins, sur un problème avec <code>x0step= 0.1</code> (soit ~100 trajectoires calculées), le gain en temps de calcul de cette méthode est marginal : 123 ms contre 128 ms avec la méthode précédente (test avec backage <code>BenchmarkTools.jl</code>).</p>
+<p>Le code de la fonction <code>int_tordeuse</code> est plus simple avec l’integrator interface qu’en redéfinissant le problème d’intégration à chaque fois. Néanmoins, sur un problème avec <code>x0step= 0.1</code> (soit ~100 trajectoires calculées), le gain en temps de calcul de cette méthode est marginal : 123 ms contre 128 ms avec la méthode précédente (test avec package <code>BenchmarkTools.jl</code>).</p>
 <p>Le gain en mémoire est plus sensible : 4.28 mB contre 7,26 mB, mais finalement marginal aussi sur des machines modernes pour de si petits problèmes d’intégration.</p>
 
 
@@ -923,7 +923,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb6-169"><a href="#cb6-169" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-170"><a href="#cb6-170" aria-hidden="true" tabindex="-1"></a><span class="co">### Commentaires</span></span>
 <span id="cb6-171"><a href="#cb6-171" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-172"><a href="#cb6-172" aria-hidden="true" tabindex="-1"></a><span class="ot">Le code de la fonction `int_tordeuse` est plus simple avec l'integrator interface qu'en redéfinissant le problème d'intégration à chaque fois. Néanmoins, sur un problème avec `x0step= 0.1` </span><span class="ch">(</span><span class="ot">soit ~100 trajectoires calculées</span><span class="ch">)</span><span class="ot">, le gain en temps de calcul de cette méthode est marginal : 123 ms contre 128 ms avec la méthode précédente </span><span class="ch">(</span><span class="ot">test avec backage `BenchmarkTools.jl`</span><span class="ch">)</span><span class="ot">. </span></span>
+<span id="cb6-172"><a href="#cb6-172" aria-hidden="true" tabindex="-1"></a><span class="ot">Le code de la fonction `int_tordeuse` est plus simple avec l'integrator interface qu'en redéfinissant le problème d'intégration à chaque fois. Néanmoins, sur un problème avec `x0step= 0.1` </span><span class="ch">(</span><span class="ot">soit ~100 trajectoires calculées</span><span class="ch">)</span><span class="ot">, le gain en temps de calcul de cette méthode est marginal : 123 ms contre 128 ms avec la méthode précédente </span><span class="ch">(</span><span class="ot">test avec package `BenchmarkTools.jl`</span><span class="ch">)</span><span class="ot">. </span></span>
 <span id="cb6-173"><a href="#cb6-173" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-174"><a href="#cb6-174" aria-hidden="true" tabindex="-1"></a><span class="ot">Le gain en mémoire est plus sensible : 4.28 mB contre 7,26 mB, mais finalement marginal aussi sur des machines modernes pour de si petits problèmes d'intégration.</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
