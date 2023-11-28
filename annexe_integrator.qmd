@@ -2,7 +2,7 @@
 title: "Matériel supplémentaire"
 ---
 
-## Utilisation de l'interface Integrator
+## Interface Integrator pour simulations multiples
 
 Lors de simulations multiples^[par exemple pour plusieurs conditions initiales pour le modèle avec [effets Allee](pop_isolees.qmd) ou celui de la [tordeuse du bourgeon de l'épinette](pop_exploitees.qmd)], la stratégie choisie a été de redéfinir un nouveau problème d'intégration `ODEProblem` pour chaque condition initiale. Cette procédure est a priori très peu efficace, et `DifferentialEquations.jl` permet de modifier un problème d'intégration via la [Integrator Interface](https://docs.sciml.ai/DiffEqDocs/stable/basics/integrator/). 
 
@@ -37,7 +37,6 @@ function tordeuse(u, p, t)
     dx = r*x*(1 - x/K) - α*x^2/(h^2 + x^2)*yc
 end
 ```
-\
 
 Nous définissons ensuite le problème d'intégration ainsi que l'intégrateur `integrator`:
 ```{julia}
@@ -157,3 +156,9 @@ elseif length(eq_pos) == 3
           label = "")
 end
 ```
+
+### Commentaires
+
+Le code de la fonction `int_tordeuse` est plus simple avec l'integrator interface qu'en redéfinissant le problème d'intégration à chaque fois. Néanmoins, sur un problème avec `x0step= 0.1` (soit ~100 trajectoires calculées), le gain en temps de calcul de cette méthode est marginal : 123 ms contre 128 ms avec la méthode précédente (test avec backage `BenchmarkTools.jl`). 
+
+Le gain en mémoire est plus sensible : 4.28 mB contre 7,26 mB, mais finalement marginal aussi sur des machines modernes pour de si petits problèmes d'intégration.
