@@ -6,8 +6,6 @@ title: "Matériel supplémentaire"
 
 Lors de simulations multiples^[par exemple pour plusieurs conditions initiales pour le modèle avec [effets Allee](pop_isolees.qmd) ou celui de la [tordeuse du bourgeon de l'épinette](pop_exploitees.qmd)], la stratégie choisie a été de redéfinir un nouveau problème d'intégration `ODEProblem` pour chaque condition initiale. Cette procédure est a priori très peu efficace, et `DifferentialEquations.jl` permet de modifier un problème d'intégration via la [Integrator Interface](https://docs.sciml.ai/DiffEqDocs/stable/basics/integrator/). 
 
-La même approche peut être utilisée pour redéfinir un problème d'intégration en modifiant les paramètres plutôt que la condition initiale, par exemple pour calculer un diagramme de bifurcations par force brute comme pour le modèle de [Rosenzweig MacArthur](pop_interactions2.qmd).
-
 Répliquons la figure des dynamiques de la tordeuse du bourgeon de l'épinette avec cette méthode. On commence par définir les paramètres et le modèle:
 
 ```{julia}
@@ -161,4 +159,43 @@ end
 
 Le code de la fonction `int_tordeuse` est plus simple avec l'integrator interface qu'en redéfinissant le problème d'intégration à chaque fois. Néanmoins, sur un problème avec `x0step= 0.1` (soit ~100 trajectoires calculées), le gain en temps de calcul de cette méthode est marginal : 123 ms contre 128 ms avec la méthode précédente (test avec package `BenchmarkTools.jl`). 
 
-Le gain en mémoire est plus sensible : 4.28 mB contre 7,26 mB, mais finalement marginal aussi sur des machines modernes pour de si petits problèmes d'intégration.
+Le gain en mémoire est plus sensible : 4.28 MiB contre 7.26 MiB, mais finalement marginal aussi sur des machines modernes pour de si petits problèmes d'intégration.
+
+### Redéfinition du problème d'intégration via `remake`
+
+Une autre approche plutôt que d'utiliser l'integrator interface, ou de redéfinir un nouveau problème d'intégration à chaque fois, serait de modifier le problème d'intégration via la fonction `remake`:
+
+```{julia}
+#| output: true
+
+function int_tordeuse2(x0, prob)
+    prob = remake(prob, u0 = x0)       # redéfinition du problème d'intégration
+    
+    sol_tordeuse = solve(prob)
+    sol_tordeuse = DataFrame(sol_tordeuse)
+    rename!(sol_tordeuse, :timestamp => :time, :value => :x)
+end
+
+P2 = plot(palette = init_cgrad,
+         legend = :right, 
+         label = "équilibres instables",
+         title = "Tordeuse du bourgeon de l\'épinette",
+         ylabel = "densité de population \$x(t)\$", 
+         xlabel = "temps \$t\$",
+         margin = .5Plots.cm,
+         topmargin = 1Plots.cm)
+
+for x0 in x0vec
+    plot!(P2, int_tordeuse2(x0, prob_tordeuse).time, 
+          int_tordeuse2(x0, prob_tordeuse).x,
+          linewidth = 2,
+          label = "")
+end
+
+P2
+```
+\
+
+Cette méthode est plus rapide que la redéfinition de problème d'intégration ou l'utilisation de l'integrator interface (113 ms dans les conditions vues plus haut) et intermédiaire en termes de mémoire utilisée (6.39 MiB). Le code est aussi simple que pour l'integrator interface.
+
+Par ailleurs la même approche via `remake` peut être utilisée pour redéfinir un problème d'intégration en modifiant les paramètres plutôt que la condition initiale, par exemple pour calculer un diagramme de bifurcations par force brute comme pour le modèle de [Rosenzweig MacArthur](pop_interactions2.qmd).
