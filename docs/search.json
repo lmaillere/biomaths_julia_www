@@ -186,6 +186,6 @@
     "href": "index.html#installation-de-julia",
     "title": "Présentation",
     "section": "Installation de Julia",
-    "text": "Installation de Julia\nLa façon la plus simple d’installer Julia est d’utiliser juliaup.\nSur Linux :\n\ncurl -fsSL https://install.julialang.org | sh\n\net procéder à l’installation.\nPuis procéder à l’installation du package IJulia:\n\njulia\njulia&gt; ]  # package mode\n(@v1.9) pkg&gt; add IJulia\n\nUn noyau Julia est ensuite disponible dans votre jupyter favori ou via son propre système de notebook Pluto.jl:\n\njulia&gt; ]   # package mode\n(@v1.9) pkg&gt; add Pluto\njulia&gt; using Pluto  # hit backspace to exit package mode\n\nUne extension Julia est aussi disponible pour VScode/VScodium.\nAllons-y !"
+    "text": "Installation de Julia\nLa façon la plus simple d’installer Julia est d’utiliser juliaup.\nSur Linux :\n\ncurl -fsSL https://install.julialang.org | sh\n\net procéder à l’installation.\nPuis procéder à l’installation du package IJulia:\n\njulia\njulia&gt; ]  # package mode\n(@v1.9) pkg&gt; add IJulia\n\nUn noyau Julia est ensuite disponible dans votre jupyter favori ou via son propre système de notebook Pluto.jl:\n\njulia&gt; ]   # package mode\n(@v1.9) pkg&gt; add Pluto\njulia&gt; using Pluto  # hit backspace first to exit package mode\n\nUne extension Julia est disponible pour VScode/VScodium.\nAllons-y !"
   }
 ]
