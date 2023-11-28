@@ -293,7 +293,7 @@ fig3 = Figure(backgroundcolor = :transparent,
 ax31 = Axis(fig3[1,1],
            xlabel = L"$K$",
            ylabel = L"densité de population $y^*$",
-           title = "Bifurcations pour le modèle de Rosenzweig MacArthur")
+           title = "Diagramme de bifurcations pour le\n modèle de Rosenzweig MacArthur")
 
 # on trace la population x 
 # left of transcritical
@@ -324,7 +324,7 @@ lines!(ax31, K_plot3, y_co3,
 fig3
 ```
 
-### Cycle limite
+#### Cycle limite
 
 Pour estimer le cycle limite pour chaque la valeur de $K$ nous allons simuler le modèle pendant un transitoire assez long, puis repartir de cette valeur de l'état, simuler un cycle et récupérer les extremas pour les tracer. Nous utilisons une méthode basée sur `remake` pour modifier le problème d'intégration^[voir aussi l'[annexe](annexe_integrator.qmd)].
 
@@ -370,11 +370,9 @@ for Kc in K_plot3               # loop on K values
   i+=1
   #return post_trans2
 end
-
-
 ```
 
-### Diagramme de bifurcation final
+#### Diagramme de bifurcation final
 
 Finalement, on inclut les branches calculées dans le diagramme de bifurcations.
 ```{julia}
@@ -390,7 +388,6 @@ lines!(ax31, K_plot3, y_cmin,
 lines!(ax31, K_plot3, y_cmax,
        color = Cycled(3),
        linewidth = 2)
-
 
 axislegend(ax31, position = :lt, labelsize = 14)
 

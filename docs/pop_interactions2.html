@@ -221,8 +221,6 @@ div.csl-indent {
   <li><a href="#dynamiques" id="toc-dynamiques" class="nav-link" data-scroll-target="#dynamiques">Dynamiques</a></li>
   <li><a href="#dynamiques-et-plan-de-phase" id="toc-dynamiques-et-plan-de-phase" class="nav-link" data-scroll-target="#dynamiques-et-plan-de-phase">Dynamiques et plan de phase</a></li>
   <li><a href="#diagramme-de-bifurcations" id="toc-diagramme-de-bifurcations" class="nav-link" data-scroll-target="#diagramme-de-bifurcations">Diagramme de bifurcations</a></li>
-  <li><a href="#cycle-limite" id="toc-cycle-limite" class="nav-link" data-scroll-target="#cycle-limite">Cycle limite</a></li>
-  <li><a href="#diagramme-de-bifurcation-final" id="toc-diagramme-de-bifurcation-final" class="nav-link" data-scroll-target="#diagramme-de-bifurcation-final">Diagramme de bifurcation final</a></li>
   </ul></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/lmaillere/biomaths_www/edit/main/pop_interactions2.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/lmaillere/biomaths_www/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
@@ -259,7 +257,7 @@ div.csl-indent {
 <section id="dynamiques" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="dynamiques">Dynamiques</h3>
 <p>Il n’y a pas de difficulté particulière à la simulation par rapport au modèle de Lotka Volterra.</p>
-<div class="cell" data-execution_count="2">
+<div class="cell" data-execution_count="1">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">DifferentialEquations</span>, <span class="bu">DataFrames</span></span>
@@ -306,11 +304,11 @@ div.csl-indent {
 </div>
 <div class="page-columns page-full"><p>Nous utiliserons ici le package de visualisation graphique <code>Makie.jl</code><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> à la place de <code>Plots.jl</code>. <code>Makie.jl</code> permet un contrôle très approfondi du graphique. Commençons par tracer les dynamiques contre le temps dans une figure simple.</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;entièrement écrit en <code>Julia</code>, présenté comme “<a href="https://medium.com/coffee-in-a-klein-bottle/visualizing-data-with-julia-using-makie-7685d7850f06">le futur</a>” de la représentation graphique avec <code>Julia</code>. Une bonne <a href="https://juliadatascience.io/DataVisualizationMakie">introduction à Makie</a>.</p></li></div></div>
 <p>Nous utiliserons le backend <code>CairoMakie</code> pour la visualisation en 2D.</p>
-<div class="cell" data-execution_count="3">
+<div class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CairoMakie</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Un peu comme <code>Matplotlib</code> en <code>Python</code>, <code>Makie</code> définit un triplet <code>FigureAxisPlot</code> : la figure est le conteneur de (éventuellement) plusieurs systèmes d’axes qui contiennent chacun un ou plusieurs graphique.</p>
-<div class="cell" data-execution_count="4">
+<div class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># on crée la figure</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>fig1 <span class="op">=</span> <span class="fu">Figure</span>(backgroundcolor <span class="op">=</span> <span class="op">:</span>transparent,</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>              resolution <span class="op">=</span> (<span class="fl">600</span>,<span class="fl">400</span>),   <span class="co"># size</span></span>
@@ -339,7 +337,7 @@ div.csl-indent {
 <span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="co"># on affiche la figure</span></span>
 <span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>fig1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="118">
+<div class="cell-output cell-output-display" data-execution_count="157">
 <div id="fig-dyn-rma" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="pop_interactions2_files/figure-html/fig-dyn-rma-output-1.svg" class="img-fluid figure-img"></p>
@@ -352,7 +350,7 @@ div.csl-indent {
 <section id="dynamiques-et-plan-de-phase" class="level3">
 <h3 class="anchored" data-anchor-id="dynamiques-et-plan-de-phase">Dynamiques et plan de phase</h3>
 <p>Nous allons maintenant tracer un graphique plus complexe comprenant en colonne de droite les dynamiques des proies et des prédateurs sur deux lignes et en colonne de gauche le plan de phase. préparons la figure et les systèmes d’axes.</p>
-<div class="cell" data-execution_count="5">
+<div class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># figure</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>fig2 <span class="op">=</span> <span class="fu">Figure</span>(backgroundcolor <span class="op">=</span> <span class="op">:</span>transparent,</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>              resolution <span class="op">=</span> (<span class="fl">800</span>,<span class="fl">500</span>),   <span class="co"># size</span></span>
@@ -381,12 +379,12 @@ div.csl-indent {
 <span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="co"># on affiche la figure</span></span>
 <span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>fig2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="119">
+<div class="cell-output cell-output-display" data-execution_count="158">
 <p><img src="pop_interactions2_files/figure-html/cell-5-output-1.svg" class="img-fluid"></p>
 </div>
 </div>
 <p>On rajoute les dynamiques.</p>
-<div class="cell" data-execution_count="6">
+<div class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lines!</span>(ax21, sol_rma.time, sol_rma.x,</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>       color <span class="op">=</span> <span class="fu">Cycled</span>(<span class="fl">1</span>),  <span class="co"># pick color 1 in the colorcycle</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>       linewidth <span class="op">=</span> <span class="fl">2</span>,</span>
@@ -404,12 +402,12 @@ div.csl-indent {
 <span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="fu">hidexdecorations!</span>(ax21, ticks <span class="op">=</span> <span class="cn">false</span>)</span>
 <span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>fig2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="120">
+<div class="cell-output cell-output-display" data-execution_count="159">
 <p><img src="pop_interactions2_files/figure-html/cell-6-output-1.svg" class="img-fluid"></p>
 </div>
 </div>
 <p>Passons maintenant au plan de phase.</p>
-<div class="cell" data-execution_count="7">
+<div class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># trajectoire</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines!</span>(ax23, sol_rma.x, sol_rma.y,</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>       color <span class="op">=</span> <span class="fu">Cycled</span>(<span class="fl">1</span>),</span>
@@ -484,7 +482,7 @@ div.csl-indent {
 <span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a><span class="fu">rowgap!</span>(fig2.layout, <span class="fl">20</span>)</span>
 <span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a>fig2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="121">
+<div class="cell-output cell-output-display" data-execution_count="160">
 <div id="fig-rma-pplane" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="pop_interactions2_files/figure-html/fig-rma-pplane-output-1.svg" class="img-fluid figure-img"></p>
@@ -494,7 +492,7 @@ div.csl-indent {
 </div>
 </div>
 </section>
-<section id="diagramme-de-bifurcations" class="level3">
+<section id="diagramme-de-bifurcations" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="diagramme-de-bifurcations">Diagramme de bifurcations</h3>
 <p>Pour finir ce TP, nous allons tracer le diagramme de bifurcation du modèle de Rosenzweig MacArthur <span class="math inline">y^*</span> en fonction de <span class="math inline">K</span>, en identifiant les bifurcations transcritique et de Hopf vues en cours, et en estimant et représentant les extremas du cycle limite apparaissant pour <span class="math inline">K</span> grand.</p>
 <p>Pour rappel, il y a 3 situations asymptotiques distinctes pour le modèle de Rosenzweig MacArthur :</p>
@@ -507,7 +505,7 @@ div.csl-indent {
 <section id="equilibres" class="level4">
 <h4 class="anchored" data-anchor-id="equilibres">Equilibres</h4>
 <p>Nous faisons une boucle sur les valeurs de <span class="math inline">K</span> et calculons les équilibres.</p>
-<div class="cell" data-execution_count="8">
+<div class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>K_step <span class="op">=</span> <span class="fl">0.1</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># before transcritical</span></span>
@@ -525,7 +523,7 @@ div.csl-indent {
 <span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>y_co3 <span class="op">=</span> [r<span class="op">/</span><span class="fu">c*</span>(h<span class="op">+</span>m<span class="op">*</span>h<span class="op">/</span>(b<span class="op">-</span>m))<span class="fu">*</span>(<span class="fl">1</span><span class="op">-</span>m<span class="op">*</span>h<span class="op">/</span>(b<span class="op">-</span>m)<span class="op">/</span>K_p) for K_p <span class="kw">in</span> K_plot3]; <span class="co"># may have broadcasted</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Et nous commençons le tracé de la figure :</p>
-<div class="cell" data-execution_count="9">
+<div class="cell" data-execution_count="8">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fig3 <span class="op">=</span> <span class="fu">Figure</span>(backgroundcolor <span class="op">=</span> <span class="op">:</span>transparent,</span>
@@ -536,7 +534,7 @@ div.csl-indent {
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>ax31 <span class="op">=</span> <span class="fu">Axis</span>(fig3[<span class="fl">1</span>,<span class="fl">1</span>],</span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>           xlabel <span class="op">=</span> L<span class="st">"</span><span class="sc">$</span>K<span class="sc">$</span><span class="st">",</span></span>
 <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="st">           </span>ylabel<span class="st"> = L"</span>densité de population <span class="op">$</span>y<span class="op">^*$</span><span class="st">",</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>           title <span class="op">=</span> <span class="st">"Bifurcations pour le modèle de Rosenzweig MacArthur"</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>           title <span class="op">=</span> <span class="st">"Diagramme de bifurcations pour le</span><span class="sc">\n</span><span class="st"> modèle de Rosenzweig MacArthur"</span>)</span>
 <span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co"># on trace la population x </span></span>
 <span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co"># left of transcritical</span></span>
@@ -566,16 +564,15 @@ div.csl-indent {
 <span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>fig3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="123">
+<div class="cell-output cell-output-display" data-execution_count="162">
 <p><img src="pop_interactions2_files/figure-html/cell-9-output-1.svg" class="img-fluid"></p>
 </div>
 </div>
 </section>
-</section>
-<section id="cycle-limite" class="level3 page-columns page-full">
-<h3 class="anchored" data-anchor-id="cycle-limite">Cycle limite</h3>
+<section id="cycle-limite" class="level4 page-columns page-full">
+<h4 class="anchored" data-anchor-id="cycle-limite">Cycle limite</h4>
 <div class="page-columns page-full"><p>Pour estimer le cycle limite pour chaque la valeur de <span class="math inline">K</span> nous allons simuler le modèle pendant un transitoire assez long, puis repartir de cette valeur de l’état, simuler un cycle et récupérer les extremas pour les tracer. Nous utilisons une méthode basée sur <code>remake</code> pour modifier le problème d’intégration<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>.</p><div class="no-row-height column-margin column-container"><li id="fn2"><p><sup>2</sup>&nbsp;voir aussi l’<a href="./annexe_integrator.html">annexe</a></p></li></div></div>
-<div class="cell" data-execution_count="10">
+<div class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># transient integration time</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>t_trans <span class="op">=</span> (<span class="fl">0.0</span>, <span class="fl">8000</span>.)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -584,7 +581,7 @@ div.csl-indent {
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>y_cmin <span class="op">=</span> <span class="fu">zero</span>(K_plot3)</span>
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>y_cmax <span class="op">=</span> <span class="fu">zero</span>(K_plot3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="11">
+<div class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>rma_pbe <span class="op">=</span> <span class="fu">ODEProblem</span>(rma, etat0, t_trans, par_rma)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># estimate limit cycle through loop on K </span></span>
@@ -617,10 +614,10 @@ div.csl-indent {
 <span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="diagramme-de-bifurcation-final" class="level3">
-<h3 class="anchored" data-anchor-id="diagramme-de-bifurcation-final">Diagramme de bifurcation final</h3>
+<section id="diagramme-de-bifurcation-final" class="level4">
+<h4 class="anchored" data-anchor-id="diagramme-de-bifurcation-final">Diagramme de bifurcation final</h4>
 <p>Finalement, on inclut les branches calculées dans le diagramme de bifurcations.</p>
-<div class="cell" data-execution_count="12">
+<div class="cell" data-execution_count="11">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lines!</span>(ax31, K_plot3, y_cmin,</span>
@@ -632,12 +629,11 @@ div.csl-indent {
 <span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>       color <span class="op">=</span> <span class="fu">Cycled</span>(<span class="fl">3</span>),</span>
 <span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>       linewidth <span class="op">=</span> <span class="fl">2</span>)</span>
 <span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="fu">axislegend</span>(ax31, position <span class="op">=</span> <span class="op">:</span>lt, labelsize <span class="op">=</span> <span class="fl">14</span>)</span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>fig3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="fu">axislegend</span>(ax31, position <span class="op">=</span> <span class="op">:</span>lt, labelsize <span class="op">=</span> <span class="fl">14</span>)</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>fig3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="126">
+<div class="cell-output cell-output-display" data-execution_count="165">
 <div id="fig-bifurcation-rma" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="pop_interactions2_files/figure-html/fig-bifurcation-rma-output-1.svg" class="img-fluid figure-img"></p>
@@ -651,6 +647,7 @@ div.csl-indent {
 <!-- -->
 
 
+</section>
 </section>
 </section>
 
@@ -1245,7 +1242,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb12-309"><a href="#cb12-309" aria-hidden="true" tabindex="-1"></a>ax31 = Axis(fig3[<span class="dv">1</span>,<span class="dv">1</span>],</span>
 <span id="cb12-310"><a href="#cb12-310" aria-hidden="true" tabindex="-1"></a>           xlabel = L<span class="ot">"</span><span class="dt">$K</span><span class="wa">$"</span><span class="st">,</span></span>
 <span id="cb12-311"><a href="#cb12-311" aria-hidden="true" tabindex="-1"></a><span class="st">           ylabel = L</span><span class="ot">"</span>densité de population <span class="dt">$y</span>^*<span class="wa">$"</span>,</span>
-<span id="cb12-312"><a href="#cb12-312" aria-hidden="true" tabindex="-1"></a>           title = <span class="ot">"</span><span class="st">Bifurcations pour le modèle de Rosenzweig MacArthur</span><span class="ot">"</span>)</span>
+<span id="cb12-312"><a href="#cb12-312" aria-hidden="true" tabindex="-1"></a>           title = <span class="ot">"</span><span class="st">Diagramme de bifurcations pour le</span><span class="ch">\n</span><span class="st"> modèle de Rosenzweig MacArthur</span><span class="ot">"</span>)</span>
 <span id="cb12-313"><a href="#cb12-313" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-314"><a href="#cb12-314" aria-hidden="true" tabindex="-1"></a><span class="co"># on trace la population x </span></span>
 <span id="cb12-315"><a href="#cb12-315" aria-hidden="true" tabindex="-1"></a><span class="co"># left of transcritical</span></span>
@@ -1276,7 +1273,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb12-340"><a href="#cb12-340" aria-hidden="true" tabindex="-1"></a>fig3</span>
 <span id="cb12-341"><a href="#cb12-341" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb12-342"><a href="#cb12-342" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-343"><a href="#cb12-343" aria-hidden="true" tabindex="-1"></a><span class="fu">### Cycle limite</span></span>
+<span id="cb12-343"><a href="#cb12-343" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Cycle limite</span></span>
 <span id="cb12-344"><a href="#cb12-344" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-345"><a href="#cb12-345" aria-hidden="true" tabindex="-1"></a>Pour estimer le cycle limite pour chaque la valeur de $K$ nous allons simuler le modèle pendant un transitoire assez long, puis repartir de cette valeur de l'état, simuler un cycle et récupérer les extremas pour les tracer. Nous utilisons une méthode basée sur <span class="in">`remake`</span> pour modifier le problème d'intégration^<span class="co">[</span><span class="ot">voir aussi l'[annexe](annexe_integrator.qmd)</span><span class="co">]</span>.</span>
 <span id="cb12-346"><a href="#cb12-346" aria-hidden="true" tabindex="-1"></a></span>
@@ -1322,32 +1319,29 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb12-390"><a href="#cb12-390" aria-hidden="true" tabindex="-1"></a>  i+=<span class="dv">1</span></span>
 <span id="cb12-391"><a href="#cb12-391" aria-hidden="true" tabindex="-1"></a>  <span class="co">#return post_trans2</span></span>
 <span id="cb12-392"><a href="#cb12-392" aria-hidden="true" tabindex="-1"></a>end</span>
-<span id="cb12-393"><a href="#cb12-393" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-393"><a href="#cb12-393" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb12-394"><a href="#cb12-394" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-395"><a href="#cb12-395" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb12-395"><a href="#cb12-395" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Diagramme de bifurcation final</span></span>
 <span id="cb12-396"><a href="#cb12-396" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-397"><a href="#cb12-397" aria-hidden="true" tabindex="-1"></a><span class="fu">### Diagramme de bifurcation final</span></span>
-<span id="cb12-398"><a href="#cb12-398" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-399"><a href="#cb12-399" aria-hidden="true" tabindex="-1"></a>Finalement, on inclut les branches calculées dans le diagramme de bifurcations.</span>
-<span id="cb12-402"><a href="#cb12-402" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb12-403"><a href="#cb12-403" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
-<span id="cb12-404"><a href="#cb12-404" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
-<span id="cb12-405"><a href="#cb12-405" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-bifurcation-rma</span></span>
-<span id="cb12-406"><a href="#cb12-406" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Diagramme de bifurcations du modèle de Rosenzweig MacArthur.</span></span>
-<span id="cb12-407"><a href="#cb12-407" aria-hidden="true" tabindex="-1"></a>lines!(ax31, K_plot3, y_cmin,</span>
-<span id="cb12-408"><a href="#cb12-408" aria-hidden="true" tabindex="-1"></a>       color = Cycled(<span class="dv">3</span>),</span>
-<span id="cb12-409"><a href="#cb12-409" aria-hidden="true" tabindex="-1"></a>       linewidth = <span class="dv">2</span>,</span>
-<span id="cb12-410"><a href="#cb12-410" aria-hidden="true" tabindex="-1"></a>       label = L<span class="ot">"</span><span class="st">cycle limite</span><span class="wa">$$</span><span class="ot">"</span>)</span>
-<span id="cb12-411"><a href="#cb12-411" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-412"><a href="#cb12-412" aria-hidden="true" tabindex="-1"></a>lines!(ax31, K_plot3, y_cmax,</span>
-<span id="cb12-413"><a href="#cb12-413" aria-hidden="true" tabindex="-1"></a>       color = Cycled(<span class="dv">3</span>),</span>
-<span id="cb12-414"><a href="#cb12-414" aria-hidden="true" tabindex="-1"></a>       linewidth = <span class="dv">2</span>)</span>
+<span id="cb12-397"><a href="#cb12-397" aria-hidden="true" tabindex="-1"></a>Finalement, on inclut les branches calculées dans le diagramme de bifurcations.</span>
+<span id="cb12-400"><a href="#cb12-400" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb12-401"><a href="#cb12-401" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
+<span id="cb12-402"><a href="#cb12-402" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb12-403"><a href="#cb12-403" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-bifurcation-rma</span></span>
+<span id="cb12-404"><a href="#cb12-404" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Diagramme de bifurcations du modèle de Rosenzweig MacArthur.</span></span>
+<span id="cb12-405"><a href="#cb12-405" aria-hidden="true" tabindex="-1"></a>lines!(ax31, K_plot3, y_cmin,</span>
+<span id="cb12-406"><a href="#cb12-406" aria-hidden="true" tabindex="-1"></a>       color = Cycled(<span class="dv">3</span>),</span>
+<span id="cb12-407"><a href="#cb12-407" aria-hidden="true" tabindex="-1"></a>       linewidth = <span class="dv">2</span>,</span>
+<span id="cb12-408"><a href="#cb12-408" aria-hidden="true" tabindex="-1"></a>       label = L<span class="ot">"</span><span class="st">cycle limite</span><span class="wa">$$</span><span class="ot">"</span>)</span>
+<span id="cb12-409"><a href="#cb12-409" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-410"><a href="#cb12-410" aria-hidden="true" tabindex="-1"></a>lines!(ax31, K_plot3, y_cmax,</span>
+<span id="cb12-411"><a href="#cb12-411" aria-hidden="true" tabindex="-1"></a>       color = Cycled(<span class="dv">3</span>),</span>
+<span id="cb12-412"><a href="#cb12-412" aria-hidden="true" tabindex="-1"></a>       linewidth = <span class="dv">2</span>)</span>
+<span id="cb12-413"><a href="#cb12-413" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-414"><a href="#cb12-414" aria-hidden="true" tabindex="-1"></a>axislegend(ax31, position = :<span class="ot">lt</span>, labelsize = <span class="dv">14</span>)</span>
 <span id="cb12-415"><a href="#cb12-415" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-416"><a href="#cb12-416" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-417"><a href="#cb12-417" aria-hidden="true" tabindex="-1"></a>axislegend(ax31, position = :<span class="ot">lt</span>, labelsize = <span class="dv">14</span>)</span>
-<span id="cb12-418"><a href="#cb12-418" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-419"><a href="#cb12-419" aria-hidden="true" tabindex="-1"></a>fig3</span>
-<span id="cb12-420"><a href="#cb12-420" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb12-416"><a href="#cb12-416" aria-hidden="true" tabindex="-1"></a>fig3</span>
+<span id="cb12-417"><a href="#cb12-417" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
