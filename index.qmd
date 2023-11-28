@@ -18,11 +18,29 @@ Le document est structuré comme suit :
 La façon la plus simple d'installer `Julia` est d'utiliser [juliaup](https://github.com/JuliaLang/juliaup).
 
 Sur Linux :
-```
+```{julia}
+#| eval: false
 curl -fsSL https://install.julialang.org | sh
 ```
 et procéder à l'installation.
 
+Puis procéder à l'installation du package `IJulia`:
+```{julia}
+#| eval: false
+julia
+julia> ]  # package mode
+(@v1.9) pkg> add IJulia
+```
 
+
+Un noyau `Julia` est ensuite disponible dans votre `jupyter` favori ou via son propre système de notebook `Pluto.jl`:
+```{julia}
+#| eval: false
+julia> ]   # package mode
+(@v1.9) pkg> add Pluto
+julia> using Pluto  # hit backspace first to exit package mode
+```
+
+Une extension `Julia` est aussi disponible pour VScode/VScodium.
 
 [Allons-y !](pop_isolees.qmd)
