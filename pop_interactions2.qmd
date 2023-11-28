@@ -300,13 +300,13 @@ ax31 = Axis(fig3[1,1],
 lines!(ax31, K_plot1, y_eq01,
        color = Cycled(1),
        linewidth = 2,
-       label = L"branche stable")
+       label = L"branche stable$$")
 
 # between transcritical and Hopf
 lines!(ax31, K_plot2, y_eq02,
        color = Cycled(2),
        linewidth = 2,
-       label = "branche instable")
+       label = L"branche instable$$")
 
 lines!(ax31, K_plot2, y_co2,
        color = Cycled(1),
@@ -324,4 +324,75 @@ lines!(ax31, K_plot3, y_co3,
 fig3
 ```
 
+### Cycle limite
 
+Pour estimer le cycle limite pour chaque la valeur de $K$ nous allons simuler le modèle pendant un transitoire assez long, puis repartir de cette valeur de l'état, simuler un cycle et récupérer les extremas pour les tracer. Nous utilisons une méthode basée sur `remake` pour modifier le problème d'intégration^[voir aussi l'[annexe](annexe_integrator.qmd)].
+
+```{julia}
+# transient integration time
+t_trans = (0.0, 8000.)
+
+# for storage
+i = 1
+y_cmin = zero(K_plot3)
+y_cmax = zero(K_plot3)
+```
+
+
+```{julia}
+rma_pbe = ODEProblem(rma, etat0, t_trans, par_rma)
+
+# estimate limit cycle through loop on K 
+for Kc in K_plot3               # loop on K values
+  par_rmac = [r, Kc, c, h, b, m]    # set parameters
+  
+  # transient initial value problem; simulation
+  rma_trans_pbe =  remake(rma_pbe, p = par_rmac)
+  # with such arguments `solve` yields only the final value of the simulation
+  post_trans2 = solve(rma_trans_pbe, 
+                      save_everystep = false, 
+                      save_start = false,  
+                      abstol=1e-6, reltol=1e-6)
+  
+  # limit cycle initial value problem; simulation
+  rma_cycle_pbe =  remake(rma_pbe, 
+                          p = par_rmac, 
+                          u0 = post_trans2[:,1], 
+                          tspan = tspan, 
+                          saveat = tstep)
+  
+  sol_cycle = solve(rma_cycle_pbe, abstol=1e-6, reltol=1e-6)
+  
+  # get the extrema of y
+  y_cmin[i] = minimum(sol_cycle[2,:])			
+  y_cmax[i] = maximum(sol_cycle[2,:])
+  
+  i+=1
+  #return post_trans2
+end
+
+
+```
+
+### Diagramme de bifurcation final
+
+Finalement, on inclut les branches calculées dans le diagramme de bifurcations.
+```{julia}
+#| output: true
+#| code-fold: true
+#| label: fig-bifurcation-rma
+#| fig-cap: Diagramme de bifurcations du modèle de Rosenzweig MacArthur.
+lines!(ax31, K_plot3, y_cmin,
+       color = Cycled(3),
+       linewidth = 2,
+       label = L"cycle limite$$")
+
+lines!(ax31, K_plot3, y_cmax,
+       color = Cycled(3),
+       linewidth = 2)
+
+
+axislegend(ax31, position = :lt, labelsize = 14)
+
+fig3
+```
