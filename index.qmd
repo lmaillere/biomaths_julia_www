@@ -13,4 +13,16 @@ Le document est structuré comme suit :
 
 - la section sur les [populations en interaction](pop_interactions.qmd) approfondit la dimension 2, notamment via les représentations dans l'espace d'état, et traite des interactions entre populations sous l'angle des modèles proies-prédateurs (modèle de Lotka Volterra et modèle de Rosenzweig MacArthur)
 
+## Installation de Julia
+
+La façon la plus simple d'installer `Julia` est d'utiliser [juliaup](https://github.com/JuliaLang/juliaup).
+
+Sur Linux :
+```
+curl -fsSL https://install.julialang.org | sh
+```
+et procéder à l'installation.
+
+
+
 [Allons-y !](pop_isolees.qmd)

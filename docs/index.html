@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.427">
+<meta name="generator" content="quarto-1.3.450">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -153,7 +153,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./pop_interactions.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Populations en interaction</span></a>
+ <span class="menu-text">Populations en interaction (1)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pop_interactions2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Populations en interaction (2)</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -168,7 +174,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#installation-de-julia" id="toc-installation-de-julia" class="nav-link active" data-scroll-target="#installation-de-julia">Installation de Julia</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/lmaillere/biomaths_www/edit/main/index.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/lmaillere/biomaths_www/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -197,11 +209,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p>la section sur les <a href="./pop_exploitees.html">populations exploitées</a> introduit les diagrammes de bifurcations et la dimension 2 (prélèvements et effets Allee, interactions insectes-oiseaux)</p></li>
 <li><p>la section sur les <a href="./pop_interactions.html">populations en interaction</a> approfondit la dimension 2, notamment via les représentations dans l’espace d’état, et traite des interactions entre populations sous l’angle des modèles proies-prédateurs (modèle de Lotka Volterra et modèle de Rosenzweig MacArthur)</p></li>
 </ul>
+<section id="installation-de-julia" class="level2">
+<h2 class="anchored" data-anchor-id="installation-de-julia">Installation de Julia</h2>
+<p>La façon la plus simple d’installer <code>Julia</code> est d’utiliser <a href="https://github.com/JuliaLang/juliaup">juliaup</a>.</p>
+<p>Sur Linux :</p>
+<pre><code>curl -fsSL https://install.julialang.org | sh</code></pre>
+<p>et procéder à l’installation.</p>
 <p><a href="./pop_isolees.html">Allons-y !</a></p>
 
 
 <!-- -->
 
+</section>
 
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">https://creativecommons.org/licenses/by-nc/4.0/</a></div></div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -488,22 +507,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Présentation"</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>Ces pages proposent une introduction à la simulation d'équations différentielles avec Julia, centrée sur la simulation de modèles classiques en dynamique des populations.</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>Le document est structuré comme suit :</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>La section sur les <span class="co">[</span><span class="ot">populations isolées</span><span class="co">](pop_isolees.qmd)</span> introduit les bases en dimension 1 (modèle de Malthus, modèle logistique et effets Allee)</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>la section sur les <span class="co">[</span><span class="ot">populations exploitées</span><span class="co">](pop_exploitees.qmd)</span> introduit les diagrammes de bifurcations et la dimension 2  (prélèvements et effets Allee, interactions insectes-oiseaux)</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>la section sur les <span class="co">[</span><span class="ot">populations en interaction</span><span class="co">](pop_interactions.qmd)</span> approfondit la dimension 2, notamment via les représentations dans l'espace d'état, et traite des interactions entre populations sous l'angle des modèles proies-prédateurs (modèle de Lotka Volterra et modèle de Rosenzweig MacArthur)</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Allons-y !</span><span class="co">](pop_isolees.qmd)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb2" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Présentation"</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>Ces pages proposent une introduction à la simulation d'équations différentielles avec Julia, centrée sur la simulation de modèles classiques en dynamique des populations.</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>Le document est structuré comme suit :</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>La section sur les <span class="co">[</span><span class="ot">populations isolées</span><span class="co">](pop_isolees.qmd)</span> introduit les bases en dimension 1 (modèle de Malthus, modèle logistique et effets Allee)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>la section sur les <span class="co">[</span><span class="ot">populations exploitées</span><span class="co">](pop_exploitees.qmd)</span> introduit les diagrammes de bifurcations et la dimension 2  (prélèvements et effets Allee, interactions insectes-oiseaux)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>la section sur les <span class="co">[</span><span class="ot">populations en interaction</span><span class="co">](pop_interactions.qmd)</span> approfondit la dimension 2, notamment via les représentations dans l'espace d'état, et traite des interactions entre populations sous l'angle des modèles proies-prédateurs (modèle de Lotka Volterra et modèle de Rosenzweig MacArthur)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="fu">## Installation de Julia</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>La façon la plus simple d'installer <span class="in">`Julia`</span> est d'utiliser <span class="co">[</span><span class="ot">juliaup</span><span class="co">](https://github.com/JuliaLang/juliaup)</span>.</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>Sur Linux :</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="in">curl -fsSL https://install.julialang.org | sh</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>et procéder à l'installation.</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Allons-y !</span><span class="co">](pop_isolees.qmd)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">
@@ -511,7 +540,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     <div class="nav-footer-left">
       &nbsp;
     </div>   
-    <div class="nav-footer-center">Copyright 2023, Ludovic Mailleret<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/lmaillere/biomaths_www/edit/main/index.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/lmaillere/biomaths_www/issues/new" class="toc-action">Report an issue</a></p></div></div></div>
+    <div class="nav-footer-center">Copyright 2023, Ludovic Mailleret</div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
