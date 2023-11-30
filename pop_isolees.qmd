@@ -13,7 +13,7 @@ avec $n$ le taux de natalité, et $m$ le taux de mortalité.
 
 ### Préliminaires
 
-Pour simuler ce modèle, c'est à dire intégrer numériquement les solutions au problème de Cauchy correspondant à l'@eq-malthus avec $x(0)=x_0\geq0$, nous allons utiliser les routines de `DifferentialEquations.jl` avec la méthode par défaut. Nous utiliserons aussi le package `Plots.jl` pour les représentations graphiques.
+Pour simuler ce modèle, c'est à dire intégrer numériquement les solutions au problème de Cauchy correspondant à l'@eq-malthus avec $x(0)=x_0\geq0$, nous allons utiliser les routines de `DifferentialEquations.jl` avec la méthode par défaut. Nous utiliserons aussi le package `Plots.jl` pour les représentations graphiques^[si vous n'avez jamais installé un package, il faudra commencer par le faire avant de pouvoir l'utiliser...].
 
 ```{julia}
 using Plots, DifferentialEquations

@@ -1,5 +1,5 @@
 ---
-title: "Matériel supplémentaire"
+title: "Simulations multiples"
 ---
 
 ## Interface Integrator pour simulations multiples

@@ -191,7 +191,13 @@ div.csl-indent {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./pop_interactions.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Populations en interaction</span></a>
+ <span class="menu-text">Populations en interaction (1)</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pop_interactions2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Populations en interaction (2)</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -243,14 +249,14 @@ div.csl-indent {
 
 </header>
 
-<section id="sec-malthus" class="level2">
+<section id="sec-malthus" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="sec-malthus">Le modèle de Malthus</h2>
 <p>Nous considérons le modèle proposé par <span class="citation" data-cites="malthus">Malthus (<a href="#ref-malthus" role="doc-biblioref">1798</a>)</span> : <span id="eq-malthus"><span class="math display">
 \dot x = (n-m)x,
 \tag{1}</span></span> avec <span class="math inline">n</span> le taux de natalité, et <span class="math inline">m</span> le taux de mortalité.</p>
-<section id="préliminaires" class="level3">
+<section id="préliminaires" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="préliminaires">Préliminaires</h3>
-<p>Pour simuler ce modèle, c’est à dire intégrer numériquement les solutions au problème de Cauchy correspondant à l’<a href="#eq-malthus">Equation&nbsp;1</a> avec <span class="math inline">x(0)=x_0\geq0</span>, nous allons utiliser les routines de <code>DifferentialEquations.jl</code> avec la méthode par défaut. Nous utiliserons aussi le package <code>Plots.jl</code> pour les représentations graphiques.</p>
+<div class="page-columns page-full"><p>Pour simuler ce modèle, c’est à dire intégrer numériquement les solutions au problème de Cauchy correspondant à l’<a href="#eq-malthus">Equation&nbsp;1</a> avec <span class="math inline">x(0)=x_0\geq0</span>, nous allons utiliser les routines de <code>DifferentialEquations.jl</code> avec la méthode par défaut. Nous utiliserons aussi le package <code>Plots.jl</code> pour les représentations graphiques<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;si vous n’avez jamais installé un package, il faudra commencer par le faire avant de pouvoir l’utiliser…</p></li></div></div>
 <div class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span>, <span class="bu">DifferentialEquations</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -567,7 +573,7 @@ div.csl-indent {
 </section>
 <section id="sec-allee" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="sec-allee">Effets Allee</h2>
-<div class="page-columns page-full"><p>On s’intéresse à un modèle de dynamique de population avec “effets Allee forts”, souvent attribué à <span class="citation" data-cites="gruntfest1997">Gruntfest, Arditi, and Dombrovsky (<a href="#ref-gruntfest1997" role="doc-biblioref">1997</a>)</span><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> :</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;mais de nombreuses variations de cette forme polynomiale existent dans la littérature depuis <span class="citation" data-cites="bazykin1985">Bazykin (<a href="#ref-bazykin1985" role="doc-biblioref">1985</a>)</span></p></li></div></div>
+<div class="page-columns page-full"><p>On s’intéresse à un modèle de dynamique de population avec “effets Allee forts”, souvent attribué à <span class="citation" data-cites="gruntfest1997">Gruntfest, Arditi, and Dombrovsky (<a href="#ref-gruntfest1997" role="doc-biblioref">1997</a>)</span><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> :</p><div class="no-row-height column-margin column-container"><li id="fn2"><p><sup>2</sup>&nbsp;mais de nombreuses variations de cette forme polynomiale existent dans la littérature depuis <span class="citation" data-cites="bazykin1985">Bazykin (<a href="#ref-bazykin1985" role="doc-biblioref">1985</a>)</span></p></li></div></div>
 <p><span id="eq-allee"><span class="math display">
 \dot x = r x \left(\frac{x}{\epsilon}-1\right)\left(1-\frac{x}{K}\right),
 \tag{3}</span></span> avec <span class="math inline">r</span> le taux de croissance intrinsèque de la population (par analogie avec la logistique), <span class="math inline">K</span> la capacité de charge de l’environnement et <span class="math inline">\epsilon</span> le seuil en dessous duquel la population n’est pas viable (‘seuil de Allee’).</p>
@@ -1029,7 +1035,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a><span class="fu">### Préliminaires</span></span>
 <span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>Pour simuler ce modèle, c'est à dire intégrer numériquement les solutions au problème de Cauchy correspondant à l'@eq-malthus avec $x(0)=x_0\geq0$, nous allons utiliser les routines de <span class="in">`DifferentialEquations.jl`</span> avec la méthode par défaut. Nous utiliserons aussi le package <span class="in">`Plots.jl`</span> pour les représentations graphiques.</span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>Pour simuler ce modèle, c'est à dire intégrer numériquement les solutions au problème de Cauchy correspondant à l'@eq-malthus avec $x(0)=x_0\geq0$, nous allons utiliser les routines de <span class="in">`DifferentialEquations.jl`</span> avec la méthode par défaut. Nous utiliserons aussi le package <span class="in">`Plots.jl`</span> pour les représentations graphiques^<span class="co">[</span><span class="ot">si vous n'avez jamais installé un package, il faudra commencer par le faire avant de pouvoir l'utiliser...</span><span class="co">]</span>.</span>
 <span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
 <span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>using Plots, DifferentialEquations</span>

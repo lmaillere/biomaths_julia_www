@@ -1,0 +1,115 @@
+---
+title: "Lotka Volterra avec `Makie.jl`"
+---
+
+\
+
+L'objectif ici est de faire une jolie représentation graphique du modèle de Lotka Volterra avec la librairie graphique `Makie.jl`.
+
+On reprend une partie du code de la page sur les [populations en intéractions](pop_interactions.qmd).
+
+```{julia}
+#| code-fold: true
+#| output: true
+using DifferentialEquations
+
+# conditions initiales
+x0 = 1.0
+y0 = 1.95
+etat0 = [x0, y0]
+
+# paramètres
+r = 1.0
+c = 1.0
+b = 1.0
+m = 1.0
+par_lovo = [r, c, b, m]
+
+# integration plus longue
+tspan = (0.0, 30.0)
+tstep = .01
+
+# définition du modèle
+function lovo(u, par, t)
+    r, c, b, m = par
+    x = u[1]
+    y = u[2]
+    dx = r*x - c*x*y
+    dy = b*x*y - m*y
+    [dx, dy]
+end
+
+# problème
+prob_lovo = ODEProblem(lovo, etat0, tspan, par_lovo, saveat = tstep)
+# intégration
+sol_lovo = solve(prob_lovo, reltol = 1e-6)
+sol_lovo[1,:]
+```
+
+L'objectif est de créer une figure avec trois panels. dans la colonne de gauche, le premier panel représentera la dynamique temporelle, le second le plan de phase, et dans la colonne de droite nous représenterons la figure 3D avec l'intégrale première.
+
+```{julia}
+#| output: true
+using CairoMakie
+
+# on crée la figure avec un fond gris clair
+fig = Figure(backgroundcolor = RGBf(0.98, 0.98, 0.98),
+              resolution = (1000, 700)) 
+
+# déclare les différents panels comme des éléments gridlayout contenant les plots
+panela = fig[1, 1] = GridLayout()
+panelb = fig[2, 1] = GridLayout()
+panelc = fig[:, 2] = GridLayout()
+```
+
+```{julia}
+#| output: true
+ax1 = Axis(panela[1,1],
+           xlabel = L"temps$$",
+           ylabel = L"densités de populations$$",
+           title="Dynamiques")
+
+lines!(ax1, sol_lovo.t, sol_lovo[1,:],
+       linewidth = 2,
+       label = L"$x(t)$")
+lines!(ax1, sol_lovo.t, sol_lovo[2,:],
+       linewidth = 2,
+       label = L"$y(t)$")
+
+fig
+```
+
+```{julia}
+#| output: true
+ax2 = Axis(panelb[1,1],
+           xlabel = L"population $x$",
+           ylabel = L"population $y$",
+           title = "Plan de phase",
+           xticks = (0:.5:2),
+           yticks = (0:.5:2))
+
+# champs de vecteur
+scale = 10
+xrange = range(.1, 2.25, length=11)  
+yrange = range(.1, 2.25, length=11)
+
+derx = [lovo([x y], par_lovo, 0)[1]/scale for x in xrange, y in yrange]
+dery = [lovo([x y], par_lovo, 0)[2]/scale for x in xrange, y in yrange]
+
+arrows!(ax2, xrange, yrange, derx, dery, 
+        color = :lightgray, 
+        arrowsize = 10, 
+        label = L"vector field$$")
+
+# nullclines
+
+# trajectoire
+lines!(ax2, sol_lovo[1, :], 
+       sol_lovo[2, :],
+       label = "trajectoire")
+
+xlims!(ax2, 0, 2.25)
+ylims!(ax2, 0, 2.25)
+
+fig
+```
