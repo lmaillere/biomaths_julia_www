@@ -10,12 +10,11 @@ On reprend une partie du code de la page sur les [populations en intéractions](
 
 ```{julia}
 #| code-fold: true
-#| output: true
 using DifferentialEquations
 
 # conditions initiales
 x0 = 1.0
-y0 = 1.95
+y0 = 2.3
 etat0 = [x0, y0]
 
 # paramètres
@@ -43,13 +42,11 @@ end
 prob_lovo = ODEProblem(lovo, etat0, tspan, par_lovo, saveat = tstep)
 # intégration
 sol_lovo = solve(prob_lovo, reltol = 1e-6)
-sol_lovo[1,:]
 ```
 
 L'objectif est de créer une figure avec trois panels. dans la colonne de gauche, le premier panel représentera la dynamique temporelle, le second le plan de phase, et dans la colonne de droite nous représenterons la figure 3D avec l'intégrale première.
 
 ```{julia}
-#| output: true
 using CairoMakie
 
 # on crée la figure avec un fond gris clair
@@ -76,6 +73,8 @@ lines!(ax1, sol_lovo.t, sol_lovo[2,:],
        linewidth = 2,
        label = L"$y(t)$")
 
+axislegend(ax1, position = :lt, labelsize = 12)
+
 fig
 ```
 
@@ -90,26 +89,88 @@ ax2 = Axis(panelb[1,1],
 
 # champs de vecteur
 scale = 10
-xrange = range(.1, 2.25, length=11)  
-yrange = range(.1, 2.25, length=11)
+xrange = range(0, 2.35, length=11)  
+yrange = range(0, 2.35, length=11)
 
 derx = [lovo([x y], par_lovo, 0)[1]/scale for x in xrange, y in yrange]
 dery = [lovo([x y], par_lovo, 0)[2]/scale for x in xrange, y in yrange]
 
 arrows!(ax2, xrange, yrange, derx, dery, 
         color = :lightgray, 
-        arrowsize = 10, 
-        label = L"vector field$$")
+        arrowsize = 10)
 
 # nullclines
+lines!(ax2, xrange, [r/c for x in xrange],
+       color = Cycled(2),
+       linewidth = 2,
+       label = L"$\dot{x}$ nullcline")
+lines!(ax2, [0 for y in yrange], yrange,
+       linewidth = 2,
+       color = Cycled(2))
+lines!(ax2, [m/b for y in yrange], yrange,
+       color = Cycled(3),
+       linewidth = 2,
+       label = L"$\dot{y}$ nullcline")
+lines!(ax2, xrange, [0 for y in yrange],
+       color = Cycled(3),
+       linewidth = 2)
+
+# équilibres
+scatter!(ax2, Point2f(0,0),
+         color = Cycled(4))
+scatter!(ax2, Point2f(m/b, r/c),
+         color = Cycled(4))
 
 # trajectoire
-lines!(ax2, sol_lovo[1, :], 
-       sol_lovo[2, :],
-       label = "trajectoire")
+lines!(ax2, sol_lovo[1, :], sol_lovo[2, :],
+       color = Cycled(1),
+       linewidth = 2)
 
-xlims!(ax2, 0, 2.25)
-ylims!(ax2, 0, 2.25)
+xlims!(ax2, -0.1, 2.35)
+ylims!(ax2, -0.1, 2.35)
+axislegend(ax2, position = :rt, labelsize = 12)
+
+fig
+```
+
+```{julia}
+# l'intégrale première
+function int_prem(x, y, par = par_lovo)
+      r, c, b, m = par
+      -r*log(y) + c*y - m*log(x) + b*x
+end
+```
+
+
+```{julia}
+#| output: true
+ax3 = Axis3(panelc[1, 1], 
+            title = "Intégrale première",
+            xlabel = L"population $x$",
+            ylabel = L"population $y$",
+            zlabel = L"$H(x,y)$",
+            azimuth = 0.5,
+            elevation = 0.2)
+
+# grille x, y
+xsurf = .2: .1: 3
+ysurf = .2:.1: 3
+
+# calcul de la surface via une compréhension de liste
+hsurf = [int_prem(x, y, par_lovo) for x in xsurf, y in ysurf]
+hplane = [int_prem(x0, y0, par_lovo) for x in xsurf, y in ysurf]
+
+hs = surface!(ax3, xsurf, ysurf, hsurf, alpha=.5)
+surface!(ax3, xsurf, ysurf, hplane, color = fill(:red,100,100), alpha = .3)
+
+lines!(ax3, sol_lovo[1,:], sol_lovo[2,:], 
+       [int_prem(x0, y0) for x in sol_lovo[1,:]],
+       color = Cycled(4),
+       linewidth = 3)
+
+Colorbar(panelc[1, 2], hs, label = L"$H(x,y)$")
+
+
 
 fig
 ```
