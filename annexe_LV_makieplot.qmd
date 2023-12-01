@@ -51,7 +51,7 @@ using CairoMakie
 
 # on crée la figure avec un fond gris clair
 fig = Figure(backgroundcolor = RGBf(0.98, 0.98, 0.98),
-              resolution = (1000, 700)) 
+              resolution = (1000, 600)) 
 
 # déclare les différents panels comme des éléments gridlayout contenant les plots
 panela = fig[1, 1] = GridLayout()
@@ -62,9 +62,11 @@ panelc = fig[:, 2] = GridLayout()
 ```{julia}
 #| output: true
 ax1 = Axis(panela[1,1],
-           xlabel = L"temps$$",
+           #xlabel = L"temps$$",
            ylabel = L"densités de populations$$",
            title="Dynamiques")
+
+Label(panela[1,1,Bottom()], L"temps$$", padding=(0,0,0,20))
 
 lines!(ax1, sol_lovo.t, sol_lovo[1,:],
        linewidth = 2,
@@ -73,7 +75,10 @@ lines!(ax1, sol_lovo.t, sol_lovo[2,:],
        linewidth = 2,
        label = L"$y(t)$")
 
-axislegend(ax1, position = :lt, labelsize = 12)
+axislegend(ax1, position = :lt, 
+           labelsize = 12, 
+           padding = (5,5,0,0),
+           rowgap = -5)
 
 fig
 ```
@@ -89,8 +94,8 @@ ax2 = Axis(panelb[1,1],
 
 # champs de vecteur
 scale = 10
-xrange = range(0, 2.35, length=11)  
-yrange = range(0, 2.35, length=11)
+xrange = range(0, 2.75, length=11)  
+yrange = range(0, 2.75, length=11)
 
 derx = [lovo([x y], par_lovo, 0)[1]/scale for x in xrange, y in yrange]
 dery = [lovo([x y], par_lovo, 0)[2]/scale for x in xrange, y in yrange]
@@ -126,9 +131,13 @@ lines!(ax2, sol_lovo[1, :], sol_lovo[2, :],
        color = Cycled(1),
        linewidth = 2)
 
-xlims!(ax2, -0.1, 2.35)
-ylims!(ax2, -0.1, 2.35)
-axislegend(ax2, position = :rt, labelsize = 12)
+xlims!(ax2, -0.1, 2.75)
+ylims!(ax2, -0.1, 2.75)
+
+axislegend(ax2, position = :rt, 
+           labelsize = 12, 
+           padding = (5,5,0,0), 
+           rowgap = -5)
 
 fig
 ```
@@ -146,6 +155,7 @@ end
 #| output: true
 ax3 = Axis3(panelc[1, 1], 
             title = "Intégrale première",
+            titlegap = -50,
             xlabel = L"population $x$",
             ylabel = L"population $y$",
             zlabel = L"$H(x,y)$",
@@ -168,9 +178,14 @@ lines!(ax3, sol_lovo[1,:], sol_lovo[2,:],
        color = Cycled(4),
        linewidth = 3)
 
-Colorbar(panelc[1, 2], hs, label = L"$H(x,y)$")
+Colorbar(panelc[1, 2], hs, height = Relative(.55))
 
-
+colsize!(fig.layout, 2, Auto(1.5))
+colgap!(fig.layout, 60)
+colgap!(panelc, -10)
+rowgap!(fig.layout, 10)
+# titre général
+supertitle = Label(fig[0, :], "Modèle de Lotka Volterra", fontsize = 30)
 
 fig
 ```
