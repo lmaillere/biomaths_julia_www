@@ -1,9 +1,9 @@
 ---
 title: "Présentation"
 ---
+\
 
-
-Ces pages proposent une introduction à la simulation d'équations différentielles avec Julia, centrée sur la simulation de modèles classiques en dynamique des populations.
+Ces pages proposent une introduction à la simulation d'équations différentielles avec `Julia`, centrée sur la simulation de modèles classiques en dynamique des populations.
 
 Le document est structuré comme suit :
 
@@ -12,6 +12,15 @@ Le document est structuré comme suit :
 - la section sur les [populations exploitées](pop_exploitees.qmd) introduit les diagrammes de bifurcations (prélèvements et effets Allee, interactions insectes-oiseaux)
 
 - la section sur les [populations en interaction](pop_interactions.qmd) introduit la dimension 2, notamment via les représentations dans l'espace d'état, et traite des interactions entre populations sous l'angle des modèles proies-prédateurs (modèle de Lotka Volterra et [modèle de Rosenzweig MacArthur](pop_interactions2.qmd))
+
+Le site contient aussi du matétiel supplémentaire pour compléments plus avancés pour :
+
+- [tracer](annexe_LV_makieplot.qmd) une jolie figure pour Lotka Volterra avec `Makie.jl`
+
+- [utiliser](annexe_integrator.qmd) l'interface `integrator` de `DifferentialEquations.jl` ou la redéfinition de problèmes d'intégration via `remake` 
+
+- [simuler](annexe_FisherKPP.qmd) une équation de réaction-diffusion en une dimension : le modèle de Fisher-KPP **PRECISIONS**
+
 
 ## Installation de Julia
 
@@ -24,16 +33,25 @@ curl -fsSL https://install.julialang.org | sh
 ```
 et procéder à l'installation.
 
-Puis installer le package `IJulia`:
+Puis installer le package `IJulia` si vous souhaitez utiliser `Julia` dans un notebook `jupyter`:
 ```{julia}
 #| eval: false
 julia
 julia> ]  # package mode
-(@v1.9) pkg> add IJulia
+(@v1.9) pkg> add IJulia 
 ```
 
 
-Un noyau `Julia` est ensuite disponible dans votre `jupyter` favori ou via son propre système de notebook `Pluto.jl`:
+
+Si vous avez déjà `jupyterlab` installé, un noyau `Julia` est ensuite disponible. Sinon :
+```{julia}
+#| eval: false
+julia> using IJulia # hit backspace first to exit package mode
+julia> jupyterlab()
+```
+vous permettra d'installer (via une installation de miniconda) et de démarrer `jupyterlab`. 
+
+`Julia` a aussi un système de notebook propre `Pluto.jl`:
 ```{julia}
 #| eval: false
 julia> ]   # package mode
