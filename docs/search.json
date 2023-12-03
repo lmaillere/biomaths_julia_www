@@ -4,7 +4,7 @@
     "href": "index.html",
     "title": "Présentation",
     "section": "",
-    "text": "Ces pages proposent une introduction à la simulation d’équations différentielles avec Julia, centrée sur la simulation de modèles classiques en dynamique des populations.\nLe document est structuré comme suit :\nLe site contient aussi du matétiel supplémentaire pour compléments plus avancés pour :"
+    "text": "Ces pages proposent une introduction à la simulation d’équations différentielles avec Julia, centrée sur la simulation de modèles classiques en dynamique des populations.\nLe site est structuré comme suit :\nLe site contient aussi du matétiel supplémentaire pour compléments plus avancés pour :"
   },
   {
     "objectID": "about.html",

@@ -5,7 +5,7 @@ title: "Présentation"
 
 Ces pages proposent une introduction à la simulation d'équations différentielles avec `Julia`, centrée sur la simulation de modèles classiques en dynamique des populations.
 
-Le document est structuré comme suit :
+Le site est structuré comme suit :
 
 - La section sur les [populations isolées](pop_isolees.qmd) introduit les bases en dimension 1 (modèle de Malthus, modèle logistique et effets Allee)
 
@@ -19,7 +19,7 @@ Le site contient aussi du matétiel supplémentaire pour compléments plus avanc
 
 - [utiliser](annexe_integrator.qmd) l'interface `integrator` de `DifferentialEquations.jl` ou la redéfinition de problèmes d'intégration via `remake` 
 
-- [simuler](annexe_FisherKPP.qmd) une équation de réaction-diffusion en une dimension : le modèle de Fisher-KPP **PRECISIONS**
+- [simuler](annexe_FisherKPP.qmd) une équation de réaction-diffusion en une dimension : le modèle de Fisher-KPP
 
 
 ## Installation de Julia

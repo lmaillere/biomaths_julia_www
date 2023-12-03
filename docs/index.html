@@ -205,7 +205,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><br>
 </p>
 <p>Ces pages proposent une introduction à la simulation d’équations différentielles avec <code>Julia</code>, centrée sur la simulation de modèles classiques en dynamique des populations.</p>
-<p>Le document est structuré comme suit :</p>
+<p>Le site est structuré comme suit :</p>
 <ul>
 <li><p>La section sur les <a href="./pop_isolees.html">populations isolées</a> introduit les bases en dimension 1 (modèle de Malthus, modèle logistique et effets Allee)</p></li>
 <li><p>la section sur les <a href="./pop_exploitees.html">populations exploitées</a> introduit les diagrammes de bifurcations (prélèvements et effets Allee, interactions insectes-oiseaux)</p></li>
@@ -215,30 +215,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li><p><a href="./annexe_LV_makieplot.html">tracer</a> une jolie figure pour Lotka Volterra avec <code>Makie.jl</code></p></li>
 <li><p><a href="./annexe_integrator.html">utiliser</a> l’interface <code>integrator</code> de <code>DifferentialEquations.jl</code> ou la redéfinition de problèmes d’intégration via <code>remake</code></p></li>
-<li><p><a href="./annexe_FisherKPP.html">simuler</a> une équation de réaction-diffusion en une dimension : le modèle de Fisher-KPP <strong>PRECISIONS</strong></p></li>
+<li><p><a href="./annexe_FisherKPP.html">simuler</a> une équation de réaction-diffusion en une dimension : le modèle de Fisher-KPP</p></li>
 </ul>
 <section id="installation-de-julia" class="level2">
 <h2 class="anchored" data-anchor-id="installation-de-julia">Installation de Julia</h2>
 <p>La façon la plus simple d’installer <code>Julia</code> est d’utiliser <a href="https://github.com/JuliaLang/juliaup">juliaup</a>.</p>
 <p>Sur Linux :</p>
-<div class="cell" data-execution_count="1">
+<div class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>curl <span class="op">-</span>fsSL https<span class="op">://</span>install.julialang.org <span class="op">|</span> sh</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>et procéder à l’installation.</p>
 <p>Puis installer le package <code>IJulia</code> si vous souhaitez utiliser <code>Julia</code> dans un notebook <code>jupyter</code>:</p>
-<div class="cell" data-execution_count="2">
+<div class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>julia</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> ]  <span class="co"># package mode</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>(<span class="pp">@v1</span><span class="fl">.9</span>) pkg<span class="op">&gt;</span> add IJulia </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Si vous avez déjà <code>jupyterlab</code> installé, un noyau <code>Julia</code> est ensuite disponible. Sinon :</p>
-<div class="cell" data-execution_count="3">
+<div class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="im">using</span> <span class="bu">IJulia </span><span class="co"># hit backspace first to exit package mode</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">jupyterlab</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>vous permettra d’installer (via une installation de miniconda) et de démarrer <code>jupyterlab</code>.</p>
 <p><code>Julia</code> a aussi un système de notebook propre <code>Pluto.jl</code>:</p>
-<div class="cell" data-execution_count="4">
+<div class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> ]   <span class="co"># package mode</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>(<span class="pp">@v1</span><span class="fl">.9</span>) pkg<span class="op">&gt;</span> add Pluto</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="im">using</span> <span class="bu">Pluto  </span><span class="co"># hit backspace first to exit package mode</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -543,7 +543,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>Ces pages proposent une introduction à la simulation d'équations différentielles avec <span class="in">`Julia`</span>, centrée sur la simulation de modèles classiques en dynamique des populations.</span>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>Le document est structuré comme suit :</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>Le site est structuré comme suit :</span>
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>La section sur les <span class="co">[</span><span class="ot">populations isolées</span><span class="co">](pop_isolees.qmd)</span> introduit les bases en dimension 1 (modèle de Malthus, modèle logistique et effets Allee)</span>
 <span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
@@ -557,7 +557,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">utiliser</span><span class="co">](annexe_integrator.qmd)</span> l'interface <span class="in">`integrator`</span> de <span class="in">`DifferentialEquations.jl`</span> ou la redéfinition de problèmes d'intégration via <span class="in">`remake`</span> </span>
 <span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">simuler</span><span class="co">](annexe_FisherKPP.qmd)</span> une équation de réaction-diffusion en une dimension : le modèle de Fisher-KPP **PRECISIONS**</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">simuler</span><span class="co">](annexe_FisherKPP.qmd)</span> une équation de réaction-diffusion en une dimension : le modèle de Fisher-KPP</span>
 <span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="fu">## Installation de Julia</span></span>
