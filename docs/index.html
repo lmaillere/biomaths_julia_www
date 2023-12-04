@@ -216,12 +216,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="installation-de-julia">Installation de Julia</h2>
 <p>La façon la plus simple d’installer <code>Julia</code> est d’utiliser <a href="https://github.com/JuliaLang/juliaup">juliaup</a>.</p>
 <p>Sur Linux :</p>
-<div class="cell" data-execution_count="1">
+<div class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>curl <span class="op">-</span>fsSL https<span class="op">://</span>install.julialang.org <span class="op">|</span> sh</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>et procéder à l’installation.</p>
 <p>Puis, si vous souhaitez utiliser <code>Julia</code> dans un notebook <code>jupyter</code>, installez le package <code>IJulia</code> depuis Julia comme suit :</p>
-<div class="cell" data-execution_count="2">
+<div class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>julia <span class="co"># executer julia dans un terminal</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>   _       _ <span class="fu">_</span>(_)_     <span class="op">|</span>  Documentation<span class="op">:</span> https<span class="op">://</span>docs.julialang.org</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  (_)     <span class="op">|</span> (_) (_)    <span class="op">|</span></span>
@@ -235,18 +235,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>(<span class="pp">@v1</span><span class="fl">.9</span>) pkg<span class="op">&gt;</span> add IJulia </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Si vous avez déjà <code>jupyterlab</code> installé, un noyau <code>Julia</code> est ensuite disponible. Sinon toujours depuis Julia :</p>
-<div class="cell" data-execution_count="3">
+<div class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="im">using</span> <span class="bu">IJulia </span><span class="co"># hit backspace first to exit package mode</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">jupyterlab</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>vous permettra d’installer (via une installation de miniconda) et de démarrer <code>jupyterlab</code>.</p>
 <p><code>Julia</code> a aussi un système de notebook propre <code>Pluto.jl</code>:</p>
-<div class="cell" data-execution_count="4">
+<div class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> ]   <span class="co"># package mode</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>(<span class="pp">@v1</span><span class="fl">.9</span>) pkg<span class="op">&gt;</span> add Pluto</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="im">using</span> <span class="bu">Pluto  </span><span class="co"># hit backspace first to exit package mode</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Une extension <code>Julia</code> est disponible pour VScode/VScodium.</p>
+<p>Une <a href="https://www.julia-vscode.org/docs/stable/setup/">extension <code>Julia</code></a> est disponible pour VScode/VScodium.</p>
 <p><a href="./pop_isolees.html">Allons-y !</a></p>
 
 
@@ -601,7 +601,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb5-68"><a href="#cb5-68" aria-hidden="true" tabindex="-1"></a>julia&gt; using Pluto  <span class="co"># hit backspace first to exit package mode</span></span>
 <span id="cb5-69"><a href="#cb5-69" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb5-70"><a href="#cb5-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-71"><a href="#cb5-71" aria-hidden="true" tabindex="-1"></a>Une extension <span class="in">`Julia`</span> est disponible pour VScode/VScodium.</span>
+<span id="cb5-71"><a href="#cb5-71" aria-hidden="true" tabindex="-1"></a>Une <span class="co">[</span><span class="ot">extension `Julia`</span><span class="co">](https://www.julia-vscode.org/docs/stable/setup/)</span> est disponible pour VScode/VScodium.</span>
 <span id="cb5-72"><a href="#cb5-72" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-73"><a href="#cb5-73" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Allons-y !</span><span class="co">](pop_isolees.qmd)</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
