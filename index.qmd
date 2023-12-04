@@ -29,7 +29,7 @@ et procéder à l'installation.
 Puis, si vous souhaitez utiliser `Julia` dans un notebook `jupyter`, installez le package `IJulia` depuis Julia comme suit :
 ```{julia}
 #| eval: false
-:~$ julia
+julia # executer julia dans un terminal
    _       _ _(_)_     |  Documentation: https://docs.julialang.org
   (_)     | (_) (_)    |
    _ _   _| |_  __ _   |  Type "?" for help, "]?" for Pkg help.
