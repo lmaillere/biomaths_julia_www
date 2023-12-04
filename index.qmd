@@ -5,9 +5,9 @@ title: "Introduction"
 
 Ces pages proposent une introduction à la simulation d'équations différentielles avec `Julia`, centrée sur la simulation de modèles classiques en dynamique des populations.
 
-Le site est structuré comme suit :
+Ces pages sont structurées comme suit :
 
-- La section sur les [populations isolées](pop_isolees.qmd) introduit les bases en dimension 1 (modèle de Malthus, modèle logistique et effets Allee)
+- la section sur les [populations isolées](pop_isolees.qmd) introduit les bases en dimension 1 (modèle de Malthus, modèle logistique et effets Allee)
 
 - la section sur les [populations exploitées](pop_exploitees.qmd) introduit les diagrammes de bifurcations (prélèvements et effets Allee, interactions insectes-oiseaux)
 
