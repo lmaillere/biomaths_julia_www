@@ -17,16 +17,18 @@ Le site contient aussi du [matétiel supplémentaire](annexes.qmd) pour complém
 
 ## Installation de Julia
 
-La façon la plus simple d'installer `Julia` est d'utiliser [juliaup](https://github.com/JuliaLang/juliaup).
+La façon la plus simple d'installer `Julia` est d'utiliser [juliaup](https://github.com/JuliaLang/juliaup). Installez `curl` sur votre système^[`sudo apt install curl` sur Ubuntu].
 
 Sur Linux :
 ```{julia}
 #| eval: false
 curl -fsSL https://install.julialang.org | sh
 ```
-et procéder à l'installation.
+et procéder à l'installation. 
 
-Puis, si vous souhaitez utiliser `Julia` dans un notebook `jupyter`, installez le package `IJulia` depuis Julia comme suit :
+Fermez et réouvrez votre terminal (ou rechargez votre fichier de préférences comme vous l'indique l'installateur de juliaup) pour pouvoir exécuter `Julia`.
+
+Puis, si vous souhaitez utiliser `Julia` dans un notebook `jupyter`, installez le package `IJulia` depuis Julia comme suit^[le profil utilisé doit être administrateur, et si il est tout nouvellement créé un redémarrage peut s'avérer nécessaire si vous rencontrez une erreur à l'exécution de `jupyterlab()`]:
 ```{julia}
 #| eval: false
 julia # executer julia dans un terminal
