@@ -12,6 +12,7 @@ website:
       - pop_exploitees.qmd
       - pop_interactions.qmd
       - pop_interactions2.qmd
+      - annexes.qmd
       - about.qmd
   page-footer: "Copyright 2023, Ludovic Mailleret"
   repo-url: https://github.com/lmaillere/biomaths_www

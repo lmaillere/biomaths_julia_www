@@ -1,5 +1,5 @@
 ---
-title: "Présentation"
+title: "Introduction"
 ---
 \
 
@@ -17,9 +17,9 @@ Le site contient aussi du [matétiel supplémentaire](annexes.qmd) pour complém
 
 ## Installation de Julia
 
-La façon la plus simple d'installer `Julia` est d'utiliser [juliaup](https://github.com/JuliaLang/juliaup). Installez `curl` sur votre système^[`sudo apt install curl` sur Ubuntu].
+La façon la plus simple d'installer `Julia` est d'utiliser [juliaup](https://github.com/JuliaLang/juliaup). 
 
-Puis, sur Linux :
+Sur Linux, installez `curl` sur votre système^[`sudo apt install curl` sur Ubuntu]. Puis dans un terminal :
 ```{julia}
 #| eval: false
 curl -fsSL https://install.julialang.org | sh
