@@ -1,0 +1,13 @@
+---
+title: "Matériel supplémentaire"
+---
+\
+
+
+Les pages listées ici contiennent du matétiel supplémentaire pour compléments plus avancés :
+
+- [tracer](annexe_LV_makieplot.qmd) une jolie figure pour Lotka Volterra avec `Makie.jl`
+
+- [utiliser](annexe_integrator.qmd) l'interface `integrator` de `DifferentialEquations.jl` ou la redéfinition de problèmes d'intégration via `remake` 
+
+- [simuler](annexe_FisherKPP.qmd) une équation de réaction-diffusion en une dimension : le modèle de Fisher-KPP

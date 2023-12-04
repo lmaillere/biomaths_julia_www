@@ -13,14 +13,7 @@ Le site est structuré comme suit :
 
 - la section sur les [populations en interaction](pop_interactions.qmd) introduit la dimension 2, notamment via les représentations dans l'espace d'état, et traite des interactions entre populations sous l'angle des modèles proies-prédateurs (modèle de Lotka Volterra et [modèle de Rosenzweig MacArthur](pop_interactions2.qmd))
 
-Le site contient aussi du matétiel supplémentaire pour compléments plus avancés pour :
-
-- [tracer](annexe_LV_makieplot.qmd) une jolie figure pour Lotka Volterra avec `Makie.jl`
-
-- [utiliser](annexe_integrator.qmd) l'interface `integrator` de `DifferentialEquations.jl` ou la redéfinition de problèmes d'intégration via `remake` 
-
-- [simuler](annexe_FisherKPP.qmd) une équation de réaction-diffusion en une dimension : le modèle de Fisher-KPP
-
+Le site contient aussi du [matétiel supplémentaire](annexes.qmd) pour compléments plus avancés (graphiques, methodes d'intégration alternatives, équations de réaction-diffusion).
 
 ## Installation de Julia
 
@@ -33,17 +26,25 @@ curl -fsSL https://install.julialang.org | sh
 ```
 et procéder à l'installation.
 
-Puis installer le package `IJulia` si vous souhaitez utiliser `Julia` dans un notebook `jupyter`:
+Puis, si vous souhaitez utiliser `Julia` dans un notebook `jupyter`, installez le package `IJulia` depuis Julia comme suit :
 ```{julia}
 #| eval: false
-julia
+:~$ julia
+   _       _ _(_)_     |  Documentation: https://docs.julialang.org
+  (_)     | (_) (_)    |
+   _ _   _| |_  __ _   |  Type "?" for help, "]?" for Pkg help.
+  | | | | | | |/ _` |  |
+  | | |_| | | | (_| |  |  Version 1.9.4 (2023-11-14)
+ _/ |\__'_|_|_|\__'_|  |  Official https://julialang.org/ release
+|__/                   |
+
 julia> ]  # package mode
 (@v1.9) pkg> add IJulia 
 ```
 
 
 
-Si vous avez déjà `jupyterlab` installé, un noyau `Julia` est ensuite disponible. Sinon :
+Si vous avez déjà `jupyterlab` installé, un noyau `Julia` est ensuite disponible. Sinon toujours depuis Julia :
 ```{julia}
 #| eval: false
 julia> using IJulia # hit backspace first to exit package mode
