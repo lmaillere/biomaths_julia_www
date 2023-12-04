@@ -24,7 +24,7 @@ Sur Linux :
 #| eval: false
 curl -fsSL https://install.julialang.org | sh
 ```
-et procéder à l'installation. 
+et procédez à l'installation. 
 
 Fermez et réouvrez votre terminal (ou rechargez votre fichier de préférences comme vous l'indique l'installateur de juliaup) pour pouvoir exécuter `Julia`.
 
