@@ -46,13 +46,14 @@ julia> ]  # package mode
 
 
 
-Si vous avez déjà `jupyterlab` installé, un noyau `Julia` est ensuite disponible. Sinon toujours depuis Julia :
+Si vous avez déjà `jupyterlab` installé, un noyau `Julia` est ensuite disponible. Sinon vous pouvez l'installer et le démarrer directement depuis Julia :
 ```{julia}
 #| eval: false
-julia> using IJulia # hit backspace first to exit package mode
+julia> using IJulia # tapez backspace d'abord 
+                    # pour sortir du package mode
 julia> jupyterlab()
 ```
-vous permettra d'installer (via une installation de miniconda) et de démarrer `jupyterlab`. 
+\
 
 `Julia` a aussi un système de notebook propre `Pluto.jl`:
 ```{julia}
@@ -61,6 +62,7 @@ julia> ]   # package mode
 (@v1.9) pkg> add Pluto
 julia> using Pluto  # hit backspace first to exit package mode
 ```
+\
 
 Enfin, une [extension `Julia`](https://www.julia-vscode.org/docs/stable/setup/) est disponible pour VScode/VScodium.
 
