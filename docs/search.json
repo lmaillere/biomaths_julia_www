@@ -256,6 +256,6 @@
     "href": "annexes.html",
     "title": "Matériel supplémentaire",
     "section": "",
-    "text": "Les pages listées ici contiennent du matétiel supplémentaire pour compléments plus avancés :\n\ntracer une jolie figure pour Lotka Volterra avec Makie.jl\nutiliser l’interface integrator de DifferentialEquations.jl ou la redéfinition de problèmes d’intégration via remake\nsimuler une équation de réaction-diffusion en une dimension : le modèle de Fisher-KPP\n\n\n\n\n\n\nReusehttps://creativecommons.org/licenses/by-nc/4.0/"
+    "text": "Les pages listées ici contiennent du matétiel supplémentaire pour compléments plus avancés :\n\ntracer une jolie figure pour Lotka Volterra avec Makie.jl\nutiliser l’interface integrator de DifferentialEquations.jl ou la redéfinition de problèmes d’intégration via remake\nsimuler une équation de réaction-diffusion en une dimension : le modèle de Fisher-KPP\n\nNous n’avons qu’effleuré l’utilisation de Julia, pour aller plus loin (et aussi revoir quelques bases !), vous pouvez vous référer à ces tutoriels:\n\nle cours Introduction to computational thinking du MIT (assez long)\nle workshop Julia Zero-to-Hero de Georges Datseris (plus direct)\n\n\n\n\n\n\nReusehttps://creativecommons.org/licenses/by-nc/4.0/"
   }
 ]

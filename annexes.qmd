@@ -3,7 +3,6 @@ title: "Matériel supplémentaire"
 ---
 \
 
-
 Les pages listées ici contiennent du matétiel supplémentaire pour compléments plus avancés :
 
 - [tracer](annexe_LV_makieplot.qmd) une jolie figure pour Lotka Volterra avec `Makie.jl`
@@ -11,3 +10,10 @@ Les pages listées ici contiennent du matétiel supplémentaire pour complément
 - [utiliser](annexe_integrator.qmd) l'interface `integrator` de `DifferentialEquations.jl` ou la redéfinition de problèmes d'intégration via `remake` 
 
 - [simuler](annexe_FisherKPP.qmd) une équation de réaction-diffusion en une dimension : le modèle de Fisher-KPP
+
+
+Nous n'avons qu'effleuré l'utilisation de `Julia`, pour aller plus loin (et aussi revoir quelques bases !), vous pouvez vous référer à ces tutoriels:
+
+- le cours [Introduction to computational thinking](https://computationalthinking.mit.edu/Fall23/) du MIT (assez long)
+
+- le workshop [Julia Zero-to-Hero](https://github.com/Datseris/Zero2Hero-JuliaWorkshop) de Georges Datseris (plus direct)
