@@ -12,7 +12,9 @@ Les pages listées ici contiennent du matétiel supplémentaire pour complément
 - [simuler](annexe_FisherKPP.qmd) une équation de réaction-diffusion en une dimension : le modèle de Fisher-KPP
 
 
-Nous n'avons qu'effleuré l'utilisation de `Julia`, pour aller plus loin (et aussi revoir quelques bases !), vous pouvez vous référer à ces tutoriels:
+Nous n'avons qu'effleuré l'utilisation de `Julia`, par exemple tout le code présenté est scripté et relativement peu de code est inclus dans des fonctions, alors que le gain en performance serait notable via la pré-compilation. Nous n'avons pas non plus abordé les types `struct` et le `multiple dispatch` qui sont pourtant au coeur du fonctionnement, de l'efficacité et de la versatilité  de ce langage.
+
+Pour aller plus loin (et aussi revoir quelques bases !), vous pouvez par exemple vous référer à ces tutoriels:
 
 - le cours [Introduction to computational thinking](https://computationalthinking.mit.edu/Fall23/) du MIT (assez long)
 
