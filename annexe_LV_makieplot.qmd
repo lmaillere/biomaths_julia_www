@@ -51,7 +51,7 @@ using CairoMakie
 
 # on crée la figure avec un fond gris clair
 fig = Figure(backgroundcolor = RGBf(0.98, 0.98, 0.98),
-              resolution = (1000, 600)) 
+              size = (1000, 600)) 
 
 # déclare les différents panels comme des éléments gridlayout contenant les plots
 panela = fig[1, 1] = GridLayout()

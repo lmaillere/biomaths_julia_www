@@ -263,7 +263,7 @@ div.csl-indent {
 <section id="dynamiques" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="dynamiques">Dynamiques</h3>
 <p>Il n’y a pas de difficulté particulière à la simulation par rapport au modèle de Lotka Volterra.</p>
-<div class="cell" data-execution_count="2">
+<div class="cell" data-execution_count="1">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">DifferentialEquations</span>, <span class="bu">DataFrames</span></span>
@@ -310,11 +310,11 @@ div.csl-indent {
 </div>
 <div class="page-columns page-full"><p>Nous utiliserons ici le package de visualisation graphique <code>Makie.jl</code><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> à la place de <code>Plots.jl</code>. <code>Makie.jl</code> permet un contrôle très approfondi du graphique. Commençons par tracer les dynamiques contre le temps dans une figure simple.</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;entièrement écrit en <code>Julia</code>, présenté comme “<a href="https://medium.com/coffee-in-a-klein-bottle/visualizing-data-with-julia-using-makie-7685d7850f06">le futur</a>” de la représentation graphique avec <code>Julia</code>. Une bonne <a href="https://juliadatascience.io/DataVisualizationMakie">introduction à Makie</a>.</p></li></div></div>
 <p>Nous utiliserons le backend <code>CairoMakie</code> pour la visualisation en 2D.</p>
-<div class="cell" data-execution_count="3">
+<div class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CairoMakie</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Un peu comme <code>Matplotlib</code> en <code>Python</code>, <code>Makie</code> définit un triplet <code>FigureAxisPlot</code> : la figure est le conteneur de (éventuellement) plusieurs systèmes d’axes qui contiennent chacun un ou plusieurs graphique.</p>
-<div class="cell" data-execution_count="4">
+<div class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># on crée la figure</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>fig1 <span class="op">=</span> <span class="fu">Figure</span>(backgroundcolor <span class="op">=</span> <span class="op">:</span>transparent,</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>              resolution <span class="op">=</span> (<span class="fl">600</span>,<span class="fl">400</span>),   <span class="co"># size</span></span>
@@ -356,10 +356,10 @@ div.csl-indent {
 <section id="dynamiques-et-plan-de-phase" class="level3">
 <h3 class="anchored" data-anchor-id="dynamiques-et-plan-de-phase">Dynamiques et plan de phase</h3>
 <p>Nous allons maintenant tracer un graphique plus complexe comprenant en colonne de droite les dynamiques des proies et des prédateurs sur deux lignes et en colonne de gauche le plan de phase. préparons la figure et les systèmes d’axes.</p>
-<div class="cell" data-execution_count="5">
+<div class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># figure</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>fig2 <span class="op">=</span> <span class="fu">Figure</span>(backgroundcolor <span class="op">=</span> <span class="op">:</span>transparent,</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>              resolution <span class="op">=</span> (<span class="fl">800</span>,<span class="fl">500</span>),   <span class="co"># size</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>              size <span class="op">=</span> (<span class="fl">800</span>,<span class="fl">500</span>),   <span class="co"># size</span></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>              fontsize <span class="op">=</span> <span class="fl">20</span>,</span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>              font <span class="op">=</span> <span class="st">"CMU Serif"</span>)  </span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
@@ -390,7 +390,7 @@ div.csl-indent {
 </div>
 </div>
 <p>On rajoute les dynamiques.</p>
-<div class="cell" data-execution_count="6">
+<div class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lines!</span>(ax21, sol_rma.time, sol_rma.x,</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>       color <span class="op">=</span> <span class="fu">Cycled</span>(<span class="fl">1</span>),  <span class="co"># pick color 1 in the colorcycle</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>       linewidth <span class="op">=</span> <span class="fl">2</span>,</span>
@@ -413,7 +413,7 @@ div.csl-indent {
 </div>
 </div>
 <p>Passons maintenant au plan de phase.</p>
-<div class="cell" data-execution_count="7">
+<div class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># trajectoire</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines!</span>(ax23, sol_rma.x, sol_rma.y,</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>       color <span class="op">=</span> <span class="fu">Cycled</span>(<span class="fl">1</span>),</span>
@@ -511,7 +511,7 @@ div.csl-indent {
 <section id="equilibres" class="level4">
 <h4 class="anchored" data-anchor-id="equilibres">Equilibres</h4>
 <p>Nous faisons une boucle sur les valeurs de <span class="math inline">K</span> et calculons les équilibres.</p>
-<div class="cell" data-execution_count="8">
+<div class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>K_step <span class="op">=</span> <span class="fl">0.1</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># before transcritical</span></span>
@@ -529,7 +529,7 @@ div.csl-indent {
 <span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>y_co3 <span class="op">=</span> [r<span class="op">/</span><span class="fu">c*</span>(h<span class="op">+</span>m<span class="op">*</span>h<span class="op">/</span>(b<span class="op">-</span>m))<span class="fu">*</span>(<span class="fl">1</span><span class="op">-</span>m<span class="op">*</span>h<span class="op">/</span>(b<span class="op">-</span>m)<span class="op">/</span>K_p) for K_p <span class="kw">in</span> K_plot3]; <span class="co"># may have broadcasted</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Et nous commençons le tracé de la figure :</p>
-<div class="cell" data-execution_count="9">
+<div class="cell" data-execution_count="8">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fig3 <span class="op">=</span> <span class="fu">Figure</span>(backgroundcolor <span class="op">=</span> <span class="op">:</span>transparent,</span>
@@ -578,7 +578,7 @@ div.csl-indent {
 <section id="cycle-limite" class="level4 page-columns page-full">
 <h4 class="anchored" data-anchor-id="cycle-limite">Cycle limite</h4>
 <div class="page-columns page-full"><p>Pour estimer le cycle limite pour chaque la valeur de <span class="math inline">K</span> nous allons simuler le modèle pendant un transitoire assez long, puis repartir de cette valeur de l’état, simuler un cycle et récupérer les extremas pour les tracer. Nous utilisons une méthode basée sur <code>remake</code> pour modifier le problème d’intégration<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>.</p><div class="no-row-height column-margin column-container"><li id="fn2"><p><sup>2</sup>&nbsp;voir aussi l’<a href="./annexe_integrator.html">annexe</a></p></li></div></div>
-<div class="cell" data-execution_count="10">
+<div class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># transient integration time</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>t_trans <span class="op">=</span> (<span class="fl">0.0</span>, <span class="fl">8000</span>.)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -587,7 +587,7 @@ div.csl-indent {
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>y_cmin <span class="op">=</span> <span class="fu">zero</span>(K_plot3)</span>
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>y_cmax <span class="op">=</span> <span class="fu">zero</span>(K_plot3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="11">
+<div class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>rma_pbe <span class="op">=</span> <span class="fu">ODEProblem</span>(rma, etat0, t_trans, par_rma)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># estimate limit cycle through loop on K </span></span>
@@ -623,7 +623,7 @@ div.csl-indent {
 <section id="diagramme-de-bifurcations-final" class="level4">
 <h4 class="anchored" data-anchor-id="diagramme-de-bifurcations-final">Diagramme de bifurcations final</h4>
 <p>Finalement, on inclut les branches calculées dans le diagramme de bifurcations.</p>
-<div class="cell" data-execution_count="12">
+<div class="cell" data-execution_count="11">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lines!</span>(ax31, K_plot3, y_cmin,</span>
@@ -1035,7 +1035,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb12-83"><a href="#cb12-83" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Ma première figure avec `Makie.jl` </span></span>
 <span id="cb12-84"><a href="#cb12-84" aria-hidden="true" tabindex="-1"></a><span class="co"># on crée la figure</span></span>
 <span id="cb12-85"><a href="#cb12-85" aria-hidden="true" tabindex="-1"></a><span class="ot">fig1 = Figure</span><span class="ch">(</span><span class="ot">backgroundcolor = :transparent,</span></span>
-<span id="cb12-86"><a href="#cb12-86" aria-hidden="true" tabindex="-1"></a><span class="ot">              resolution = </span><span class="ch">(</span><span class="ot">600,400</span><span class="ch">)</span><span class="ot">,</span><span class="co">   # size</span></span>
+<span id="cb12-86"><a href="#cb12-86" aria-hidden="true" tabindex="-1"></a><span class="ot">              size = </span><span class="ch">(</span><span class="ot">600,400</span><span class="ch">)</span><span class="ot">,</span><span class="co">   # size</span></span>
 <span id="cb12-87"><a href="#cb12-87" aria-hidden="true" tabindex="-1"></a><span class="ot">              fontsize = 18</span><span class="ch">)</span><span class="ot">  </span></span>
 <span id="cb12-88"><a href="#cb12-88" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-89"><a href="#cb12-89" aria-hidden="true" tabindex="-1"></a><span class="co"># on crée un système d'axes en position [1,1] dans la figure</span></span>
@@ -1071,7 +1071,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb12-121"><a href="#cb12-121" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
 <span id="cb12-122"><a href="#cb12-122" aria-hidden="true" tabindex="-1"></a><span class="co"># figure</span></span>
 <span id="cb12-123"><a href="#cb12-123" aria-hidden="true" tabindex="-1"></a><span class="ot">fig2 = Figure</span><span class="ch">(</span><span class="ot">backgroundcolor = :transparent,</span></span>
-<span id="cb12-124"><a href="#cb12-124" aria-hidden="true" tabindex="-1"></a><span class="ot">              resolution = </span><span class="ch">(</span><span class="ot">800,500</span><span class="ch">)</span><span class="ot">,</span><span class="co">   # size</span></span>
+<span id="cb12-124"><a href="#cb12-124" aria-hidden="true" tabindex="-1"></a><span class="ot">              size = </span><span class="ch">(</span><span class="ot">800,500</span><span class="ch">)</span><span class="ot">,</span><span class="co">   # size</span></span>
 <span id="cb12-125"><a href="#cb12-125" aria-hidden="true" tabindex="-1"></a><span class="ot">              fontsize = 20,</span></span>
 <span id="cb12-126"><a href="#cb12-126" aria-hidden="true" tabindex="-1"></a><span class="ot">              font = "CMU Serif"</span><span class="ch">)</span><span class="ot">  </span></span>
 <span id="cb12-127"><a href="#cb12-127" aria-hidden="true" tabindex="-1"></a></span>
@@ -1244,7 +1244,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb12-302"><a href="#cb12-302" aria-hidden="true" tabindex="-1"></a><span class="ss">#| code-fold: true</span></span>
 <span id="cb12-303"><a href="#cb12-303" aria-hidden="true" tabindex="-1"></a><span class="ss">#| output: true </span></span>
 <span id="cb12-304"><a href="#cb12-304" aria-hidden="true" tabindex="-1"></a><span class="ss">fig3 = Figure(backgroundcolor = :transparent,</span></span>
-<span id="cb12-305"><a href="#cb12-305" aria-hidden="true" tabindex="-1"></a><span class="ss">              resolution = (600,400),   # size</span></span>
+<span id="cb12-305"><a href="#cb12-305" aria-hidden="true" tabindex="-1"></a><span class="ss">              size = (600,400),   # size</span></span>
 <span id="cb12-306"><a href="#cb12-306" aria-hidden="true" tabindex="-1"></a><span class="ss">              fontsize = 18)  </span></span>
 <span id="cb12-307"><a href="#cb12-307" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-308"><a href="#cb12-308" aria-hidden="true" tabindex="-1"></a><span class="ss"># on crée un système d</span><span class="ot">'</span>axes en position [<span class="dv">1</span>,<span class="dv">1</span>] dans la figure</span>

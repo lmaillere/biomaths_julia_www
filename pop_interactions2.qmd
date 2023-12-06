@@ -77,7 +77,7 @@ Un peu comme `Matplotlib` en `Python`, `Makie` définit un triplet `FigureAxisPl
 #| fig-cap: Ma première figure avec `Makie.jl` 
 # on crée la figure
 fig1 = Figure(backgroundcolor = :transparent,
-              resolution = (600,400),   # size
+              size = (600,400),   # size
               fontsize = 18)  
 
 # on crée un système d'axes en position [1,1] dans la figure
@@ -113,7 +113,7 @@ Nous allons maintenant tracer un graphique plus complexe comprenant en colonne d
 #| output: true
 # figure
 fig2 = Figure(backgroundcolor = :transparent,
-              resolution = (800,500),   # size
+              size = (800,500),   # size
               fontsize = 20,
               font = "CMU Serif")  
 
@@ -286,7 +286,7 @@ Et nous commençons le tracé de la figure :
 #| code-fold: true
 #| output: true 
 fig3 = Figure(backgroundcolor = :transparent,
-              resolution = (600,400),   # size
+              size = (600,400),   # size
               fontsize = 18)  
 
 # on crée un système d'axes en position [1,1] dans la figure
