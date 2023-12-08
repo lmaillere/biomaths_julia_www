@@ -64,6 +64,6 @@ julia> using Pluto  # hit backspace first to exit package mode
 ```
 \
 
-Enfin, une [extension `Julia`](https://www.julia-vscode.org/docs/stable/setup/) est disponible pour VScode/VScodium, un environnement de développement que je vous conseille.
+Enfin, une [extension Julia](https://www.julia-vscode.org/docs/stable/setup/) est disponible pour VScode/VScodium, un environnement de développement que je vous conseille.
 
 [Allons-y !](pop_isolees.qmd)
