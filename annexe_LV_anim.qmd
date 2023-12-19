@@ -4,5 +4,26 @@ title: "Graphiques animés avec `Makie.jl`"
 
 \
 
-Nous reprenons le modèle de Lotka Volterra, et testons les capacités de création de graphiques animés avec `Makie.jl`^[Il est aussi possible de créér sur le même modèle des graphiques interactifs]. Ce document est largement inspiré par l'excellent [tutoriel](https://www.youtube.com/watch?v=L-gyDvhjzGQ) sur le double pendule chaotique par G. Datseris. 
+Nous reprenons le modèle de Lotka Volterra, et testons les capacités de création de graphiques animés avec `Makie.jl`^[Il est aussi possible de créér sur le même modèle des [graphiques interactifs](https://gist.github.com/Datseris/4b9d25a3ddb3936d3b83d3037f8188dd)]. Ce document est largement inspiré par l'excellent [tutoriel](https://www.youtube.com/watch?v=L-gyDvhjzGQ) sur le double pendule chaotique par G. Datseris. 
+
+## Trajectoire animée en 2D
+
+Le principe tire partie des conteneurs `Observable`, qui sont des conteneurs mutables que l'on peut donc modifier et dont on peut surveiller l'action de modification. Lorsqu'un `Observable` passé à `Makie.jl` est modifié, ce dernier le prend en compte et met à jour le graphique correspondant automatiquement. Cela fonctionne particulièrement bien avec le backend `GL`, qui depuis un script ou un notebook ouvre une fenetre graphique qui se met à jour automatiquement. Sur cette page, il nous faut réafficher la figure.
+
+Prenons un exemple, sur une simple figure, on définit un `Observable` random puis on le trace:
+```{julia}
+#| output: true
+using GLMakie
+
+x = 1:4
+y = Observable(rand(4))
+fig, ax = lines(x, y)
+```
+
+Ensuite on réassigne la valeur de l'observable^[notez la syntaxe `y[]=` qui met à jour le contenu de l'obervable et informe de la mise à jour] et on réaffiche
+```{julia}
+#| output: true
+y[] = rand(4)
+display(fig) 
+```
 

@@ -264,5 +264,12 @@
     "title": "Graphiques animés avec Makie.jl",
     "section": "",
     "text": "Nous reprenons le modèle de Lotka Volterra, et testons les capacités de création de graphiques animés avec Makie.jl1. Ce document est largement inspiré par l’excellent tutoriel sur le double pendule chaotique par G. Datseris.1 Il est aussi possible de créér sur le même modèle des graphiques interactifs\n\n\n\n\n\n\nReusehttps://creativecommons.org/licenses/by-nc/4.0/"
+  },
+  {
+    "objectID": "annexe_LV_anim.html#trajectoire-animée-en-2d",
+    "href": "annexe_LV_anim.html#trajectoire-animée-en-2d",
+    "title": "Graphiques animés avec Makie.jl",
+    "section": "Trajectoire animée en 2D",
+    "text": "Trajectoire animée en 2D\nLe principe tire partie des conteneurs Observable, qui sont des conteneurs mutables que l’on peut donc modifier et dont on peut surveiller l’action de modification. Lorsqu’un Observable passé à Makie.jl est modifié, ce dernier le prend en compte et met à jour le graphique correspondant automatiquement. Cela fonctionne particulièrement bien avec le backend GL, qui depuis un script ou un notebook ouvre une fenetre graphique qui se met à jour automatiquement. Sur cette page, il nous faut réafficher la figure.\nPrenons un exemple, sur une simple figure, on définit un Observable random puis on le trace:\n\nusing GLMakie\n\nx = 1:4\ny = Observable(rand(4))\nfig, ax = lines(x, y)\n\n\n\n\nEnsuite on réassigne la valeur de l’observable2 et on réaffiche2 notez la syntaxe y[]= qui met à jour le contenu de l’obervable et informe de la mise à jour\n\ny[] = rand(4)\ndisplay(fig) \n\n\n\n\nCairoMakie.Screen{IMAGE}"
   }
 ]

@@ -182,7 +182,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#trajectoire-animée-en-2d" id="toc-trajectoire-animée-en-2d" class="nav-link active" data-scroll-target="#trajectoire-animée-en-2d">Trajectoire animée en 2D</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/lmaillere/biomaths_www/edit/main/annexe_LV_anim.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/lmaillere/biomaths_www/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content page-columns page-full" id="quarto-document-content">
@@ -206,11 +212,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <p><br>
 </p>
-<div class="page-columns page-full"><p>Nous reprenons le modèle de Lotka Volterra, et testons les capacités de création de graphiques animés avec <code>Makie.jl</code><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Ce document est largement inspiré par l’excellent <a href="https://www.youtube.com/watch?v=L-gyDvhjzGQ">tutoriel</a> sur le double pendule chaotique par G. Datseris.</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;Il est aussi possible de créér sur le même modèle des graphiques interactifs</p></li></div></div>
+<div class="page-columns page-full"><p>Nous reprenons le modèle de Lotka Volterra, et testons les capacités de création de graphiques animés avec <code>Makie.jl</code><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Ce document est largement inspiré par l’excellent <a href="https://www.youtube.com/watch?v=L-gyDvhjzGQ">tutoriel</a> sur le double pendule chaotique par G. Datseris.</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;Il est aussi possible de créér sur le même modèle des <a href="https://gist.github.com/Datseris/4b9d25a3ddb3936d3b83d3037f8188dd">graphiques interactifs</a></p></li></div></div>
+<section id="trajectoire-animée-en-2d" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="trajectoire-animée-en-2d">Trajectoire animée en 2D</h2>
+<p>Le principe tire partie des conteneurs <code>Observable</code>, qui sont des conteneurs mutables que l’on peut donc modifier et dont on peut surveiller l’action de modification. Lorsqu’un <code>Observable</code> passé à <code>Makie.jl</code> est modifié, ce dernier le prend en compte et met à jour le graphique correspondant automatiquement. Cela fonctionne particulièrement bien avec le backend <code>GL</code>, qui depuis un script ou un notebook ouvre une fenetre graphique qui se met à jour automatiquement. Sur cette page, il nous faut réafficher la figure.</p>
+<p>Prenons un exemple, sur une simple figure, on définit un <code>Observable</code> random puis on le trace:</p>
+<div class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">GLMakie</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> <span class="fu">Observable</span>(<span class="fu">rand</span>(<span class="fl">4</span>))</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> <span class="fu">lines</span>(x, y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<p><img src="annexe_LV_anim_files/figure-html/cell-2-output-1.svg" class="img-fluid"></p>
+</div>
+</div>
+<div class="page-columns page-full"><p>Ensuite on réassigne la valeur de l’observable<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> et on réaffiche</p><div class="no-row-height column-margin column-container"><li id="fn2"><p><sup>2</sup>&nbsp;notez la syntaxe <code>y[]=</code> qui met à jour le contenu de l’obervable et informe de la mise à jour</p></li></div></div>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>y[] <span class="op">=</span> <span class="fu">rand</span>(<span class="fl">4</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">display</span>(fig) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="annexe_LV_anim_files/figure-html/cell-3-output-1.svg" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<pre><code>CairoMakie.Screen{IMAGE}</code></pre>
+</div>
+</div>
 
 
 <!-- -->
 
+</section>
 
 
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">https://creativecommons.org/licenses/by-nc/4.0/</a></div></div></section></div></main> <!-- /main -->
@@ -498,13 +530,35 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Graphiques animés avec `Makie.jl`"</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>\</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>Nous reprenons le modèle de Lotka Volterra, et testons les capacités de création de graphiques animés avec <span class="in">`Makie.jl`</span>^<span class="co">[</span><span class="ot">Il est aussi possible de créér sur le même modèle des graphiques interactifs</span><span class="co">]</span>. Ce document est largement inspiré par l'excellent <span class="co">[</span><span class="ot">tutoriel</span><span class="co">](https://www.youtube.com/watch?v=L-gyDvhjzGQ)</span> sur le double pendule chaotique par G. Datseris. </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb4" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Graphiques animés avec `Makie.jl`"</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>\</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>Nous reprenons le modèle de Lotka Volterra, et testons les capacités de création de graphiques animés avec <span class="in">`Makie.jl`</span>^<span class="co">[</span><span class="ot">Il est aussi possible de créér sur le même modèle des [graphiques interactifs](https://gist.github.com/Datseris/4b9d25a3ddb3936d3b83d3037f8188dd)</span><span class="co">]</span>. Ce document est largement inspiré par l'excellent <span class="co">[</span><span class="ot">tutoriel</span><span class="co">](https://www.youtube.com/watch?v=L-gyDvhjzGQ)</span> sur le double pendule chaotique par G. Datseris. </span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="fu">## Trajectoire animée en 2D</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>Le principe tire partie des conteneurs <span class="in">`Observable`</span>, qui sont des conteneurs mutables que l'on peut donc modifier et dont on peut surveiller l'action de modification. Lorsqu'un <span class="in">`Observable`</span> passé à <span class="in">`Makie.jl`</span> est modifié, ce dernier le prend en compte et met à jour le graphique correspondant automatiquement. Cela fonctionne particulièrement bien avec le backend <span class="in">`GL`</span>, qui depuis un script ou un notebook ouvre une fenetre graphique qui se met à jour automatiquement. Sur cette page, il nous faut réafficher la figure.</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>Prenons un exemple, sur une simple figure, on définit un <span class="in">`Observable`</span> random puis on le trace:</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>using GLMakie</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>x = <span class="dv">1</span>:<span class="dv">4</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="ot">y </span>= Observable(<span class="fu">rand</span>(<span class="dv">4</span>))</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>fig, ax = lines(x, y)</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>Ensuite on réassigne la valeur de l'observable^<span class="co">[</span><span class="ot">notez la syntaxe `y[]=` qui met à jour le contenu de l'obervable et informe de la mise à jour</span><span class="co">]</span> et on réaffiche</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a><span class="ot">y</span>[] = <span class="fu">rand</span>(<span class="dv">4</span>)</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>display(fig) </span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">
@@ -512,7 +566,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     <div class="nav-footer-left">
       &nbsp;
     </div>   
-    <div class="nav-footer-center">Copyright 2023, Ludovic Mailleret<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/lmaillere/biomaths_www/edit/main/annexe_LV_anim.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/lmaillere/biomaths_www/issues/new" class="toc-action">Report an issue</a></p></div></div></div>
+    <div class="nav-footer-center">Copyright 2023, Ludovic Mailleret</div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
