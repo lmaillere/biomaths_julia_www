@@ -1,0 +1,8 @@
+---
+title: "Graphiques animés avec `Makie.jl`"
+---
+
+\
+
+Nous reprenons le modèle de Lotka Volterra, et testons les capacités de création de graphiques animés avec `Makie.jl`^[Il est aussi possible de créér sur le même modèle des graphiques interactifs]. Ce document est largement inspiré par l'excellent [tutoriel](https://www.youtube.com/watch?v=L-gyDvhjzGQ) sur le double pendule chaotique par G. Datseris. 
+
