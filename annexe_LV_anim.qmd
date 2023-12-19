@@ -8,6 +8,8 @@ Nous reprenons le modèle de Lotka Volterra, et testons les capacités de créat
 
 ## Trajectoire animée en 2D
 
+### Observables
+
 Le principe tire partie des conteneurs `Observable`, qui sont des conteneurs mutables que l'on peut donc modifier et dont on peut surveiller l'action de modification. Lorsqu'un `Observable` passé à `Makie.jl` est modifié, ce dernier le prend en compte et met à jour le graphique correspondant automatiquement. Cela fonctionne particulièrement bien avec le backend `GL`, qui depuis un script ou un notebook ouvre une fenetre graphique qui se met à jour automatiquement. Sur cette page, il nous faut réafficher la figure.
 
 Prenons un exemple, sur une simple figure, on définit un `Observable` random puis on le trace:
@@ -17,13 +19,20 @@ using GLMakie
 
 x = 1:4
 y = Observable(rand(4))
-fig, ax = lines(x, y)
+fig, ax = lines(x, y) 
 ```
 
-Ensuite on réassigne la valeur de l'observable^[notez la syntaxe `y[]=` qui met à jour le contenu de l'obervable et informe de la mise à jour] et on réaffiche
+Ensuite on réassigne la valeur de l'observable^[notez la syntaxe `y[]=` qui met à jour le contenu de l'observable et informe de la mise à jour] et on réaffiche la figure qui s'est mise à jour automatiquement, sans retracer la `line`.
 ```{julia}
 #| output: true
 y[] = rand(4)
-display(fig) 
+fig
 ```
+
+Il s'agit d'exploiter ce principe pour créér un graphique animé.
+
+### Trajectoire de Lotka Volterra
+
+Nous allons représenter la trajectoire au cours du temps comme un point mobile dans l'espace d'état, avec une "queue" qui représente les valeurs de l'état dans le passé proche.
+
 
