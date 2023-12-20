@@ -190,6 +190,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#observables" id="toc-observables" class="nav-link" data-scroll-target="#observables">Observables</a></li>
   <li><a href="#trajectoire-de-lotka-volterra" id="toc-trajectoire-de-lotka-volterra" class="nav-link" data-scroll-target="#trajectoire-de-lotka-volterra">Trajectoire de Lotka Volterra</a></li>
+  <li><a href="#image-animée-pour-site" id="toc-image-animée-pour-site" class="nav-link" data-scroll-target="#image-animée-pour-site">Image animée pour site</a></li>
   </ul></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/lmaillere/biomaths_www/edit/main/annexe_LV_anim.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/lmaillere/biomaths_www/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
@@ -199,7 +200,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title">Graphiques animés avec <code>Makie.jl</code></h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<div class="quarto-title-block"><div><h1 class="title">Graphiques animés avec <code>Makie.jl</code></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
 </div>
 
 
@@ -223,29 +224,214 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="observables">Observables</h3>
 <p>Le principe tire partie des conteneurs <code>Observable</code>, qui sont des conteneurs mutables que l’on peut donc modifier et dont on peut surveiller l’action de modification. Lorsqu’un <code>Observable</code> passé à <code>Makie.jl</code> est modifié, ce dernier le prend en compte et met à jour le graphique correspondant automatiquement. Cela fonctionne particulièrement bien avec le backend <code>GL</code>, qui depuis un script ou un notebook ouvre une fenetre graphique qui se met à jour automatiquement. Sur cette page, il nous faut réafficher la figure.</p>
 <p>Prenons un exemple, sur une simple figure, on définit un <code>Observable</code> random puis on le trace:</p>
-<div class="cell" data-execution_count="2">
+<div class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">GLMakie</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> <span class="fu">Observable</span>(<span class="fu">rand</span>(<span class="fl">4</span>))</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> <span class="fu">lines</span>(x, y) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="18">
+<div class="cell-output cell-output-display" data-execution_count="98">
 <p><img src="annexe_LV_anim_files/figure-html/cell-2-output-1.svg" class="img-fluid"></p>
 </div>
 </div>
-<div class="page-columns page-full"><p>Ensuite on réassigne la valeur de l’observable<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> et on réaffiche la figure qui s’est mise à jour toute automatiquement, sans retracer la <code>line</code>.</p><div class="no-row-height column-margin column-container"><li id="fn2"><p><sup>2</sup>&nbsp;notez la syntaxe <code>y[]=</code> qui met à jour le contenu de l’observable et informe de la mise à jour</p></li></div></div>
-<div class="cell" data-execution_count="3">
+<div class="page-columns page-full"><p>Ensuite on réassigne la valeur de l’observable<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> et on réaffiche la figure qui s’est mise à jour automatiquement, sans retracer la <code>line</code>.</p><div class="no-row-height column-margin column-container"><li id="fn2"><p><sup>2</sup>&nbsp;notez la syntaxe <code>y[]=</code> qui assigne le contenu de l’observable et informe le système de la mise à jour de l’observable</p></li></div></div>
+<div class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>y[] <span class="op">=</span> <span class="fu">rand</span>(<span class="fl">4</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>fig</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="19">
+<div class="cell-output cell-output-display" data-execution_count="99">
 <p><img src="annexe_LV_anim_files/figure-html/cell-3-output-1.svg" class="img-fluid"></p>
 </div>
 </div>
 <p>Il s’agit d’exploiter ce principe pour créér un graphique animé.</p>
 </section>
-<section id="trajectoire-de-lotka-volterra" class="level3">
+<section id="trajectoire-de-lotka-volterra" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="trajectoire-de-lotka-volterra">Trajectoire de Lotka Volterra</h3>
 <p>Nous allons représenter la trajectoire au cours du temps comme un point mobile dans l’espace d’état, avec une “queue” qui représente les valeurs de l’état dans le passé proche.</p>
+<p>On commence par définir les fonctions et paramètres pour simuler le modèle et créer un problème ODE <code>prob_lv</code>.</p>
+<div class="cell" data-execution_count="3">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">DifferentialEquations</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># conditions initiales</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>x0 <span class="op">=</span> <span class="fl">1.0</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>y0 <span class="op">=</span> <span class="fl">1.95</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>etat0 <span class="op">=</span> [x0, y0]</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># paramètres</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> <span class="fl">1.0</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> <span class="fl">1.0</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> <span class="fl">1.0</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> <span class="fl">1.0</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>par_lovo <span class="op">=</span> [r, c, b, m]</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co"># temps</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>tspan <span class="op">=</span> (<span class="fl">0.0</span>, <span class="fl">30.0</span>)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>tstep <span class="op">=</span> <span class="fl">.01</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co"># définition du modèle</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">lovo</span>(u, par, t)</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    r, c, b, m <span class="op">=</span> par</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    x, y <span class="op">=</span> u</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    dx <span class="op">=</span> r<span class="op">*</span>x <span class="op">-</span> c<span class="op">*</span>x<span class="op">*</span>y</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    dy <span class="op">=</span> b<span class="op">*</span>x<span class="op">*</span>y <span class="op">-</span> m<span class="op">*</span>y</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    [dx, dy]</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="co"># define ODE problem</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>prob_lv <span class="op">=</span> <span class="fu">ODEProblem</span>(lovo, etat0, tspan, par_lovo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="page-columns page-full"><p>Nous créons des observables pour l’état et pour la “queue” de simulation sous la forme d’objets de type <code>Point2f</code><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> (ou <code>CircularBuffer</code><a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> de <code>Point2f</code>) pour les passer à Makie.</p><div class="no-row-height column-margin column-container"><li id="fn3"><p><sup>3</sup>&nbsp;il s’agirait de la meilleure structure pour tracer des points en 2D pour Makie</p></li><li id="fn4"><p><sup>4</sup>&nbsp;vecteur de taille fixe qu’on remplit/vide avec <code>push!()</code></p></li></div></div>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># observable pour l'état</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>x, y <span class="op">=</span> etat0            </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>state_lv <span class="op">=</span> <span class="fu">Observable</span>(<span class="fu">Point2f</span>(x, y))     <span class="co"># initialisation</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># observable pour la queue</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">DataStructures</span>: CircularBuffer</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>tailsize <span class="op">=</span> <span class="fl">600</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>tail <span class="op">=</span> <span class="fu">CircularBuffer</span><span class="dt">{Point2f}</span>(tailsize)    <span class="co"># une queue de simulation </span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="fu">fill!</span>(tail, <span class="fu">Point2f</span>(x, y))      <span class="co"># que l'on initialize sur la condition initiale</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>tail <span class="op">=</span> <span class="fu">Observable</span>(tail)         <span class="co"># et que l'on transforme en Observable</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>L’animation repose sur une simulation de proche en proche, pour cela nous utilisons l’interface <code>integrator</code> de <code>DifferentialEquations.jl</code> et la fonction <code>step!(integrator)</code> qui calcule la solution au bout d’un pas de temps. Nous créons une fonction qui effectue ce calcul et met à jour les Observables état et queue (en place !).</p>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>integrator_lv <span class="op">=</span> <span class="fu">init</span>(prob_lv)    <span class="co"># interface integrator</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">step_lv!</span>(integrator, state_lv, tail)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">step!</span>(integrator, <span class="fl">0.01</span>,  <span class="cn">true</span>)   <span class="co"># calcule la solution a t+0.01, en place</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    x, y <span class="op">=</span> integrator.u              <span class="co"># assigne la solution à x et y</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    state_lv[] <span class="op">=</span> <span class="fu">Point2f</span>(x, y)        <span class="co"># met à jour l'Observable</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">push!</span>(tail[], <span class="fu">Point2f</span>(x,y))      <span class="co"># assigne la nouvelle valeur dans la queue, en place</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    tail[] <span class="op">=</span> tail[]                  <span class="co"># l'opération en place n'indique pas la mise à jour de l'Observable</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Il faut maintenant définir la figure en elle-même:</p>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> <span class="fu">Figure</span>()</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> <span class="fu">Axis</span>(fig[<span class="fl">1</span>, <span class="fl">1</span>], xticks <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">.5</span><span class="op">:</span><span class="fl">2</span>, yticks <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">.5</span><span class="op">:</span><span class="fl">2</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># champs de vecteur</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>scale <span class="op">=</span> <span class="fl">10</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>xrange <span class="op">=</span> <span class="fu">range</span>(<span class="fl">0</span>, <span class="fl">2.75</span>, length<span class="op">=</span><span class="fl">11</span>)  </span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>yrange <span class="op">=</span> <span class="fu">range</span>(<span class="fl">0</span>, <span class="fl">2.75</span>, length<span class="op">=</span><span class="fl">11</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>derx <span class="op">=</span> [<span class="fu">lovo</span>([x y], par_lovo, <span class="fl">0</span>)[<span class="fl">1</span>]<span class="op">/</span>scale for x <span class="kw">in</span> xrange, y <span class="kw">in</span> yrange]</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>dery <span class="op">=</span> [<span class="fu">lovo</span>([x y], par_lovo, <span class="fl">0</span>)[<span class="fl">2</span>]<span class="op">/</span>scale for x <span class="kw">in</span> xrange, y <span class="kw">in</span> yrange]</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="fu">arrows!</span>(ax, xrange, yrange, derx, dery, </span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        color <span class="op">=</span> <span class="op">:</span>lightgray, </span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        arrowsize <span class="op">=</span> <span class="fl">10</span>)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co"># plot of the state</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="fu">scatter!</span>(ax, state_lv, </span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>         marker <span class="op">=</span> <span class="op">:</span>circle, </span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>         strokewidth <span class="op">=</span> <span class="fl">2</span>, </span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>         strokecolor <span class="op">=</span> <span class="op">:</span>purple,</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>         color <span class="op">=</span> <span class="op">:</span>black,</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>         markersize <span class="op">=</span> <span class="fl">8</span>)</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="co"># equilibrium</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="fu">scatter!</span>(ax, m<span class="op">/</span>b, r<span class="op">/</span>c, marker <span class="op">=</span> <span class="op">:</span>star, color <span class="op">=</span> <span class="op">:</span>grey, markersize <span class="op">=</span> <span class="fl">14</span>)</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="co"># plot of the tail</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>col <span class="op">=</span> <span class="fu">to_color</span>(<span class="op">:</span>purple)</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>tailcol <span class="op">=</span> [<span class="fu">RGBAf</span>(col.r, col.g, col.b, (i<span class="op">/</span>tailsize)<span class="op">^</span><span class="fl">2</span>) for i <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>tailsize]</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a><span class="fu">lines!</span>(ax, tail, linewidth <span class="op">=</span> <span class="fl">3</span>, color <span class="op">=</span> tailcol)</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a><span class="co"># enluminures</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>ax.title <span class="op">=</span> <span class="st">"Lotka Volterra"</span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>ax.xlabel <span class="op">=</span> <span class="st">"Proies"</span></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>ax.ylabel <span class="op">=</span> <span class="st">"Prédateurs"</span></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a><span class="fu">xlims!</span>(ax, <span class="fl">0</span>, <span class="fl">2.25</span>)</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a><span class="fu">ylims!</span>(ax, <span class="fl">0</span>, <span class="fl">2.25</span>)</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>fig</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="103">
+<p><img src="annexe_LV_anim_files/figure-html/cell-7-output-1.svg" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># test the 2D plot </span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="kw">in</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">1000</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">step_lv!</span>(integrator_lv, state_lv, tail)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sleep</span>(<span class="fl">.001</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Depuis un script ou un notebook, la figure proposée par <code>GLMakie</code> devrait s’animer. Ici nous ne pouvons qu’afficher la dernière simulation :</p>
+<div class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fig</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="105">
+<p><img src="annexe_LV_anim_files/figure-html/cell-9-output-1.svg" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="image-animée-pour-site" class="level3">
+<h3 class="anchored" data-anchor-id="image-animée-pour-site">Image animée pour site</h3>
+<p>Il faut générer une image animée pour pouvoir visualiser l’animation sur cette page html.</p>
+<p>On peut commencer par réunir tout le code d’initialisation et de génération de figure dans une fonction, pour facilement réinitialiser:</p>
+<div class="cell" data-execution_count="9">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">init_anim_lv</span>(etat0)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Odeproblem, integrator</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    prob_lv <span class="op">=</span> <span class="fu">ODEProblem</span>(lovo, etat0, tspan, par_lovo)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    integrator_lv <span class="op">=</span> <span class="fu">init</span>(prob_lv)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    x, y <span class="op">=</span> etat0            </span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    state_lv <span class="op">=</span> <span class="fu">Observable</span>(<span class="fu">Point2f</span>(x, y))</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    tailsize <span class="op">=</span> <span class="fl">600</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    tail <span class="op">=</span> <span class="fu">CircularBuffer</span><span class="dt">{Point2f}</span>(tailsize)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fill!</span>(tail, <span class="fu">Point2f</span>(x, y))</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    tail <span class="op">=</span> <span class="fu">Observable</span>(tail)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    fig <span class="op">=</span> <span class="fu">Figure</span>()</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    ax <span class="op">=</span> <span class="fu">Axis</span>(fig[<span class="fl">1</span>, <span class="fl">1</span>], xticks <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">.5</span><span class="op">:</span><span class="fl">2</span>, yticks <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">.5</span><span class="op">:</span><span class="fl">2</span>)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    scale <span class="op">=</span> <span class="fl">10</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    xrange <span class="op">=</span> <span class="fu">range</span>(<span class="fl">0</span>, <span class="fl">2.75</span>, length<span class="op">=</span><span class="fl">11</span>)  </span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    yrange <span class="op">=</span> <span class="fu">range</span>(<span class="fl">0</span>, <span class="fl">2.75</span>, length<span class="op">=</span><span class="fl">11</span>)</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    derx <span class="op">=</span> [<span class="fu">lovo</span>([x y], par_lovo, <span class="fl">0</span>)[<span class="fl">1</span>]<span class="op">/</span>scale for x <span class="kw">in</span> xrange, y <span class="kw">in</span> yrange]</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    dery <span class="op">=</span> [<span class="fu">lovo</span>([x y], par_lovo, <span class="fl">0</span>)[<span class="fl">2</span>]<span class="op">/</span>scale for x <span class="kw">in</span> xrange, y <span class="kw">in</span> yrange]</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrows!</span>(ax, xrange, yrange, derx, dery, </span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>            color <span class="op">=</span> <span class="op">:</span>lightgray, </span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>            arrowsize <span class="op">=</span> <span class="fl">10</span>)</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scatter!</span>(ax, state_lv, </span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>            marker <span class="op">=</span> <span class="op">:</span>circle, </span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>            strokewidth <span class="op">=</span> <span class="fl">2</span>, </span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>            strokecolor <span class="op">=</span> <span class="op">:</span>purple,</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>            color <span class="op">=</span> <span class="op">:</span>black,</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>            markersize <span class="op">=</span> <span class="fl">8</span>)</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>    r, c, b, m <span class="op">=</span> par_lovo</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scatter!</span>(ax, m<span class="op">/</span>b, r<span class="op">/</span>c, marker <span class="op">=</span> <span class="op">:</span>star, color <span class="op">=</span> <span class="op">:</span>grey, markersize <span class="op">=</span> <span class="fl">14</span>)</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>    col <span class="op">=</span> <span class="fu">to_color</span>(<span class="op">:</span>purple)</span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>    tailcol <span class="op">=</span> [<span class="fu">RGBAf</span>(col.r, col.g, col.b, (i<span class="op">/</span>tailsize)<span class="op">^</span><span class="fl">2</span>) for i <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>tailsize]</span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lines!</span>(ax, tail, linewidth <span class="op">=</span> <span class="fl">3</span>, color <span class="op">=</span> tailcol)</span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>    ax.title <span class="op">=</span> <span class="st">"Lotka Volterra"</span></span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>    ax.xlabel <span class="op">=</span> <span class="st">"Proies"</span></span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>    ax.ylabel <span class="op">=</span> <span class="st">"Prédateurs"</span></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">xlims!</span>(ax, <span class="fl">0</span>, <span class="fl">2.25</span>)</span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ylims!</span>(ax, <span class="fl">0</span>, <span class="fl">2.25</span>)</span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> fig, integrator_lv, state_lv, tail</span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Nous générons la figure animée sous forme d’un gif.</p>
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>fig, integrator_lv, state_lv, tail <span class="op">=</span> <span class="fu">init_anim_lv</span>(etat0)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>frames <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">132</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">record</span>(fig, <span class="st">"lv.gif"</span>, frames; framerate <span class="op">=</span> <span class="fl">60</span>) <span class="cf">do</span> i</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> j <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>        <span class="fu">step_lv!</span>(integrator_lv, state_lv, tail)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Et finalement nous pouvons afficher la figure animée: <img src="lv.gif" class="img-fluid"></p>
 
 
 <!-- -->
@@ -539,43 +725,233 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb3" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Graphiques animés avec `Makie.jl`"</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>\</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>Nous reprenons le modèle de Lotka Volterra, et testons les capacités de création de graphiques animés avec <span class="in">`Makie.jl`</span>^<span class="co">[</span><span class="ot">Il est aussi possible de créér sur le même modèle des [graphiques interactifs](https://gist.github.com/Datseris/4b9d25a3ddb3936d3b83d3037f8188dd)</span><span class="co">]</span>. Ce document est largement inspiré par l'excellent <span class="co">[</span><span class="ot">tutoriel</span><span class="co">](https://www.youtube.com/watch?v=L-gyDvhjzGQ)</span> sur le double pendule chaotique par G. Datseris. </span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">## Trajectoire animée en 2D</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="fu">### Observables</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>Le principe tire partie des conteneurs <span class="in">`Observable`</span>, qui sont des conteneurs mutables que l'on peut donc modifier et dont on peut surveiller l'action de modification. Lorsqu'un <span class="in">`Observable`</span> passé à <span class="in">`Makie.jl`</span> est modifié, ce dernier le prend en compte et met à jour le graphique correspondant automatiquement. Cela fonctionne particulièrement bien avec le backend <span class="in">`GL`</span>, qui depuis un script ou un notebook ouvre une fenetre graphique qui se met à jour automatiquement. Sur cette page, il nous faut réafficher la figure.</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>Prenons un exemple, sur une simple figure, on définit un <span class="in">`Observable`</span> random puis on le trace:</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>using GLMakie</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>x = <span class="dv">1</span>:<span class="dv">4</span></span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="ot">y </span>= Observable(<span class="fu">rand</span>(<span class="dv">4</span>))</span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>fig, ax = lines(x, y) </span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>Ensuite on réassigne la valeur de l'observable^<span class="co">[</span><span class="ot">notez la syntaxe `y[]=` qui met à jour le contenu de l'observable et informe de la mise à jour</span><span class="co">]</span> et on réaffiche la figure qui s'est mise à jour toute automatiquement, sans retracer la <span class="in">`line`</span>.</span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="ot">y</span>[] = <span class="fu">rand</span>(<span class="dv">4</span>)</span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>fig</span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>Il s'agit d'exploiter ce principe pour créér un graphique animé.</span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a><span class="fu">### Trajectoire de Lotka Volterra</span></span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>Nous allons représenter la trajectoire au cours du temps comme un point mobile dans l'espace d'état, avec une "queue" qui représente les valeurs de l'état dans le passé proche.</span>
-<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a></span>
+<div class="sourceCode" id="cb11" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Graphiques animés avec `Makie.jl`"</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>\</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>Nous reprenons le modèle de Lotka Volterra, et testons les capacités de création de graphiques animés avec <span class="in">`Makie.jl`</span>^<span class="co">[</span><span class="ot">Il est aussi possible de créér sur le même modèle des [graphiques interactifs](https://gist.github.com/Datseris/4b9d25a3ddb3936d3b83d3037f8188dd)</span><span class="co">]</span>. Ce document est largement inspiré par l'excellent <span class="co">[</span><span class="ot">tutoriel</span><span class="co">](https://www.youtube.com/watch?v=L-gyDvhjzGQ)</span> sur le double pendule chaotique par G. Datseris. </span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="fu">## Trajectoire animée en 2D</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="fu">### Observables</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>Le principe tire partie des conteneurs <span class="in">`Observable`</span>, qui sont des conteneurs mutables que l'on peut donc modifier et dont on peut surveiller l'action de modification. Lorsqu'un <span class="in">`Observable`</span> passé à <span class="in">`Makie.jl`</span> est modifié, ce dernier le prend en compte et met à jour le graphique correspondant automatiquement. Cela fonctionne particulièrement bien avec le backend <span class="in">`GL`</span>, qui depuis un script ou un notebook ouvre une fenetre graphique qui se met à jour automatiquement. Sur cette page, il nous faut réafficher la figure.</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>Prenons un exemple, sur une simple figure, on définit un <span class="in">`Observable`</span> random puis on le trace:</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>using GLMakie</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>x = <span class="dv">1</span>:<span class="dv">4</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a><span class="ot">y </span>= Observable(<span class="fu">rand</span>(<span class="dv">4</span>))</span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>fig, ax = lines(x, y) </span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>Ensuite on réassigne la valeur de l'observable^<span class="co">[</span><span class="ot">notez la syntaxe `y[]=` qui assigne le contenu de l'observable et informe le système de la mise à jour de l'observable</span><span class="co">]</span> et on réaffiche la figure qui s'est mise à jour automatiquement, sans retracer la <span class="in">`line`</span>.</span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a><span class="ot">y</span>[] = <span class="fu">rand</span>(<span class="dv">4</span>)</span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>fig</span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>Il s'agit d'exploiter ce principe pour créér un graphique animé.</span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a><span class="fu">### Trajectoire de Lotka Volterra</span></span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a>Nous allons représenter la trajectoire au cours du temps comme un point mobile dans l'espace d'état, avec une "queue" qui représente les valeurs de l'état dans le passé proche.</span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a>On commence par définir les fonctions et paramètres pour simuler le modèle et créer un problème ODE <span class="in">`prob_lv`</span>.</span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-46"><a href="#cb11-46" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb11-47"><a href="#cb11-47" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb11-48"><a href="#cb11-48" aria-hidden="true" tabindex="-1"></a>using DifferentialEquations</span>
+<span id="cb11-49"><a href="#cb11-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-50"><a href="#cb11-50" aria-hidden="true" tabindex="-1"></a><span class="co"># conditions initiales</span></span>
+<span id="cb11-51"><a href="#cb11-51" aria-hidden="true" tabindex="-1"></a>x0 = <span class="fl">1.0</span></span>
+<span id="cb11-52"><a href="#cb11-52" aria-hidden="true" tabindex="-1"></a>y0 = <span class="fl">1.95</span></span>
+<span id="cb11-53"><a href="#cb11-53" aria-hidden="true" tabindex="-1"></a>etat0 = [x0, y0]</span>
+<span id="cb11-54"><a href="#cb11-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-55"><a href="#cb11-55" aria-hidden="true" tabindex="-1"></a><span class="co"># paramètres</span></span>
+<span id="cb11-56"><a href="#cb11-56" aria-hidden="true" tabindex="-1"></a>r = <span class="fl">1.0</span></span>
+<span id="cb11-57"><a href="#cb11-57" aria-hidden="true" tabindex="-1"></a>c = <span class="fl">1.0</span></span>
+<span id="cb11-58"><a href="#cb11-58" aria-hidden="true" tabindex="-1"></a>b = <span class="fl">1.0</span></span>
+<span id="cb11-59"><a href="#cb11-59" aria-hidden="true" tabindex="-1"></a><span class="ot">m = 1.0</span></span>
+<span id="cb11-60"><a href="#cb11-60" aria-hidden="true" tabindex="-1"></a><span class="ot">par_lovo =</span> [r, c, b, m]</span>
+<span id="cb11-61"><a href="#cb11-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-62"><a href="#cb11-62" aria-hidden="true" tabindex="-1"></a><span class="co"># temps</span></span>
+<span id="cb11-63"><a href="#cb11-63" aria-hidden="true" tabindex="-1"></a>tspan = (<span class="fl">0.0</span>, <span class="fl">30.0</span>)</span>
+<span id="cb11-64"><a href="#cb11-64" aria-hidden="true" tabindex="-1"></a>tstep = .<span class="bn">01</span></span>
+<span id="cb11-65"><a href="#cb11-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-66"><a href="#cb11-66" aria-hidden="true" tabindex="-1"></a><span class="co"># définition du modèle</span></span>
+<span id="cb11-67"><a href="#cb11-67" aria-hidden="true" tabindex="-1"></a>function lovo(u, par, t)</span>
+<span id="cb11-68"><a href="#cb11-68" aria-hidden="true" tabindex="-1"></a>    r, c, b, <span class="ot">m = par</span></span>
+<span id="cb11-69"><a href="#cb11-69" aria-hidden="true" tabindex="-1"></a><span class="ot">    x, y =</span> u</span>
+<span id="cb11-70"><a href="#cb11-70" aria-hidden="true" tabindex="-1"></a>    dx = r<span class="dt">*x</span> - c<span class="dt">*x*y</span></span>
+<span id="cb11-71"><a href="#cb11-71" aria-hidden="true" tabindex="-1"></a>    dy = b<span class="dt">*x*y</span> - <span class="ot">m*y</span></span>
+<span id="cb11-72"><a href="#cb11-72" aria-hidden="true" tabindex="-1"></a><span class="ot">    </span><span class="ch">[</span><span class="bn">dx, dy</span><span class="ch">]</span></span>
+<span id="cb11-73"><a href="#cb11-73" aria-hidden="true" tabindex="-1"></a><span class="ot">end</span></span>
+<span id="cb11-74"><a href="#cb11-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-75"><a href="#cb11-75" aria-hidden="true" tabindex="-1"></a><span class="co"># define ODE problem</span></span>
+<span id="cb11-76"><a href="#cb11-76" aria-hidden="true" tabindex="-1"></a><span class="ot">prob_lv = ODEProblem</span><span class="ch">(</span><span class="ot">lovo, etat0, tspan, par_lovo</span><span class="ch">)</span></span>
+<span id="cb11-77"><a href="#cb11-77" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
+<span id="cb11-78"><a href="#cb11-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-79"><a href="#cb11-79" aria-hidden="true" tabindex="-1"></a><span class="ot">Nous créons des observables pour l'état et pour la "queue" de simulation sous la forme d'objets de type `Point2f`</span><span class="ch">^[</span><span class="bn">il s'agirait de la meilleure structure pour tracer des points en 2D pour Makie</span><span class="ch">]</span><span class="ot"> </span><span class="ch">(</span><span class="ot">ou `CircularBuffer`</span><span class="ch">^[</span><span class="bn">vecteur de taille fixe qu'on remplit/vide avec `push!()`</span><span class="ch">]</span><span class="ot"> de `Point2f`</span><span class="ch">)</span><span class="ot"> pour les passer à Makie.</span></span>
+<span id="cb11-80"><a href="#cb11-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-83"><a href="#cb11-83" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb11-84"><a href="#cb11-84" aria-hidden="true" tabindex="-1"></a><span class="co"># observable pour l'état</span></span>
+<span id="cb11-85"><a href="#cb11-85" aria-hidden="true" tabindex="-1"></a><span class="ot">x, y = etat0            </span></span>
+<span id="cb11-86"><a href="#cb11-86" aria-hidden="true" tabindex="-1"></a><span class="ot">state_lv = Observable</span><span class="ch">(</span><span class="ot">Point2f</span><span class="ch">(</span><span class="ot">x, y</span><span class="ch">))</span><span class="co">     # initialisation</span></span>
+<span id="cb11-87"><a href="#cb11-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-88"><a href="#cb11-88" aria-hidden="true" tabindex="-1"></a><span class="co"># observable pour la queue</span></span>
+<span id="cb11-89"><a href="#cb11-89" aria-hidden="true" tabindex="-1"></a><span class="ot">using DataStructures: CircularBuffer</span></span>
+<span id="cb11-90"><a href="#cb11-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-91"><a href="#cb11-91" aria-hidden="true" tabindex="-1"></a><span class="ot">tailsize = 600</span></span>
+<span id="cb11-92"><a href="#cb11-92" aria-hidden="true" tabindex="-1"></a><span class="ot">tail = CircularBuffer{Point2f}</span><span class="ch">(</span><span class="ot">tailsize</span><span class="ch">)</span><span class="co">    # une queue de simulation </span></span>
+<span id="cb11-93"><a href="#cb11-93" aria-hidden="true" tabindex="-1"></a><span class="ot">fill!</span><span class="ch">(</span><span class="ot">tail, Point2f</span><span class="ch">(</span><span class="ot">x, y</span><span class="ch">))</span><span class="co">      # que l'on initialize sur la condition initiale</span></span>
+<span id="cb11-94"><a href="#cb11-94" aria-hidden="true" tabindex="-1"></a><span class="ot">tail = Observable</span><span class="ch">(</span><span class="ot">tail</span><span class="ch">)</span><span class="co">         # et que l'on transforme en Observable</span></span>
+<span id="cb11-95"><a href="#cb11-95" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
+<span id="cb11-96"><a href="#cb11-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-97"><a href="#cb11-97" aria-hidden="true" tabindex="-1"></a><span class="ot">L'animation repose sur une simulation de proche en proche, pour cela nous utilisons l'interface `integrator` de `DifferentialEquations.jl` et la fonction `step!</span><span class="ch">(</span><span class="ot">integrator</span><span class="ch">)</span><span class="ot">` qui calcule la solution au bout d'un pas de temps. Nous créons une fonction qui effectue ce calcul et met à jour les Observables état et queue </span><span class="ch">(</span><span class="ot">en place !</span><span class="ch">)</span><span class="ot">.</span></span>
+<span id="cb11-98"><a href="#cb11-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-101"><a href="#cb11-101" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb11-102"><a href="#cb11-102" aria-hidden="true" tabindex="-1"></a><span class="ot">integrator_lv = init</span><span class="ch">(</span><span class="ot">prob_lv</span><span class="ch">)</span><span class="co">    # interface integrator</span></span>
+<span id="cb11-103"><a href="#cb11-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-104"><a href="#cb11-104" aria-hidden="true" tabindex="-1"></a><span class="ot">function step_lv!</span><span class="ch">(</span><span class="ot">integrator, state_lv, tail</span><span class="ch">)</span></span>
+<span id="cb11-105"><a href="#cb11-105" aria-hidden="true" tabindex="-1"></a><span class="ot">    step!</span><span class="ch">(</span><span class="ot">integrator, 0.01,  true</span><span class="ch">)</span><span class="co">   # calcule la solution a t+0.01, en place</span></span>
+<span id="cb11-106"><a href="#cb11-106" aria-hidden="true" tabindex="-1"></a><span class="ot">    x, y = integrator.u</span><span class="co">              # assigne la solution à x et y</span></span>
+<span id="cb11-107"><a href="#cb11-107" aria-hidden="true" tabindex="-1"></a><span class="ot">    state_lv</span><span class="ch">[]</span><span class="ot"> = Point2f</span><span class="ch">(</span><span class="ot">x, y</span><span class="ch">)</span><span class="co">        # met à jour l'Observable</span></span>
+<span id="cb11-108"><a href="#cb11-108" aria-hidden="true" tabindex="-1"></a><span class="ot">    push!</span><span class="ch">(</span><span class="ot">tail</span><span class="ch">[]</span><span class="ot">, Point2f</span><span class="ch">(</span><span class="ot">x,y</span><span class="ch">))</span><span class="co">      # assigne la nouvelle valeur dans la queue, en place</span></span>
+<span id="cb11-109"><a href="#cb11-109" aria-hidden="true" tabindex="-1"></a><span class="ot">    tail</span><span class="ch">[]</span><span class="ot"> = tail</span><span class="ch">[]</span><span class="co">                  # l'opération en place n'indique pas la mise à jour de l'Observable</span></span>
+<span id="cb11-110"><a href="#cb11-110" aria-hidden="true" tabindex="-1"></a><span class="ot">end</span></span>
+<span id="cb11-111"><a href="#cb11-111" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
+<span id="cb11-112"><a href="#cb11-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-113"><a href="#cb11-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-114"><a href="#cb11-114" aria-hidden="true" tabindex="-1"></a><span class="ot">Il faut maintenant définir la figure en elle-même:</span></span>
+<span id="cb11-117"><a href="#cb11-117" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb11-118"><a href="#cb11-118" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
+<span id="cb11-119"><a href="#cb11-119" aria-hidden="true" tabindex="-1"></a><span class="ot">fig = Figure</span><span class="ch">()</span></span>
+<span id="cb11-120"><a href="#cb11-120" aria-hidden="true" tabindex="-1"></a><span class="ot">ax = Axis</span><span class="ch">(</span><span class="ot">fig</span><span class="ch">[</span><span class="bn">1, 1</span><span class="ch">]</span><span class="ot">, xticks = 0:.5:2, yticks = 0:.5:2</span><span class="ch">)</span></span>
+<span id="cb11-121"><a href="#cb11-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-122"><a href="#cb11-122" aria-hidden="true" tabindex="-1"></a><span class="co"># champs de vecteur</span></span>
+<span id="cb11-123"><a href="#cb11-123" aria-hidden="true" tabindex="-1"></a><span class="ot">scale = 10</span></span>
+<span id="cb11-124"><a href="#cb11-124" aria-hidden="true" tabindex="-1"></a><span class="ot">xrange = range</span><span class="ch">(</span><span class="ot">0, 2.75, length=11</span><span class="ch">)</span><span class="ot">  </span></span>
+<span id="cb11-125"><a href="#cb11-125" aria-hidden="true" tabindex="-1"></a><span class="ot">yrange = range</span><span class="ch">(</span><span class="ot">0, 2.75, length=11</span><span class="ch">)</span></span>
+<span id="cb11-126"><a href="#cb11-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-127"><a href="#cb11-127" aria-hidden="true" tabindex="-1"></a><span class="ot">derx = </span><span class="ch">[</span><span class="bn">lovo([x y</span><span class="ch">]</span><span class="ot">, par_lovo, 0</span><span class="ch">)[</span><span class="bn">1</span><span class="ch">]</span><span class="ot">/scale for x in xrange, y in yrange]</span></span>
+<span id="cb11-128"><a href="#cb11-128" aria-hidden="true" tabindex="-1"></a><span class="ot">dery = </span><span class="ch">[</span><span class="bn">lovo([x y</span><span class="ch">]</span><span class="ot">, par_lovo, 0</span><span class="ch">)[</span><span class="bn">2</span><span class="ch">]</span><span class="ot">/scale for x in xrange, y in yrange]</span></span>
+<span id="cb11-129"><a href="#cb11-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-130"><a href="#cb11-130" aria-hidden="true" tabindex="-1"></a><span class="ot">arrows!</span><span class="ch">(</span><span class="ot">ax, xrange, yrange, derx, dery, </span></span>
+<span id="cb11-131"><a href="#cb11-131" aria-hidden="true" tabindex="-1"></a><span class="ot">        color = :lightgray, </span></span>
+<span id="cb11-132"><a href="#cb11-132" aria-hidden="true" tabindex="-1"></a><span class="ot">        arrowsize = 10</span><span class="ch">)</span></span>
+<span id="cb11-133"><a href="#cb11-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-134"><a href="#cb11-134" aria-hidden="true" tabindex="-1"></a><span class="co"># plot of the state</span></span>
+<span id="cb11-135"><a href="#cb11-135" aria-hidden="true" tabindex="-1"></a><span class="ot">scatter!</span><span class="ch">(</span><span class="ot">ax, state_lv, </span></span>
+<span id="cb11-136"><a href="#cb11-136" aria-hidden="true" tabindex="-1"></a><span class="ot">         marker = :circle, </span></span>
+<span id="cb11-137"><a href="#cb11-137" aria-hidden="true" tabindex="-1"></a><span class="ot">         strokewidth = 2, </span></span>
+<span id="cb11-138"><a href="#cb11-138" aria-hidden="true" tabindex="-1"></a><span class="ot">         strokecolor = :purple,</span></span>
+<span id="cb11-139"><a href="#cb11-139" aria-hidden="true" tabindex="-1"></a><span class="ot">         color = :black,</span></span>
+<span id="cb11-140"><a href="#cb11-140" aria-hidden="true" tabindex="-1"></a><span class="ot">         markersize = 8</span><span class="ch">)</span></span>
+<span id="cb11-141"><a href="#cb11-141" aria-hidden="true" tabindex="-1"></a><span class="co"># equilibrium</span></span>
+<span id="cb11-142"><a href="#cb11-142" aria-hidden="true" tabindex="-1"></a><span class="ot">scatter!</span><span class="ch">(</span><span class="ot">ax, m/b, r/c, marker = :star, color = :grey, markersize = 14</span><span class="ch">)</span></span>
+<span id="cb11-143"><a href="#cb11-143" aria-hidden="true" tabindex="-1"></a><span class="co"># plot of the tail</span></span>
+<span id="cb11-144"><a href="#cb11-144" aria-hidden="true" tabindex="-1"></a><span class="ot">col = to_color</span><span class="ch">(</span><span class="ot">:purple</span><span class="ch">)</span></span>
+<span id="cb11-145"><a href="#cb11-145" aria-hidden="true" tabindex="-1"></a><span class="ot">tailcol = </span><span class="ch">[</span><span class="bn">RGBAf(col.r, col.g, col.b, (i/tailsize)</span><span class="ch">^</span><span class="bn">2) for i in 1:tailsize</span><span class="ch">]</span></span>
+<span id="cb11-146"><a href="#cb11-146" aria-hidden="true" tabindex="-1"></a><span class="ot">lines!</span><span class="ch">(</span><span class="ot">ax, tail, linewidth = 3, color = tailcol</span><span class="ch">)</span></span>
+<span id="cb11-147"><a href="#cb11-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-148"><a href="#cb11-148" aria-hidden="true" tabindex="-1"></a><span class="co"># enluminures</span></span>
+<span id="cb11-149"><a href="#cb11-149" aria-hidden="true" tabindex="-1"></a><span class="ot">ax.title = "Lotka Volterra"</span></span>
+<span id="cb11-150"><a href="#cb11-150" aria-hidden="true" tabindex="-1"></a><span class="ot">ax.xlabel = "Proies"</span></span>
+<span id="cb11-151"><a href="#cb11-151" aria-hidden="true" tabindex="-1"></a><span class="ot">ax.ylabel = "Prédateurs"</span></span>
+<span id="cb11-152"><a href="#cb11-152" aria-hidden="true" tabindex="-1"></a><span class="ot">xlims!</span><span class="ch">(</span><span class="ot">ax, 0, 2.25</span><span class="ch">)</span></span>
+<span id="cb11-153"><a href="#cb11-153" aria-hidden="true" tabindex="-1"></a><span class="ot">ylims!</span><span class="ch">(</span><span class="ot">ax, 0, 2.25</span><span class="ch">)</span></span>
+<span id="cb11-154"><a href="#cb11-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-155"><a href="#cb11-155" aria-hidden="true" tabindex="-1"></a><span class="ot">fig</span></span>
+<span id="cb11-156"><a href="#cb11-156" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
+<span id="cb11-157"><a href="#cb11-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-160"><a href="#cb11-160" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb11-161"><a href="#cb11-161" aria-hidden="true" tabindex="-1"></a><span class="co"># test the 2D plot </span></span>
+<span id="cb11-162"><a href="#cb11-162" aria-hidden="true" tabindex="-1"></a><span class="ot">for in in 1:1000</span></span>
+<span id="cb11-163"><a href="#cb11-163" aria-hidden="true" tabindex="-1"></a><span class="ot">    step_lv!</span><span class="ch">(</span><span class="ot">integrator_lv, state_lv, tail</span><span class="ch">)</span></span>
+<span id="cb11-164"><a href="#cb11-164" aria-hidden="true" tabindex="-1"></a><span class="ot">    sleep</span><span class="ch">(</span><span class="ot">.001</span><span class="ch">)</span></span>
+<span id="cb11-165"><a href="#cb11-165" aria-hidden="true" tabindex="-1"></a><span class="ot">end</span></span>
+<span id="cb11-166"><a href="#cb11-166" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
+<span id="cb11-167"><a href="#cb11-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-168"><a href="#cb11-168" aria-hidden="true" tabindex="-1"></a><span class="ot">Depuis un script ou un notebook, la figure proposée par `GLMakie` devrait s'animer. Ici nous ne pouvons qu'afficher la dernière simulation :</span></span>
+<span id="cb11-171"><a href="#cb11-171" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb11-172"><a href="#cb11-172" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
+<span id="cb11-173"><a href="#cb11-173" aria-hidden="true" tabindex="-1"></a><span class="ot">fig</span></span>
+<span id="cb11-174"><a href="#cb11-174" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
+<span id="cb11-175"><a href="#cb11-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-176"><a href="#cb11-176" aria-hidden="true" tabindex="-1"></a><span class="co">### Image animée pour site</span></span>
+<span id="cb11-177"><a href="#cb11-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-178"><a href="#cb11-178" aria-hidden="true" tabindex="-1"></a><span class="ot">Il faut générer une image animée pour pouvoir visualiser l'animation sur cette page html.  </span></span>
+<span id="cb11-179"><a href="#cb11-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-180"><a href="#cb11-180" aria-hidden="true" tabindex="-1"></a><span class="ot">On peut commencer par réunir tout le code d'initialisation et de génération de figure dans une fonction, pour facilement réinitialiser:</span></span>
+<span id="cb11-183"><a href="#cb11-183" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb11-184"><a href="#cb11-184" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb11-185"><a href="#cb11-185" aria-hidden="true" tabindex="-1"></a><span class="ot">function init_anim_lv</span><span class="ch">(</span><span class="ot">etat0</span><span class="ch">)</span></span>
+<span id="cb11-186"><a href="#cb11-186" aria-hidden="true" tabindex="-1"></a><span class="co">    # Odeproblem, integrator</span></span>
+<span id="cb11-187"><a href="#cb11-187" aria-hidden="true" tabindex="-1"></a><span class="ot">    prob_lv = ODEProblem</span><span class="ch">(</span><span class="ot">lovo, etat0, tspan, par_lovo</span><span class="ch">)</span></span>
+<span id="cb11-188"><a href="#cb11-188" aria-hidden="true" tabindex="-1"></a><span class="ot">    integrator_lv = init</span><span class="ch">(</span><span class="ot">prob_lv</span><span class="ch">)</span></span>
+<span id="cb11-189"><a href="#cb11-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-190"><a href="#cb11-190" aria-hidden="true" tabindex="-1"></a><span class="ot">    x, y = etat0            </span></span>
+<span id="cb11-191"><a href="#cb11-191" aria-hidden="true" tabindex="-1"></a><span class="ot">    state_lv = Observable</span><span class="ch">(</span><span class="ot">Point2f</span><span class="ch">(</span><span class="ot">x, y</span><span class="ch">))</span></span>
+<span id="cb11-192"><a href="#cb11-192" aria-hidden="true" tabindex="-1"></a><span class="ot">    tailsize = 600</span></span>
+<span id="cb11-193"><a href="#cb11-193" aria-hidden="true" tabindex="-1"></a><span class="ot">    tail = CircularBuffer{Point2f}</span><span class="ch">(</span><span class="ot">tailsize</span><span class="ch">)</span></span>
+<span id="cb11-194"><a href="#cb11-194" aria-hidden="true" tabindex="-1"></a><span class="ot">    fill!</span><span class="ch">(</span><span class="ot">tail, Point2f</span><span class="ch">(</span><span class="ot">x, y</span><span class="ch">))</span></span>
+<span id="cb11-195"><a href="#cb11-195" aria-hidden="true" tabindex="-1"></a><span class="ot">    tail = Observable</span><span class="ch">(</span><span class="ot">tail</span><span class="ch">)</span></span>
+<span id="cb11-196"><a href="#cb11-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-197"><a href="#cb11-197" aria-hidden="true" tabindex="-1"></a><span class="ot">    fig = Figure</span><span class="ch">()</span></span>
+<span id="cb11-198"><a href="#cb11-198" aria-hidden="true" tabindex="-1"></a><span class="ot">    ax = Axis</span><span class="ch">(</span><span class="ot">fig</span><span class="ch">[</span><span class="bn">1, 1</span><span class="ch">]</span><span class="ot">, xticks = 0:.5:2, yticks = 0:.5:2</span><span class="ch">)</span></span>
+<span id="cb11-199"><a href="#cb11-199" aria-hidden="true" tabindex="-1"></a><span class="ot">    scale = 10</span></span>
+<span id="cb11-200"><a href="#cb11-200" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-201"><a href="#cb11-201" aria-hidden="true" tabindex="-1"></a><span class="ot">    xrange = range</span><span class="ch">(</span><span class="ot">0, 2.75, length=11</span><span class="ch">)</span><span class="ot">  </span></span>
+<span id="cb11-202"><a href="#cb11-202" aria-hidden="true" tabindex="-1"></a><span class="ot">    yrange = range</span><span class="ch">(</span><span class="ot">0, 2.75, length=11</span><span class="ch">)</span></span>
+<span id="cb11-203"><a href="#cb11-203" aria-hidden="true" tabindex="-1"></a><span class="ot">    derx = </span><span class="ch">[</span><span class="bn">lovo([x y</span><span class="ch">]</span><span class="ot">, par_lovo, 0</span><span class="ch">)[</span><span class="bn">1</span><span class="ch">]</span><span class="ot">/scale for x in xrange, y in yrange]</span></span>
+<span id="cb11-204"><a href="#cb11-204" aria-hidden="true" tabindex="-1"></a><span class="ot">    dery = </span><span class="ch">[</span><span class="bn">lovo([x y</span><span class="ch">]</span><span class="ot">, par_lovo, 0</span><span class="ch">)[</span><span class="bn">2</span><span class="ch">]</span><span class="ot">/scale for x in xrange, y in yrange]</span></span>
+<span id="cb11-205"><a href="#cb11-205" aria-hidden="true" tabindex="-1"></a><span class="ot">    arrows!</span><span class="ch">(</span><span class="ot">ax, xrange, yrange, derx, dery, </span></span>
+<span id="cb11-206"><a href="#cb11-206" aria-hidden="true" tabindex="-1"></a><span class="ot">            color = :lightgray, </span></span>
+<span id="cb11-207"><a href="#cb11-207" aria-hidden="true" tabindex="-1"></a><span class="ot">            arrowsize = 10</span><span class="ch">)</span></span>
+<span id="cb11-208"><a href="#cb11-208" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-209"><a href="#cb11-209" aria-hidden="true" tabindex="-1"></a><span class="ot">    scatter!</span><span class="ch">(</span><span class="ot">ax, state_lv, </span></span>
+<span id="cb11-210"><a href="#cb11-210" aria-hidden="true" tabindex="-1"></a><span class="ot">            marker = :circle, </span></span>
+<span id="cb11-211"><a href="#cb11-211" aria-hidden="true" tabindex="-1"></a><span class="ot">            strokewidth = 2, </span></span>
+<span id="cb11-212"><a href="#cb11-212" aria-hidden="true" tabindex="-1"></a><span class="ot">            strokecolor = :purple,</span></span>
+<span id="cb11-213"><a href="#cb11-213" aria-hidden="true" tabindex="-1"></a><span class="ot">            color = :black,</span></span>
+<span id="cb11-214"><a href="#cb11-214" aria-hidden="true" tabindex="-1"></a><span class="ot">            markersize = 8</span><span class="ch">)</span></span>
+<span id="cb11-215"><a href="#cb11-215" aria-hidden="true" tabindex="-1"></a><span class="ot">    r, c, b, m = par_lovo</span></span>
+<span id="cb11-216"><a href="#cb11-216" aria-hidden="true" tabindex="-1"></a><span class="ot">    scatter!</span><span class="ch">(</span><span class="ot">ax, m/b, r/c, marker = :star, color = :grey, markersize = 14</span><span class="ch">)</span></span>
+<span id="cb11-217"><a href="#cb11-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-218"><a href="#cb11-218" aria-hidden="true" tabindex="-1"></a><span class="ot">    col = to_color</span><span class="ch">(</span><span class="ot">:purple</span><span class="ch">)</span></span>
+<span id="cb11-219"><a href="#cb11-219" aria-hidden="true" tabindex="-1"></a><span class="ot">    tailcol = </span><span class="ch">[</span><span class="bn">RGBAf(col.r, col.g, col.b, (i/tailsize)</span><span class="ch">^</span><span class="bn">2) for i in 1:tailsize</span><span class="ch">]</span></span>
+<span id="cb11-220"><a href="#cb11-220" aria-hidden="true" tabindex="-1"></a><span class="ot">    lines!</span><span class="ch">(</span><span class="ot">ax, tail, linewidth = 3, color = tailcol</span><span class="ch">)</span></span>
+<span id="cb11-221"><a href="#cb11-221" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-222"><a href="#cb11-222" aria-hidden="true" tabindex="-1"></a><span class="ot">    ax.title = "Lotka Volterra"</span></span>
+<span id="cb11-223"><a href="#cb11-223" aria-hidden="true" tabindex="-1"></a><span class="ot">    ax.xlabel = "Proies"</span></span>
+<span id="cb11-224"><a href="#cb11-224" aria-hidden="true" tabindex="-1"></a><span class="ot">    ax.ylabel = "Prédateurs"</span></span>
+<span id="cb11-225"><a href="#cb11-225" aria-hidden="true" tabindex="-1"></a><span class="ot">    xlims!</span><span class="ch">(</span><span class="ot">ax, 0, 2.25</span><span class="ch">)</span></span>
+<span id="cb11-226"><a href="#cb11-226" aria-hidden="true" tabindex="-1"></a><span class="ot">    ylims!</span><span class="ch">(</span><span class="ot">ax, 0, 2.25</span><span class="ch">)</span></span>
+<span id="cb11-227"><a href="#cb11-227" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-228"><a href="#cb11-228" aria-hidden="true" tabindex="-1"></a><span class="ot">    return fig, integrator_lv, state_lv, tail</span></span>
+<span id="cb11-229"><a href="#cb11-229" aria-hidden="true" tabindex="-1"></a><span class="ot">end</span></span>
+<span id="cb11-230"><a href="#cb11-230" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
+<span id="cb11-231"><a href="#cb11-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-232"><a href="#cb11-232" aria-hidden="true" tabindex="-1"></a><span class="ot">Nous générons la figure animée sous forme d'un gif.</span></span>
+<span id="cb11-235"><a href="#cb11-235" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb11-236"><a href="#cb11-236" aria-hidden="true" tabindex="-1"></a><span class="ot">fig, integrator_lv, state_lv, tail = init_anim_lv</span><span class="ch">(</span><span class="ot">etat0</span><span class="ch">)</span></span>
+<span id="cb11-237"><a href="#cb11-237" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-238"><a href="#cb11-238" aria-hidden="true" tabindex="-1"></a><span class="ot">frames = 1:132</span></span>
+<span id="cb11-239"><a href="#cb11-239" aria-hidden="true" tabindex="-1"></a><span class="ot">record</span><span class="ch">(</span><span class="ot">fig, "lv.gif", frames; framerate = 60</span><span class="ch">)</span><span class="ot"> do i</span></span>
+<span id="cb11-240"><a href="#cb11-240" aria-hidden="true" tabindex="-1"></a><span class="ot">    for j in 1:5</span></span>
+<span id="cb11-241"><a href="#cb11-241" aria-hidden="true" tabindex="-1"></a><span class="ot">        step_lv!</span><span class="ch">(</span><span class="ot">integrator_lv, state_lv, tail</span><span class="ch">)</span></span>
+<span id="cb11-242"><a href="#cb11-242" aria-hidden="true" tabindex="-1"></a><span class="ot">    end</span></span>
+<span id="cb11-243"><a href="#cb11-243" aria-hidden="true" tabindex="-1"></a><span class="ot">end</span></span>
+<span id="cb11-244"><a href="#cb11-244" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
+<span id="cb11-245"><a href="#cb11-245" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-246"><a href="#cb11-246" aria-hidden="true" tabindex="-1"></a><span class="ot">Et finalement nous pouvons afficher la figure animée:</span></span>
+<span id="cb11-247"><a href="#cb11-247" aria-hidden="true" tabindex="-1"></a><span class="ot">!</span><span class="ch">[](</span><span class="ot">lv.gif</span><span class="ch">)</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
