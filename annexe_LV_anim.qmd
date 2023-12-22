@@ -225,3 +225,92 @@ end
 
 Et finalement nous pouvons afficher la figure animée:
 ![](lv.gif)
+
+
+## Trajectoire animée en 3D
+
+Au prix d'une modification très minime du code ci-dessus, on peut facilement créér une animation de la trajectoire en 3 dimensions $(x, y, H(x,y))$. Il faut essentiellement remplacer le système d'axe 2D par un système d'axe 3D `Axis3` et les objets `Point2f` par des `Point3f`.
+
+```{julia}
+#| code-fold: show
+# on définit l'intégrale première
+function int_prem(x, y, par = par_lovo)
+    r, c, b, m = par
+    H = -r*log(y) + c*y - m*log(x) + b*x
+    return H
+end
+
+function init_anim3d_lv(etat0)
+    # Odeproblem, integrator
+    prob_lv = ODEProblem(lovo, etat0, tspan, par_lovo)
+    integrator_lv = init(prob_lv)
+
+    x, y = etat0 
+    H0 = int_prem(x, y)
+    state3d_lv = Observable(Point3f(x, y, H0))
+    tailsize = 1000
+    tail3 = CircularBuffer{Point3f}(tailsize)
+    fill!(tail3, Point3f(x, y, H0))
+    tail3 = Observable(tail3)
+
+    fig = Figure()
+    ax = Axis3(fig[1, 1], azimuth = 0.5, elevation = 0.2, xticks = 0:.5:2, yticks = 0:.5:2)
+
+    scatter!(ax, state3d_lv, 
+            marker = :circle, 
+            strokewidth = 2, 
+            strokecolor = :purple,
+            color = :black,
+            markersize = 8)
+    
+    col = to_color(:purple)
+    tailcol = [RGBAf(col.r, col.g, col.b, (i/tailsize)^2) for i in 1:tailsize]
+    lines!(ax, tail3, linewidth = 3, color = tailcol)
+
+    xsurf = .25: .1: 2.25
+    ysurf = .25:.1: 2.25
+    # calcul de la surface via une compréhension de liste
+    hsurf = [int_prem(x, y, par_lovo) for x in xsurf, y in ysurf]
+    # tracé de H(x,y) et du plan z = H(x0,y0)
+    hs = surface!(ax, xsurf, ysurf, hsurf, alpha=.2)
+
+    ax.title = "Lotka Volterra"
+    ax.xlabel = "Proies"
+    ax.ylabel = "Prédateurs"
+    ax.zlabel = L"$H(x,y)$"
+    xlims!(ax, 0, 2.25)
+    ylims!(ax, 0, 2.25)
+    zlims!(ax, 1.7, 3.5)
+
+    return fig, integrator_lv, state3d_lv, tail3
+end
+```
+
+On adapte la fonction d'animation qui avance d'un pas de temps à la nouvelle structure des observables en 3D.
+
+```{julia}
+function animsteplv3!(integrator_lv, state3d_lv, tail3)
+    step!(integrator_lv, 0.01,  true)
+    x, y = integrator_lv.u
+    state3d_lv[] = Point3f(x, y, state3d_lv[][3])
+    push!(tail3[], Point3f(x, y, state3d_lv[][3]))
+    tail3[] = tail3[]
+end
+```
+
+Et on génère une figure gif pour afficher sur cette page.
+
+```{julia}
+fig, integrator_lv, state3d_lv, tail3 = init_anim3d_lv(etat0)
+
+frames = 1:132
+record(fig, "lv3d.gif", frames; framerate = 60) do i
+    for j in 1:5
+        animsteplv3!(integrator_lv, state3d_lv, tail3)
+    end
+end
+```
+
+Finalement:
+
+![](lv3d.gif)
