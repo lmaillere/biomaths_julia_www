@@ -208,9 +208,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li><p><a href="./annexe_LV_makieplot.html">tracer</a> une jolie figure pour Lotka Volterra avec <code>Makie.jl</code></p></li>
 <li><p><a href="./annexe_integrator.html">utiliser</a> l’interface <code>integrator</code> de <code>DifferentialEquations.jl</code> ou la redéfinition de problèmes d’intégration via <code>remake</code></p></li>
+<li><p>réaliser des <a href="./annexe_LV_anim.html">graphiques animés</a> avec <code>Makie.jl</code>, un exemple sur Lotka Volterra</p></li>
 <li><p><a href="./annexe_FisherKPP.html">simuler</a> une équation de réaction-diffusion en une dimension : le modèle de Fisher-KPP</p></li>
 </ul>
-<p>Nous n’avons qu’effleuré l’utilisation de <code>Julia</code>, par exemple tout le code présenté est scripté et relativement peu de code est inclus dans des fonctions, alors que le gain en performance serait notable via la pré-compilation. Nous n’avons pas non plus abordé les types <code>struct</code> et le <code>multiple dispatch</code> qui sont pourtant au coeur du fonctionnement, de l’efficacité et de la versatilité de ce langage.</p>
+<p>Nous n’avons qu’effleuré l’utilisation de <code>Julia</code>, par exemple tout le code présenté est scripté et relativement peu de code est inclus dans des fonctions. Nous n’avons pas non plus abordé les types <code>struct</code> et le <code>multiple dispatch</code> qui sont pourtant au coeur du fonctionnement, de l’efficacité, et de la versatilité de ce langage.</p>
 <p>Pour aller plus loin (et aussi revoir quelques bases !), vous pouvez par exemple vous référer à ces tutoriels:</p>
 <ul>
 <li><p>le cours <a href="https://computationalthinking.mit.edu/Fall23/">Introduction to computational thinking</a> du MIT (assez long)</p></li>
@@ -517,16 +518,19 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">utiliser</span><span class="co">](annexe_integrator.qmd)</span> l'interface <span class="in">`integrator`</span> de <span class="in">`DifferentialEquations.jl`</span> ou la redéfinition de problèmes d'intégration via <span class="in">`remake`</span> </span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">simuler</span><span class="co">](annexe_FisherKPP.qmd)</span> une équation de réaction-diffusion en une dimension : le modèle de Fisher-KPP</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>réaliser des <span class="co">[</span><span class="ot">graphiques animés</span><span class="co">](annexe_LV_anim.qmd)</span> avec <span class="in">`Makie.jl`</span>, un exemple sur Lotka Volterra</span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>Nous n'avons qu'effleuré l'utilisation de <span class="in">`Julia`</span>, par exemple tout le code présenté est scripté et relativement peu de code est inclus dans des fonctions, alors que le gain en performance serait notable via la pré-compilation. Nous n'avons pas non plus abordé les types <span class="in">`struct`</span> et le <span class="in">`multiple dispatch`</span> qui sont pourtant au coeur du fonctionnement, de l'efficacité et de la versatilité  de ce langage.</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">simuler</span><span class="co">](annexe_FisherKPP.qmd)</span> une équation de réaction-diffusion en une dimension : le modèle de Fisher-KPP</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>Pour aller plus loin (et aussi revoir quelques bases !), vous pouvez par exemple vous référer à ces tutoriels:</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>le cours <span class="co">[</span><span class="ot">Introduction to computational thinking</span><span class="co">](https://computationalthinking.mit.edu/Fall23/)</span> du MIT (assez long)</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>le workshop <span class="co">[</span><span class="ot">Julia Zero-to-Hero</span><span class="co">](https://github.com/Datseris/Zero2Hero-JuliaWorkshop)</span> de Georges Datseris (plus direct)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>Nous n'avons qu'effleuré l'utilisation de <span class="in">`Julia`</span>, par exemple tout le code présenté est scripté et relativement peu de code est inclus dans des fonctions. Nous n'avons pas non plus abordé les types <span class="in">`struct`</span> et le <span class="in">`multiple dispatch`</span> qui sont pourtant au coeur du fonctionnement, de l'efficacité, et de la versatilité  de ce langage.</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>Pour aller plus loin (et aussi revoir quelques bases !), vous pouvez par exemple vous référer à ces tutoriels:</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>le cours <span class="co">[</span><span class="ot">Introduction to computational thinking</span><span class="co">](https://computationalthinking.mit.edu/Fall23/)</span> du MIT (assez long)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>le workshop <span class="co">[</span><span class="ot">Julia Zero-to-Hero</span><span class="co">](https://github.com/Datseris/Zero2Hero-JuliaWorkshop)</span> de Georges Datseris (plus direct)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">

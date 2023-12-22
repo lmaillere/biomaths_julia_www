@@ -4,7 +4,7 @@ title: "Simulations multiples"
 
 ## Interface Integrator pour simulations multiples
 
-Lors de simulations multiples^[par exemple pour plusieurs conditions initiales pour le modèle avec [effets Allee](pop_isolees.qmd) ou celui de la [tordeuse du bourgeon de l'épinette](pop_exploitees.qmd)], la stratégie choisie a été de redéfinir un nouveau problème d'intégration `ODEProblem` pour chaque condition initiale. Cette procédure est a priori très peu efficace, et `DifferentialEquations.jl` permet de modifier un problème d'intégration via la [Integrator Interface](https://docs.sciml.ai/DiffEqDocs/stable/basics/integrator/). 
+Lors de simulations multiples^[par exemple pour plusieurs conditions initiales pour le modèle avec [effets Allee](pop_isolees.qmd) ou celui de la [tordeuse du bourgeon de l'épinette](pop_exploitees.qmd)], la stratégie choisie a été de redéfinir un nouveau problème d'intégration `ODEProblem` pour chaque condition initiale. Cette procédure est a priori peu efficace, et `DifferentialEquations.jl` permet de modifier un problème d'intégration via la [Integrator Interface](https://docs.sciml.ai/DiffEqDocs/stable/basics/integrator/). 
 
 Répliquons la figure des dynamiques de la tordeuse du bourgeon de l'épinette avec cette méthode. On commence par définir les paramètres et le modèle:
 
@@ -198,4 +198,4 @@ P2
 
 Cette méthode est plus rapide que la redéfinition de problème d'intégration ou l'utilisation de l'integrator interface (113 ms dans les conditions vues plus haut) et intermédiaire en termes de mémoire utilisée (6.39 MiB). Le code est aussi simple que pour l'integrator interface.
 
-Par ailleurs la même approche via `remake` peut être utilisée pour redéfinir un problème d'intégration en modifiant les paramètres plutôt que la condition initiale, par exemple pour calculer un diagramme de bifurcations par force brute comme pour le modèle de [Rosenzweig MacArthur](pop_interactions2.qmd).
+Par ailleurs la même approche via `remake` peut être utilisée pour redéfinir un problème d'intégration en modifiant les paramètres plutôt que la condition initiale, par exemple pour calculer un diagramme de bifurcations par force brute comme pour le modèle de [Rosenzweig MacArthur](pop_interactions2.qmd). C'est visiblement la bonne solution algorithmique. 
