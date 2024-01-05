@@ -7,7 +7,7 @@ Les pages listées ici contiennent du matétiel supplémentaire pour complément
 
 - [tracer](annexe_LV_makieplot.qmd) une jolie figure pour Lotka Volterra avec `Makie.jl`
 
-- [utiliser](annexe_integrator.qmd) l'interface `integrator` de `DifferentialEquations.jl` ou la redéfinition de problèmes d'intégration via `remake` 
+- [utiliser](annexe_integrator.qmd) l'interface `integrator` de `DifferentialEquations.jl` ou la redéfinition de problèmes d'intégration via `remake`
 
 - réaliser des [graphiques animés](annexe_LV_anim.qmd) avec `Makie.jl`, un exemple sur Lotka Volterra
 
