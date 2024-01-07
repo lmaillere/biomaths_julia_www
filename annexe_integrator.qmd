@@ -2,15 +2,19 @@
 title: "Simulations multiples"
 ---
 
+Nous abordons ici brièvement les méthodes `integrator` et `remake` de `DifferentialEquations.jl` pour les simulations multiples.
+
 ## Interface Integrator pour simulations multiples
 
-Lors de simulations multiples^[par exemple pour plusieurs conditions initiales pour le modèle avec [effets Allee](pop_isolees.qmd) ou celui de la [tordeuse du bourgeon de l'épinette](pop_exploitees.qmd)], la stratégie choisie a été de redéfinir un nouveau problème d'intégration `ODEProblem` pour chaque condition initiale. Cette procédure est a priori peu efficace, et `DifferentialEquations.jl` permet de modifier un problème d'intégration via la [Integrator Interface](https://docs.sciml.ai/DiffEqDocs/stable/basics/integrator/). 
+Lors de simulations multiples^[par exemple pour plusieurs conditions initiales pour le modèle avec [effets Allee](pop_isolees.qmd) ou celui de la [tordeuse du bourgeon de l'épinette](pop_exploitees.qmd)], la stratégie choisie a été de redéfinir un nouveau problème d'intégration `ODEProblem` pour chaque condition initiale. Cette procédure est a priori peu efficace, et `DifferentialEquations.jl` permet de modifier un problème d'intégration via la [Integrator Interface](https://docs.sciml.ai/DiffEqDocs/stable/basics/integrator/).
 
 Répliquons la figure des dynamiques de la tordeuse du bourgeon de l'épinette avec cette méthode. On commence par définir les paramètres et le modèle:
 
 ```{julia}
 #| code-fold: true
-using DifferentialEquations, Plots, DataFrames
+using DifferentialEquations
+using Plots
+using DataFrames
 
 # paramètres
 r = 5.0      # natalité
@@ -19,7 +23,7 @@ K = 10.0     # mortalité
 h = 0.5      # constante de demi-saturation
 yc = 7.0     # densité de prédateurs
 
-par_tordeuse = [r, K, α, h, yc] 
+par_tordeuse = [r, K, α, h, yc]
 
 # temps d'intégration
 tspan = (0.0, 3.0)
@@ -32,17 +36,19 @@ x0step = 1.35
 function tordeuse(u, p, t)
     r, K, α, h, yc = p
     x = u[1]
-    dx = r*x*(1 - x/K) - α*x^2/(h^2 + x^2)*yc
+    return dx = r*x*(1 - x/K) - α*x^2/(h^2 + x^2)*yc
 end
 ```
 
 Nous définissons ensuite le problème d'intégration ainsi que l'intégrateur `integrator`:
 ```{julia}
-prob_tordeuse = ODEProblem(tordeuse,         # modèle
-                           x0step,           # condition initiale
-                           tspan,            # tspan
-                           par_tordeuse,     # paramètres
-                           saveat = tstep)   # option de sortie
+prob_tordeuse = ODEProblem(
+    tordeuse,         # modèle
+    x0step,           # condition initiale
+    tspan,            # tspan
+    par_tordeuse;     # paramètres
+    saveat = tstep,
+)   # option de sortie
 
 integrator = init(prob_tordeuse)
 ```
@@ -51,11 +57,13 @@ Pour une utilisation dans une boucle pour simuler les trajectoires depuis diffé
 
 ```{julia}
 function int_tordeuse(x0, integrator)
-    reinit!(integrator, x0)
+    reinit!(integrator, x0)             # la clef de l'interface est ici
 
-    sol_tordeuse = solve!(integrator)
+    sol_tordeuse = solve!(integrator)   # et là
     sol_tordeuse = DataFrame(sol_tordeuse)
     rename!(sol_tordeuse, :timestamp => :time, :value => :x)
+
+    return sol_tordeuse
 end
 ```
 
@@ -69,133 +77,82 @@ x0vec = x0step:x0step:K
 init_cgrad = palette([:steelblue, :lightblue], length(x0vec))
 
 # initialisation du graphique, équilibre nul
-P = plot(palette = init_cgrad,
-         legend = :right, 
-         label = "équilibres instables",
-         title = "Tordeuse du bourgeon de l\'épinette",
-         ylabel = "densité de population \$x(t)\$", 
-         xlabel = "temps \$t\$",
-         margin = .5Plots.cm,
-         topmargin = 1Plots.cm)
+fig = plot(;
+    palette = init_cgrad,
+    legend = :right,
+    label = "équilibres instables",
+    title = "Tordeuse du bourgeon de l\'épinette",
+    ylabel = "densité de population \$x(t)\$",
+    xlabel = "temps \$t\$",
+    margin = .5Plots.cm,
+    topmargin = 1Plots.cm,
+)
 
 # boucle de plot avec intégration pour differentes conditions initiales
 for x0 in x0vec
-    plot!(P, int_tordeuse(x0, integrator).time, 
-          int_tordeuse(x0, integrator).x,
-          linewidth = 2,
-          label = "")
+    plot!(
+        fig,
+        int_tordeuse(x0, integrator).time,
+        int_tordeuse(x0, integrator).x,
+        linewidth = 2,
+        label = "",
+    )
 end
 
-display(P)      # actually shows the plot P
+display(fig)      # actually shows the plot P
 ```
 \
 
-On peut compléter la figure comme vu [précédemment](pop_exploitees.qmd).
-
-```{julia}
-#| code-fold: true
-#| output: true
-#| label: fig-tordeuse-integrator
-#| fig-cap: bistabilité dans le modèle de la tordeuse du bourgeon de l'épinette
-# on définit des couleurs spécifiques depuis la palette :pal10
-mygreen = palette(:tab10)[3]
-myorange = palette(:tab10)[2]
-myblue = palette(:tab10)[1]
-myred = palette(:tab10)[4]
-
-using Polynomials
-
-# définition du monôme X
-X = Polynomial([0, 1])
-
-# définition du polynôme 
-pol = r*(1-X/K)*(h^2 + X^2)-α*X*yc
-
-# calcul des racines, réelles, positives et plus petites que K
-eq_pos = roots(pol)                         # calcul des racines
-eq_pos = real.(eq_pos[isreal.(eq_pos)])     # filtrage des racines réelles
-eq_pos = eq_pos[(eq_pos .> 0) .& (eq_pos .<= K)] # filtrage des racines >0 et <K
-
-t2plot = collect(tspan)
-
-# initialisation du graphique, équilibre nul
-plot!(P, t2plot, zeros(length(t2plot)), 
-         lw=2, 
-         linestyle = :dash, 
-         color = myorange, 
-         palette = init_cgrad,
-         legend = :right, 
-         label ="équilibres instables",
-         ylabel = "densité de population \$x(t)\$", 
-         xlabel = "temps \$t\$",
-         margin = .5Plots.cm,
-         topmargin = 1Plots.cm)
-
-# équilibres positifs
-if length(eq_pos) == 1
-    plot!(P, t2plot, ones(length(t2plot)).*eq_pos, 
-          color = mygreen, 
-          label ="équilibre stable")
-elseif length(eq_pos) == 3
-    plot!(P, t2plot, ones(length(t2plot)).*eq_pos[1], 
-          lw=2, 
-          linestyle = :dash, 
-          color = mygreen, 
-          label ="équilibres stables")
-    plot!(P, t2plot, ones(length(t2plot)).*eq_pos[2], 
-          lw=2, 
-          linestyle = :dash, 
-          color = myorange, 
-          label = "")
-    plot!(P, t2plot, ones(length(t2plot)).*eq_pos[3], 
-          lw=2, 
-          linestyle = :dash, 
-          color = mygreen, 
-          label = "")
-end
-```
+On peut compléter la figure comme vu [précédemment](pop_exploitees.qmd), mais cela n'a pas plus d'intéret ici.
 
 ### Commentaires
 
-Le code de la fonction `int_tordeuse` est plus simple avec l'integrator interface qu'en redéfinissant le problème d'intégration à chaque fois. Néanmoins, sur un problème avec `x0step= 0.1` (soit ~100 trajectoires calculées), le gain en temps de calcul de cette méthode est marginal : 123 ms contre 128 ms avec la méthode précédente (test avec package `BenchmarkTools.jl`). 
+Le code de la fonction `int_tordeuse` est plus simple avec l'integrator interface qu'en redéfinissant le problème d'intégration à chaque fois. Néanmoins, sur un problème avec `x0step= 0.1` (soit ~100 trajectoires calculées), le gain en temps de calcul de cette méthode est marginal : 123 ms contre 128 ms avec la méthode précédente (test avec package `BenchmarkTools.jl`).
 
 Le gain en mémoire est plus sensible : 4.28 MiB contre 7.26 MiB, mais finalement marginal aussi sur des machines modernes pour de si petits problèmes d'intégration.
 
 ### Redéfinition du problème d'intégration via `remake`
 
-Une autre approche plutôt que d'utiliser l'integrator interface, ou de redéfinir un nouveau problème d'intégration à chaque fois, serait de modifier le problème d'intégration via la fonction `remake`:
+Une autre approche plutôt que de redéfinir un nouveau problème d'intégration à chaque fois, est de modifier le problème d'intégration via la fonction `remake`.
+
+On définit une fonction qui prend pour arguments la condition initiale et un problème d'intégration, et redéfinit le problème d'intégration depuis cette condition initiale :
 
 ```{julia}
 #| output: true
-
 function int_tordeuse2(x0, prob)
     prob = remake(prob, u0 = x0)       # redéfinition du problème d'intégration
-    
+
     sol_tordeuse = solve(prob)
     sol_tordeuse = DataFrame(sol_tordeuse)
     rename!(sol_tordeuse, :timestamp => :time, :value => :x)
 end
 
-P2 = plot(palette = init_cgrad,
-         legend = :right, 
-         label = "équilibres instables",
-         title = "Tordeuse du bourgeon de l\'épinette",
-         ylabel = "densité de population \$x(t)\$", 
-         xlabel = "temps \$t\$",
-         margin = .5Plots.cm,
-         topmargin = 1Plots.cm)
+# initialisation du graphique
+fig2 = plot(;
+    palette = init_cgrad,
+    legend = :right,
+    label = "équilibres instables",
+    title = "Tordeuse du bourgeon de l\'épinette",
+    ylabel = "densité de population \$x(t)\$",
+    xlabel = "temps \$t\$",
+    margin = .5Plots.cm,
+    topmargin = 1Plots.cm,
+)
 
 for x0 in x0vec
-    plot!(P2, int_tordeuse2(x0, prob_tordeuse).time, 
-          int_tordeuse2(x0, prob_tordeuse).x,
-          linewidth = 2,
-          label = "")
+    plot!(
+        fig2,
+        int_tordeuse2(x0, prob_tordeuse).time,
+        int_tordeuse2(x0, prob_tordeuse).x;
+        linewidth = 2,
+        label = "",
+    )
 end
 
-P2
+display(fig2)
 ```
 \
 
 Cette méthode est plus rapide que la redéfinition de problème d'intégration ou l'utilisation de l'integrator interface (113 ms dans les conditions vues plus haut) et intermédiaire en termes de mémoire utilisée (6.39 MiB). Le code est aussi simple que pour l'integrator interface.
 
-Par ailleurs la même approche via `remake` peut être utilisée pour redéfinir un problème d'intégration en modifiant les paramètres plutôt que la condition initiale, par exemple pour calculer un diagramme de bifurcations par force brute comme pour le modèle de [Rosenzweig MacArthur](pop_interactions2.qmd). C'est visiblement la bonne solution algorithmique. 
+Par ailleurs la même approche via `remake` peut être utilisée pour redéfinir un problème d'intégration en modifiant les paramètres plutôt que la condition initiale, par exemple pour calculer un diagramme de bifurcations par force brute comme pour le modèle de [Rosenzweig MacArthur](pop_interactions2.qmd). C'est visiblement la bonne solution algorithmique.
