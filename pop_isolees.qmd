@@ -43,13 +43,14 @@ tstep = 0.1
 
 ### Système dynamique
 
-On définit le modèle comme une fonction renvoyant la dérivée de $x$ (comme `SVector`) en fonction de l'état, de paramètres, et du temps. L'ordre des arguments est important, c'est sous cette forme que les routines d'intégration attendent le modèle.
+On définit le modèle comme une fonction renvoyant la dérivée de $x$ en fonction de l'état ($u$ est la notation pour `DifferentialEquations.jl`), de paramètres ($p$), et du temps ($t$). L'ordre des arguments est important, c'est sous cette forme que les routines d'intégration attendent le modèle.
 
 ```{julia}
 function malthus(u, p, t)
     n, m = p        # unpacking
     x = u[1]        # use x notation
-    dx = (n-m)x     # return derivative
+    return dx = (n-m)x     # return derivative
+                           # no multiplication * because of ()
 end
 ```
 
