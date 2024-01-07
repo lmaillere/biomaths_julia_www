@@ -6,10 +6,10 @@ title: "Populations en interaction (1)"
 
 Pour débuter cette partie sur les populations en interactions, nous reprenons le modèle de tordeuse de @ludwig1978 en supposant que la population d'oiseaux réagit (lentement) à la démographie des tordeuses, via la prédation.
 
-Le changement principal ici est la dimension du modèle (dimension 2) :  les tailles de populations de tordeuses $x$ et d'oiseaux $y$ varient toutes deux au cours du temps en s'influençant l'une l'autre, avec une population d'oiseaux qui varie lentement (d'où le paramètre $\varepsilon$).
+Le changement principal ici est la dimension du modèle (dimension 2) :  les tailles de populations de tordeuses $x$ et d'oiseaux $y$ varient toutes deux au cours du temps en s'influençant l'une l'autre, avec une population d'oiseaux qui varie lentement (d'où le paramètre $\varepsilon$ supposé petit) par rapport à celle des tordeuses.
 
-Le modèle prend la forme :		 			
-$$ 
+Le modèle prend la forme :
+$$
 \left\{
 \begin{array}{l}
 \displaystyle \dot x = rx\left(1-\frac{x}{K}\right) - \frac{\alpha x^2}{h^2+x^2}\ y \\[.3cm]
@@ -20,7 +20,9 @@ $$ {#eq-tordeuse-yvar}
 
 Il faut ajuster un peu la manière de coder pour prendre en compte ces deux dimensions. Commençons par les paramètres divers.
 ```{julia}
-using DifferentialEquations, Plots, DataFrames
+using DifferentialEquations
+using Plots
+using DataFrames
 
 # paramètres
 r = 5.0      # natalité
@@ -28,12 +30,11 @@ K = 10.0     # mortalité
 α = 1.0      # taux max de prédation
 h = 0.5      # constante de demi-saturation
 
-ϵ = 0.01     # timescale
+ϵ = 0.01     # timescale, \epsilon + TAB
 n = 5.0      # gain à la prédation
-m = 3.0      # moralité
+m = 3.0      # mortalité
 
-
-par_tord_ois = [r, K, α, h, ϵ, n, m] 
+par_tord_ois = [r, K, α, h, ϵ, n, m]
 
 # temps d'intégration
 tspan = (0.0, 400.0)
@@ -47,23 +48,27 @@ etat0 = [x0, y0]
 
 Puis le modèle :
 ```{julia}
-function tord_ois(u, param, t)
-    r, K, α, h, ϵ, n, m = param
+function tord_ois(u, p, t)
+    r, K, α, h, ϵ, n, m = p
     x = u[1]
     y = u[2]
-    dx = r*x*(1 - x/K) - α*x^2/(h^2 + x^2) * y
-    dy = ϵ*(n*α*x^2/(h^2 + x^2) * y - m * y)
-    [dx, dy]
+
+    dx = r*x*(1 - x/K) - α*x^2/(h^2 + x^2)*y
+    dy = ϵ*(n*α*x^2/(h^2 + x^2)*y - m*y)
+
+    return [dx, dy]
 end
 ```
 
 Problème d'intégration et simulation :
 ```{julia}
-prob_tord_ois = ODEProblem(tord_ois, 
-                           etat0, 
-                           tspan, 
-                           par_tord_ois, 
-                           saveat = tstep)
+prob_tord_ois = ODEProblem(
+      tord_ois,
+      etat0,
+      tspan,
+      par_tord_ois;
+      saveat = tstep,
+)
 
 sol_tord_ois = solve(prob_tord_ois, reltol = 1e-6)
 
@@ -80,26 +85,37 @@ myorange = palette(:tab10)[2]
 myblue = palette(:tab10)[1]
 myred = palette(:tab10)[4]
 
-P1 = plot(sol_tord_ois.time, sol_tord_ois.x,
-          color = myblue,
-          linewidth = 2,
-          label = "tordeuses \$x\$",
-          xlabel = "temps",
-          ylabel = "densités de populations",
-          title = "Dynamiques des tordeuses avec\n population d'oiseaux variable")
+# initialisation graphique et solution simulée
+fig1 = plot(
+    sol_tord_ois.time,
+    sol_tord_ois.x;
+    color = myblue,
+    linewidth = 2,
+    label = "tordeuses \$x\$",
+    xlabel = "temps",
+    ylabel = "densités de populations",
+    title = "Dynamiques des tordeuses avec\n population d'oiseaux variable",
+)
 
-plot!(P1, sol_tord_ois.time, sol_tord_ois.y ./ 2,
-      color = myorange,
-      linewidth = 2,
-      label = "oiseaux \$y/2\$")
+plot!(
+    fig1,
+    sol_tord_ois.time,
+    sol_tord_ois.y ./ 2,  # scale by 2 for aesthetics
+    color = myorange,
+    linewidth = 2,
+    label = "oiseaux \$y/2\$",
+)
 ```
 \
 
-On observe ici des *bifurcations dynamiques* avec le passage de la population de tordeuse d'une branche d'équilibre stable à l'autre, qui créé un comportement de type cycle d'hysteresis. La situation se comprend bien sur le diagramme de bifurcations $(y, x)$. On retrace le diagramme de bifurcations.
+On observe ici des *bifurcations dynamiques* avec le passage de la population de tordeuse d'une branche d'équilibre stable à l'autre, qui créé un comportement de type cycle d'hysteresis.
+
+La situation se comprend bien sur le diagramme de bifurcations $(y, x)$. On retrace le diagramme de bifurcations (cf. la page sur les [populations exploitées](pop_exploitees.qmd)).
 
 ```{julia}
 #| code-fold: true
-using Symbolics, Polynomials
+using Symbolics
+using Polynomials
 
 @variables X
 D = Differential(X)
@@ -126,50 +142,68 @@ droots = filter(s -> K > s > 0, roots(dnumpoly))
 xplot1 = 0.08:.01:droots[1]
 xplot2 = droots[1]:.01:droots[2]
 xplot3 = droots[2]:.01:K
-yeq1 = r.*(1 .-xplot1./K) ./ (α.*xplot1).*(h^2 .+xplot1.^2)
-yeq2 = r.*(1 .-xplot2./K) ./ (α.*xplot2).*(h^2 .+xplot2.^2)
-yeq3 = r.*(1 .-xplot3./K) ./ (α.*xplot3).*(h^2 .+xplot3.^2)
+yeq1 = [r*(1 - x/K)/(α*x)*(h^2 + x^2) for x in xplot1]
+yeq2 = [r*(1 - x/K)/(α*x)*(h^2 + x^2) for x in xplot2]
+yeq3 = [r*(1 - x/K)/(α*x)*(h^2 + x^2) for x in xplot3]
 
 # diagramme de bifurcations
-Pbif = plot(yeq1, xplot1,
-            linewidth = 2,
-            color = mygreen,
-            label = "équilibres stables",
-            legend = :left,
-            xlabel = "population d'oiseaux \$y\$",
-            ylabel = "population de tordeuses \$x\$",
-            title = "Diagramme de bifurcations pour le modèle de tordeuses",
-            margin = .5Plots.cm,
-            topmargin = 1Plots.cm)
+figbif = plot(
+    yeq1,
+    xplot1;
+    linewidth = 2,
+    color = mygreen,
+    label = "équilibres stables",
+    legend = :left,
+    xlabel = "population d'oiseaux \$y\$",
+    ylabel = "population de tordeuses \$x\$",
+    title = "Diagramme de bifurcations pour le modèle de tordeuses",
+    margin = .5Plots.cm,
+    topmargin = 1Plots.cm,
+)
 
-plot!(Pbif, yeq2, xplot2,
-      linewidth = 2,
-      color = myred,
-      label = "équilibres instables")
+plot!(
+    figbif,
+    yeq2,
+    xplot2;
+    linewidth = 2,
+    color = myred,
+    label = "équilibres instables",
+)
 
-plot!(Pbif, yeq3, xplot3,
-      linewidth = 2,
-      color = mygreen,
-      label = "")
+plot!(
+    figbif,
+    yeq3,
+    xplot3;
+    linewidth = 2,
+    color = mygreen,
+    label = "",
+)
 
-plot!(Pbif, [0, maximum(yeq1)], [0, 0], 
-      color = myred,
-      lw = 2,
-      label = "")
+plot!(
+    figbif,
+    [0, maximum(yeq1)],
+    [0, 0];
+    color = myred,
+    lw = 2,
+    label = "",
+)
 ```
 
 On trace sur ce diagramme la trajectoire simulée plus haut :
 ```{julia}
 #| output: true
-plot!(Pbif, sol_tord_ois.y, sol_tord_ois.x,
-      color = myblue,
-      linewidth = 2,
-      linealpha = 0.5,
-      label = "trajectoire")
+plot!(
+    figbif,
+    sol_tord_ois.y,
+    sol_tord_ois.x;
+    color = myblue,
+    linewidth = 2,
+    linealpha = 0.5,
+    label = "trajectoire",
+)
 ```
 
 ## Le modèle proie-prédateur de Lotka et Volterra {#sec-lv}
-
 
 Nous considérons le modèle de dynamique de populations de @Lotka1925 et @Volterra1926 :
 
@@ -249,13 +283,13 @@ scale = 10
 der_x(x, y) = lovo([x y], par_lovo, 0)[1]/scale
 der_y(x, y) = lovo([x y], par_lovo, 0)[2]/scale
 
-# on définit un ensemble de valeur de x et y formant une grille 
+# on définit un ensemble de valeur de x et y formant une grille
 # sur laquelle évaluer le champs de vecteurs
 xrange = range(0., 2, length=11)'  # note ' : on va broadcaster pour créer la grille via der_x.() et der_y.()
 yrange = range(0. ,2, length=11)
 
 # champs de vecteurs
-Plan = quiver(xrange, yrange, 
+Plan = quiver(xrange, yrange,
        quiver = (der_x.(xrange, yrange), der_y.(xrange, yrange)),
        ylim = (-0.05, 2),
        xlim = (-0.05, 2),
@@ -286,7 +320,7 @@ plot!(Plan, ones(length(yplot)).*m./b, yplot,
       linewidth = 2,
       color = myred,
       label = "\$\\dot y = 0\$")
-plot!(Plan, xplot, zeros(length(xplot)), 
+plot!(Plan, xplot, zeros(length(xplot)),
       linewidth = 2,
       color = myred,
       label = "")
@@ -349,26 +383,26 @@ zsurf = [int_prem(x, y, par_lovo) for x in xsurf, y in ysurf]
 zplane = [int_prem(x0, y0, par_lovo) for x in xsurf, y in ysurf]
 
 # on trace H(x0, y0)
-Psurf = plot(xsurf, ysurf, zplane, 
-              st = :surface, 
-              color = myorange, 
-              alpha =.5, 
-              label = "") 
+Psurf = plot(xsurf, ysurf, zplane,
+              st = :surface,
+              color = myorange,
+              alpha =.5,
+              label = "")
 
 # l'intégrale première
-plot!(Psurf, xsurf, ysurf, zsurf, 
-             st=:surface, 
-             alpha = .6, 
-             camera = (30, 10), 
+plot!(Psurf, xsurf, ysurf, zsurf,
+             st=:surface,
+             alpha = .6,
+             camera = (30, 10),
              color = :viridis,
              xlabel = "proies",
              ylabel = "prédateurs",
              title = "Intégrale première du modèle de Lotka Volterra")
 
 # la trajectoire
-plot!(Psurf, sol_lovo.x, sol_lovo.y, ones(length(sol_lovo.x)).*int_prem(x0, y0, par_lovo), 
-      color = myred, 
-      lw=4, 
+plot!(Psurf, sol_lovo.x, sol_lovo.y, ones(length(sol_lovo.x)).*int_prem(x0, y0, par_lovo),
+      color = myred,
+      lw=4,
       label = "")
 ```
 \
