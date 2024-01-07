@@ -54,6 +54,11 @@ function malthus(u, p, t)
 end
 ```
 
+
+::: {.callout-note}
+L'ordre des arguments `u, p, t` est important pour le solver de `DifferentialEquations.jl`.
+:::
+
 ### Intégration
 
 On commence par définir le problème de Cauchy à intégrer, comme un `ODEProblem` avec arguments: le modèle, la condition initiale, les bornes d'intégration, les paramètres ainsi que l'option `saveat = tstep` permettant de récupérer la solution tout les `tstep` pas de temps (il y a plein d'options de sortie de l'intégration, dont même une fonction du temps !)
@@ -74,7 +79,7 @@ On intègre le modèle via `solve`, défini par `DifferentialEquations.jl` pour 
 sol_malthus = solve(prob_malthus)
 ```
 
-Le type de solution renvoyée par le solveur est assez complexe et comprend de nombreux champs informatifs sur le calcul. On peut accéder au temps de simulation via `sol_malthus.t` :
+Le type de solution renvoyé par le solveur est assez complexe et comprend de nombreux champs informatifs sur le calcul. On peut accéder au temps de simulation via `sol_malthus.t` :
 
 ```{julia}
 #| output: true
@@ -97,6 +102,10 @@ sol_malthus = DataFrame(sol_malthus)
 rename!(sol_malthus, :timestamp => :time, :value => :x)
 ```
 
+::: {.callout-note}
+remarquez la fonction `rename!` qui modifie en place le dataframe. Par convention les fonctions dont le nom finit par `!` modifient leur argument en place.
+:::
+
 si bien que :
 
 ```{julia}
@@ -106,21 +115,28 @@ first(sol_malthus, 3)
 
 ### Représentation graphique
 
-
 On peut représenter graphiquement la simulation de la croissance de la population au cours du temps (ici via le dataframe).
 
 ```{julia}
 #| output: true
-plot(sol_malthus.time, sol_malthus.x,
-    palette = :tab10,
+plot(
+    sol_malthus.time, sol_malthus.x;    # abcisses, ordonnées
+    palette = :tab10,                   # palette de couleurs
     linewidth = 2,
     title = "\n Modèle de Malthus \$n=$n, m=$m\$",
     label = "population \$x\$",
     ylabel = "densité de population \$x(t)\$",
     xlabel = "temps \$t\$",
     margin = .5Plots.cm,
-    topmargin = 1Plots.cm)
+    topmargin = 1Plots.cm,
+)
 ```
+
+::: {.callout-note}
+Les titres et autres chaînes de caractères peuvent utiliser des formules LaTeX via `\$`, e.g. `"\$x\$"`.
+
+La notation `"$m"` accède à la valeur du paramètre `m` et la renvoit dans la chaine de caractères.
+:::
 
 ## Le modèle logistique {#sec-logistic}
 
@@ -138,7 +154,7 @@ Il faut cependant définir les paramètres du modèle @eq-logistic :
 ```{julia}
 #| code-fold: true
 r = 1.0      # natalité
-K = 10.0     # morrtalité
+K = 10.0     # mortalité
 par_logistic = [r, K] # packing
 ```
 
@@ -148,18 +164,20 @@ ainsi que le nouveau système dynamique :
 function logistic(u, p, t)
     r, K = p            # unpacking
     x = u[1]            # use x notation
-    dx = r*x*(1-x/K)    # return derivative
+    return dx = r*x*(1-x/K)    # return derivative
 end
 ```
 
 et le problème de Cauchy correspondant :
 ```{julia}
 #| code-fold: true
-prob_logistic = ODEProblem(logistic,        # modèle
-                          x0,               # condition initiale
-                          tspan,            # tspan
-                          par_logistic,     # paramètres
-                          saveat = tstep)   # option de sortie
+prob_logistic = ODEProblem(
+    logistic,         # modèle
+    x0,               # condition initiale
+    tspan,            # tspan
+    par_logistic;     # paramètres
+    saveat = tstep,   # option de sortie
+)
 ```
 
 On simule et on transforme la solution en dataframe :
@@ -173,10 +191,11 @@ rename!(sol_logistic, :timestamp => :time, :value => :x)
 
 On trace la solution, en rajoutant les équilibres stable ($x=K$) et instable ($x=0$) :
 ```{julia}
-#| code-fold: true
+#| code-fold: false
 #| output: true
 # solution
-plot(sol_logistic.time, sol_logistic.x,
+plot(
+    sol_logistic.time, sol_logistic.x;
     palette = :tab10,
     linewidth = 2,
     title = "\n Modèle logistique \$r=$r, K=$K\$",
@@ -185,27 +204,35 @@ plot(sol_logistic.time, sol_logistic.x,
     ylabel = "densité de population \$x(t)\$",
     xlabel = "temps \$t\$",
     margin = .5Plots.cm,
-    topmargin = 1Plots.cm)
+    topmargin = 1Plots.cm,
+)
 
 # équilibre 0
-plot!(sol_logistic.time, zeros(length(sol_logistic.time)),
-      color = "red",
-      linewidth = 2,
-      linestyle = :dash,
-      linealpha = .5,
-      label = "équilibre instable")
+plot!(
+    sol_logistic.time, zeros(length(sol_logistic.time));
+    color = "red",
+    linewidth = 2,
+    linestyle = :dash,
+    linealpha = .5,
+    label = "équilibre instable",
+)
 
-# équilibre 1
-plot!(sol_logistic.time, ones(length(sol_logistic.time)).*K,
-      color = "green",
-      linewidth = 2,
-      linestyle = :dash,
-      linealpha = .5,
-      label = "équilibre stable")
+# équilibre K
+plot!(
+    sol_logistic.time, ones(length(sol_logistic.time)).*K;
+    color = "green",
+    linewidth = 2,
+    linestyle = :dash,
+    linealpha = .5,
+    label = "équilibre stable",
+)
 
 ```
-\
 
+
+::: {.callout-note}
+Remarquez l'utilisation de `plot!` qui modifie en place la première figure en rajoutant des éléments (ici les équilibres et leurs labels).
+:::
 
 ## Effets Allee {#sec-allee}
 
@@ -228,76 +255,107 @@ tspan_allee = (0.0, 3.0)
 function allee(u, p, t)
     r, K, epsilon = p        # unpacking
     x = u[1]                 # use x notation
-    dx = r*x*(x/epsilon - 1)*(1 - x/K)     # return derivative
+    return dx = r*x*(x/epsilon - 1)*(1 - x/K)     # derivative
 end
 ```
 
-Nous définissons une fonction qui réalise une simulation en un seul appel :
+Nous définissons une fonction qui réalise une simulation en un seul appel depuis une condition initiale $x_0$ :
 
 ```{julia}
 function int_allee(x0, tspan = tspan_allee, param = par_allee)
-    prob_allee = ODEProblem(allee,          # modèle
-                          x0,               # condition initiale
-                          tspan,            # tspan
-                          param,            # paramètres
-                          saveat = tstep)   # option de sortie
+    prob_allee = ODEProblem(
+        allee,            # modèle
+        x0,               # condition initiale
+        tspan,            # tspan
+        param;            # paramètres
+        saveat = tstep,   # option de sortie
+        )
 
     sol_allee = solve(prob_allee)
     sol_allee = DataFrame(sol_allee)
     rename!(sol_allee, :timestamp => :time, :value => :x)
+
+    return sol_allee
 end
 ```
+
+
+::: {.callout-note}
+La fonction `int_allee` comporte un nombre d'arguments variable: `int_allee(x0)` renverra la solution avec les arguments `tspan` et `param` à leurs valeurs par défaut (ce sont des *vararg*); c'est le même appel que `int_allee(x0, tspan_allee, par_allee)`.
+:::
 
 Nous définissons un vecteur de conditions initiales différentes :
 ```{julia}
 x0step = 1.35
-x0vec = x0step:x0step:K
+x0vec = x0step:x0step:K     # range de valeur
 ```
 
 
-Finalement on réalise la figure, en initiant un graphique `P` et en faisant une boucle pour tracer chacune des simulations correspondant aux différentes conditions initiales :
+Finalement on réalise la figure. La stratégie diffère un peu de ce qui a été vu ci-dessus. Nous commençons par initier un graphique `fig`, et faisons une boucle `for` pour tracer chacune des simulations correspondant aux différentes conditions initiales^[la palette de couleur est accessoire, juste pour l'esthétique] :
 ```{julia}
 #| output: true
 # custom color palette
 init_cgrad = palette([:steelblue, :lightblue], length(x0vec))
 
 # initialisation du graphique
-P = plot(palette = init_cgrad,
-         title = "\n Modèle à effets Allee \$r=$r, K=$K\$, \$ϵ=$epsilon\$",
-         legend = :right,
-         ylabel = "densité de population \$x(t)\$",
-         xlabel = "temps \$t\$",
-         margin = .5Plots.cm,
-         topmargin = 1Plots.cm)
+fig = plot(;          # on initie uniquement le graphique
+    palette = init_cgrad,
+    title = "\n Modèle à effets Allee \$r=$r, K=$K\$, \$ϵ=$epsilon\$",
+    legend = :right,
+    ylabel = "densité de population \$x(t)\$",
+    xlabel = "temps \$t\$",
+    margin = .5Plots.cm,
+    topmargin = 1Plots.cm,
+    )
 
 # boucle de plot avec intégration pour differentes conditions initiales
-for x0 in x0vec
-    plot!(P, int_allee(x0).time, int_allee(x0).x,
-          linewidth = 2,
-          label = "")
+for x0 in x0vec         # x0 parcourt l'array x0vec
+    plot!(
+        fig,              # on modifie fig
+        int_allee(x0).time, # abcisses
+        int_allee(x0).x;    # ordonnées
+        linewidth = 2,      # keyword arguments après ;
+        label = "",
+    )
 end
 
-# équilibres
-plot!(P, int_allee(0).time, zeros(length(int_allee(0).time)),
-      color = "green",
-      linewidth = 2,
-      linestyle = :dash,
-      linealpha = .5,
-      label = "équilibre stable")
-plot!(P, int_allee(0).time, ones(length(int_allee(0).time)).*epsilon,
-      color = "red",
-      linewidth = 2,
-      linestyle = :dash,
-      linealpha = .5,
-      label = "équilibre instable")
-plot!(P, int_allee(0).time, ones(length(int_allee(0).time)).*K,
-      color = "green",
-      linewidth = 2,
-      linestyle = :dash,
-      linealpha = .5,
-      label = "")
+# équilibre 0
+plot!(
+    fig,
+    int_allee(0).time,
+    zeros(length(int_allee(0).time));
+    color = "green",
+    linewidth = 2,
+    linestyle = :dash,
+    linealpha = .5,
+    label = "équilibre stable",
+)
 
-display(P)      # actually shows the plot P
+# équilibre epsilon
+plot!(
+    fig,
+    int_allee(0).time,
+    ones(length(int_allee(0).time)).*epsilon;
+    color = "red",
+    linewidth = 2,
+    linestyle = :dash,
+    linealpha = .5,
+    label = "équilibre instable",
+)
+
+# équilibre K
+plot!(
+    fig,
+    int_allee(0).time,
+    ones(length(int_allee(0).time)).*K;
+    color = "green",
+    linewidth = 2,
+    linestyle = :dash,
+    linealpha = .5,
+    label = "",
+)
+
+display(fig)      # actually shows the plot P
 ```
 \
 
