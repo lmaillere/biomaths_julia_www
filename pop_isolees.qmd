@@ -120,7 +120,8 @@ On peut représenter graphiquement la simulation de la croissance de la populati
 ```{julia}
 #| output: true
 plot(
-    sol_malthus.time, sol_malthus.x;    # abcisses, ordonnées
+    sol_malthus.time,                   # abscisses
+    sol_malthus.x;                      # ordonnées
     palette = :tab10,                   # palette de couleurs
     linewidth = 2,
     title = "\n Modèle de Malthus \$n=$n, m=$m\$",
@@ -195,7 +196,8 @@ On trace la solution, en rajoutant les équilibres stable ($x=K$) et instable ($
 #| output: true
 # solution
 plot(
-    sol_logistic.time, sol_logistic.x;
+    sol_logistic.time,
+    sol_logistic.x;
     palette = :tab10,
     linewidth = 2,
     title = "\n Modèle logistique \$r=$r, K=$K\$",
@@ -209,7 +211,8 @@ plot(
 
 # équilibre 0
 plot!(
-    sol_logistic.time, zeros(length(sol_logistic.time));
+    sol_logistic.time,
+    zeros(length(sol_logistic.time));
     color = "red",
     linewidth = 2,
     linestyle = :dash,
@@ -219,7 +222,8 @@ plot!(
 
 # équilibre K
 plot!(
-    sol_logistic.time, ones(length(sol_logistic.time)).*K;
+    sol_logistic.time,
+    ones(length(sol_logistic.time)).*K;
     color = "green",
     linewidth = 2,
     linestyle = :dash,
@@ -312,7 +316,7 @@ fig = plot(;          # on initie uniquement le graphique
 for x0 in x0vec         # x0 parcourt l'array x0vec
     plot!(
         fig,              # on modifie fig
-        int_allee(x0).time, # abcisses
+        int_allee(x0).time, # abscisses
         int_allee(x0).x;    # ordonnées
         linewidth = 2,      # keyword arguments après ;
         label = "",
