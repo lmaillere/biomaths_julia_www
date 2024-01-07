@@ -16,7 +16,8 @@ avec $n$ le taux de natalité, et $m$ le taux de mortalité.
 Pour simuler ce modèle, c'est à dire intégrer numériquement les solutions au problème de Cauchy correspondant à l'@eq-malthus avec $x(0)=x_0\geq0$, nous allons utiliser les routines de `DifferentialEquations.jl` avec la méthode par défaut. Nous utiliserons aussi le package `Plots.jl` pour les représentations graphiques^[si vous n'avez jamais installé un package, il faudra commencer par le faire avant de pouvoir l'utiliser...].
 
 ```{julia}
-using Plots, DifferentialEquations
+using DifferentialEquations
+using Plots
 ```
 
 ### Conditions initiales, paramètres et temps
@@ -32,7 +33,7 @@ Nous définissons les paramètres, et les encapsulons dans un vecteur de paramè
 ```{julia}
 n = 3.0     # natalité
 m = 2.0     # morrtalité
-par_malthus = [n, m] # packing
+par_malthus = [n, m] # packing in an array
 ```
 
 Enfin, les propriétés du temps d'intégration :
@@ -43,14 +44,13 @@ tstep = 0.1
 
 ### Système dynamique
 
-On définit le modèle comme une fonction renvoyant la dérivée de $x$ en fonction de l'état ($u$ est la notation pour `DifferentialEquations.jl`), de paramètres ($p$), et du temps ($t$). L'ordre des arguments est important, c'est sous cette forme que les routines d'intégration attendent le modèle.
+On définit le modèle comme une fonction renvoyant la dérivée de $x$ en fonction de l'état (`u` est la notation pour `DifferentialEquations.jl`), de paramètres (`p`), et du temps (`t`). L'ordre des arguments est important, c'est sous cette forme que les routines d'intégration attendent le modèle.
 
 ```{julia}
 function malthus(u, p, t)
-    n, m = p        # unpacking
-    x = u[1]        # use x notation
-    return dx = (n-m)x     # return derivative
-                           # no multiplication * because of ()
+    n, m = p                # unpacking
+    x = u[1]                # use x notation
+    return dx = (n-m)x      # return derivative
 end
 ```
 
@@ -59,11 +59,13 @@ end
 On commence par définir le problème de Cauchy à intégrer, comme un `ODEProblem` avec arguments: le modèle, la condition initiale, les bornes d'intégration, les paramètres ainsi que l'option `saveat = tstep` permettant de récupérer la solution tout les `tstep` pas de temps (il y a plein d'options de sortie de l'intégration, dont même une fonction du temps !)
 
 ```{julia}
-prob_malthus = ODEProblem(malthus,          # modèle
-                          x0,               # condition initiale
-                          tspan,            # tspan
-                          par_malthus,      # paramètres
-                          saveat = tstep)   # option de sortie
+prob_malthus = ODEProblem(
+    malthus,          # modèle
+    x0,               # condition initiale
+    tspan,            # tspan
+    par_malthus;      # paramètres
+    saveat = tstep,   # keyword argument, option de sortie
+)
 ```
 
 On intègre le modèle via `solve`, défini par `DifferentialEquations.jl` pour des `struct` de type `ODEProblem` :

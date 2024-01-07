@@ -17,7 +17,7 @@ website:
   page-footer: "Copyright 2023, Ludovic Mailleret"
   repo-url: https://github.com/lmaillere/biomaths_www
   repo-actions: [edit, issue]
-  
+
 highlight-style: pygments
 
 reference-location: margin
@@ -31,11 +31,11 @@ format:
     code-tools: true
     html-math-method: katex
 
-license: CC BY-NC 
+license: CC BY-NC
 
 bibliography: references.bib
 
-jupyter: julia-1.9
+jupyter: julia-1.10
 
 execute:
  cache: true

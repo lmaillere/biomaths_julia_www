@@ -185,6 +185,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#installation-de-julia" id="toc-installation-de-julia" class="nav-link active" data-scroll-target="#installation-de-julia">Installation de Julia</a></li>
+  <li><a href="#packages-utilisés" id="toc-packages-utilisés" class="nav-link" data-scroll-target="#packages-utilisés">Packages utilisés</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/lmaillere/biomaths_www/edit/main/index.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/lmaillere/biomaths_www/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
@@ -222,42 +223,57 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="installation-de-julia">Installation de Julia</h2>
 <p>La façon la plus simple d’installer <code>Julia</code> est d’utiliser <a href="https://github.com/JuliaLang/juliaup">juliaup</a>.</p>
 <div class="page-columns page-full"><p>Sur Linux, installez <code>curl</code> sur votre système<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Puis dans un terminal :</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;<code>sudo apt install curl</code> sur Ubuntu</p></li></div></div>
-<div class="cell" data-execution_count="2">
+<div class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>curl <span class="op">-</span>fsSL https<span class="op">://</span>install.julialang.org <span class="op">|</span> sh</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>et procédez à l’installation.</p>
 <p>Fermez et réouvrez votre terminal (ou rechargez votre fichier de préférences comme vous l’indique l’installateur de juliaup) pour pouvoir exécuter <code>Julia</code>.</p>
 <div class="page-columns page-full"><p>Puis, si vous souhaitez utiliser <code>Julia</code> dans un notebook <code>jupyter</code>, installez le package <code>IJulia</code> depuis Julia comme suit<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>:</p><div class="no-row-height column-margin column-container"><li id="fn2"><p><sup>2</sup>&nbsp;le profil utilisé doit semble-t-il être administrateur, et si il est tout nouvellement créé un redémarrage peut s’avérer nécessaire si vous rencontrez une erreur à l’exécution de <code>jupyterlab()</code> ci-dessous</p></li></div></div>
-<div class="cell" data-execution_count="3">
+<div class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>julia <span class="co"># executer julia dans un terminal</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>   _       _ <span class="fu">_</span>(_)_     <span class="op">|</span>  Documentation<span class="op">:</span> https<span class="op">://</span>docs.julialang.org</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  (_)     <span class="op">|</span> (_) (_)    <span class="op">|</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>   _ _   _<span class="op">|</span> <span class="op">|</span>_  __ _   <span class="op">|</span>  <span class="dt">Type</span> <span class="st">"?"</span> <span class="cf">for</span> help, <span class="st">"]?"</span> <span class="cf">for</span> <span class="bu">Pkg</span> help.</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="op">|</span> <span class="op">|</span> <span class="op">|</span> <span class="op">|</span> <span class="op">|</span> <span class="op">|/</span> _<span class="ss">` |  |</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="op">|</span> <span class="op">|</span>_<span class="op">|</span> <span class="op">|</span> <span class="op">|</span> <span class="op">|</span> (_<span class="op">|</span> <span class="op">|</span>  <span class="op">|</span>  Version <span class="fl">1.9.4</span> (<span class="fl">2023</span><span class="op">-</span><span class="fl">11</span><span class="op">-</span><span class="fl">14</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">|</span> <span class="op">|</span> <span class="op">|</span>_<span class="op">|</span> <span class="op">|</span> <span class="op">|</span> <span class="op">|</span> (_<span class="op">|</span> <span class="op">|</span>  <span class="op">|</span>  Version <span class="fl">1.10.0</span> (<span class="fl">2023</span><span class="op">-</span><span class="fl">12</span><span class="op">-</span><span class="fl">25</span>)</span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a> _<span class="op">/</span> <span class="op">|\</span>__<span class="ch">'_|_|_|\__'</span>_<span class="op">|</span>  <span class="op">|</span>  Official https<span class="op">://</span>julialang.org<span class="op">/</span> release</span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="op">|</span>__<span class="op">/</span>                   <span class="op">|</span></span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> ]  <span class="co"># package mode</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>(<span class="pp">@v1</span><span class="fl">.9</span>) pkg<span class="op">&gt;</span> add IJulia </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>(<span class="pp">@v1</span><span class="fl">.10</span>) pkg<span class="op">&gt;</span> add IJulia</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>(<span class="pp">@v1</span><span class="fl">.10</span>) pkg<span class="op">&gt;</span> build IJulia</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Si vous avez déjà <code>jupyterlab</code> installé, un noyau <code>Julia</code> est ensuite disponible. Sinon vous pouvez l’installer et le démarrer directement depuis Julia :</p>
-<div class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="im">using</span> <span class="bu">IJulia </span><span class="co"># tapez backspace d'abord </span></span>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="im">using</span> <span class="bu">IJulia </span><span class="co"># tapez backspace d'abord</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>                    <span class="co"># pour sortir du package mode</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">jupyterlab</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><br>
 </p>
 <p><code>Julia</code> a aussi un système de notebook propre <code>Pluto.jl</code>:</p>
-<div class="cell" data-execution_count="5">
+<div class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> ]   <span class="co"># package mode</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>(<span class="pp">@v1</span><span class="fl">.9</span>) pkg<span class="op">&gt;</span> add Pluto</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>(<span class="pp">@v1</span><span class="fl">.10</span>) pkg<span class="op">&gt;</span> add Pluto</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="im">using</span> <span class="bu">Pluto  </span><span class="co"># hit backspace first to exit package mode</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><br>
 </p>
 <p>Enfin, une <a href="https://www.julia-vscode.org/docs/stable/setup/">extension Julia</a> est disponible pour VScode/VScodium, un environnement de développement que je vous conseille.</p>
+</section>
+<section id="packages-utilisés" class="level2">
+<h2 class="anchored" data-anchor-id="packages-utilisés">Packages utilisés</h2>
+<p>Nous allons utiliser différents package que je vous invite à installer avant de commencer (il est toujours possible de le faire en cours de route, mais cela peut prendre un certain temps selon la connexion internet et la machine).</p>
+<p>Pour cela, il faut lancer Julia, entrer dans le <em>package mode</em> en appuyant sur la touche <code>]</code>, puis installer les package via <code>add PackageName</code>:</p>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> ]   <span class="co"># package mode</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>(<span class="pp">@v1</span><span class="fl">.10</span>) pkg<span class="op">&gt;</span> add Plots</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>(<span class="pp">@v1</span><span class="fl">.10</span>) pkg<span class="op">&gt;</span> add DifferentialEquations</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>(<span class="pp">@v1</span><span class="fl">.10</span>) pkg<span class="op">&gt;</span> add Dataframes</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>(<span class="pp">@v1</span><span class="fl">.10</span>) pkg<span class="op">&gt;</span> add Polynomials</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>(<span class="pp">@v1</span><span class="fl">.10</span>) pkg<span class="op">&gt;</span> add Symbolics</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>(<span class="pp">@v1</span><span class="fl">.10</span>) pkg<span class="op">&gt;</span> add CairoMakie</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p><a href="./pop_isolees.html">Allons-y !</a></p>
 
 
@@ -551,75 +567,90 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb5" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Introduction"</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>\</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>Ces pages proposent une introduction à la simulation d'équations différentielles avec <span class="in">`Julia`</span>, centrée sur la simulation de modèles classiques en dynamique des populations.</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>Ces pages sont structurées comme suit :</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>la section sur les <span class="co">[</span><span class="ot">populations isolées</span><span class="co">](pop_isolees.qmd)</span> introduit les bases en dimension 1 (modèle de Malthus, modèle logistique et effets Allee)</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>la section sur les <span class="co">[</span><span class="ot">populations exploitées</span><span class="co">](pop_exploitees.qmd)</span> introduit les diagrammes de bifurcations (prélèvements et effets Allee, interactions insectes-oiseaux)</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>la section sur les <span class="co">[</span><span class="ot">populations en interaction</span><span class="co">](pop_interactions.qmd)</span> introduit la dimension 2, notamment via les représentations dans l'espace d'état, et traite des interactions entre populations sous l'angle des modèles proies-prédateurs (modèle de Lotka Volterra et <span class="co">[</span><span class="ot">modèle de Rosenzweig MacArthur</span><span class="co">](pop_interactions2.qmd)</span>)</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>Le site contient aussi du <span class="co">[</span><span class="ot">matétiel supplémentaire</span><span class="co">](annexes.qmd)</span> pour compléments plus avancés (graphiques, methodes d'intégration alternatives, équations de réaction-diffusion).</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="fu">## Installation de Julia</span></span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>La façon la plus simple d'installer <span class="in">`Julia`</span> est d'utiliser <span class="co">[</span><span class="ot">juliaup</span><span class="co">](https://github.com/JuliaLang/juliaup)</span>. </span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>Sur Linux, installez <span class="in">`curl`</span> sur votre système^<span class="co">[</span><span class="ot">`sudo apt install curl` sur Ubuntu</span><span class="co">]</span>. Puis dans un terminal :</span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>curl <span class="ot">-f</span>sSL https://install.julialang.org | sh</span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>et procédez à l'installation. </span>
-<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>Fermez et réouvrez votre terminal (ou rechargez votre fichier de préférences comme vous l'indique l'installateur de juliaup) pour pouvoir exécuter <span class="in">`Julia`</span>.</span>
-<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>Puis, si vous souhaitez utiliser <span class="in">`Julia`</span> dans un notebook <span class="in">`jupyter`</span>, installez le package <span class="in">`IJulia`</span> depuis Julia comme suit^<span class="co">[</span><span class="ot">le profil utilisé doit semble-t-il être administrateur, et si il est tout nouvellement créé un redémarrage peut s'avérer nécessaire si vous rencontrez une erreur à l'exécution de `jupyterlab()` ci-dessous</span><span class="co">]</span>:</span>
-<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>julia <span class="co"># executer julia dans un terminal</span></span>
-<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>   _       _ _(_)_     |  Documentation: https://docs.julialang.org</span>
-<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>  (_)     | (_) (_)    |</span>
-<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>   _ _   _| |_  __ _   |  Type <span class="ot">"</span><span class="st">?</span><span class="ot">"</span> <span class="kw">for</span> help, <span class="ot">"</span><span class="st">]?</span><span class="ot">"</span> <span class="kw">for</span> Pkg help.</span>
-<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>  | | | | | | |<span class="ot">/ _` </span><span class="ch">|</span><span class="ot">  </span><span class="ch">|</span></span>
-<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a><span class="ot">  </span><span class="ch">|</span><span class="ot"> </span><span class="ch">|</span><span class="ot"> </span><span class="ch">|</span><span class="ot">_</span><span class="ch">|</span><span class="ot"> </span><span class="ch">|</span><span class="ot"> </span><span class="ch">|</span><span class="ot"> </span><span class="ch">|</span><span class="ot"> </span><span class="ch">(</span><span class="ot">_</span><span class="ch">|</span><span class="ot"> </span><span class="ch">|</span><span class="ot">  </span><span class="ch">|</span><span class="ot">  Version 1.9.4 </span><span class="ch">(</span><span class="ot">2023-11-14</span><span class="ch">)</span></span>
-<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a><span class="ot"> _/</span> |\__<span class="ot">'</span><span class="ss">_|_|_|\__</span><span class="ot">'</span>_|  |  Official https://julialang.org/ release</span>
-<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>|__/                   |</span>
-<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>julia&gt; ]  <span class="co"># package mode</span></span>
-<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>(<span class="dt">@v1</span>.<span class="dv">9</span>) pkg&gt; add IJulia </span>
-<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a>Si vous avez déjà <span class="in">`jupyterlab`</span> installé, un noyau <span class="in">`Julia`</span> est ensuite disponible. Sinon vous pouvez l'installer et le démarrer directement depuis Julia :</span>
-<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a>julia&gt; using IJulia <span class="co"># tapez backspace d'abord </span></span>
-<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a>                    <span class="co"># pour sortir du package mode</span></span>
-<span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a>julia&gt; jupyterlab()</span>
-<span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a>\</span>
-<span id="cb5-63"><a href="#cb5-63" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-64"><a href="#cb5-64" aria-hidden="true" tabindex="-1"></a><span class="in">`Julia`</span> a aussi un système de notebook propre <span class="in">`Pluto.jl`</span>:</span>
-<span id="cb5-67"><a href="#cb5-67" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb5-68"><a href="#cb5-68" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb5-69"><a href="#cb5-69" aria-hidden="true" tabindex="-1"></a>julia&gt; ]   <span class="co"># package mode</span></span>
-<span id="cb5-70"><a href="#cb5-70" aria-hidden="true" tabindex="-1"></a>(<span class="dt">@v1</span>.<span class="dv">9</span>) pkg&gt; add Pluto</span>
-<span id="cb5-71"><a href="#cb5-71" aria-hidden="true" tabindex="-1"></a>julia&gt; using Pluto  <span class="co"># hit backspace first to exit package mode</span></span>
-<span id="cb5-72"><a href="#cb5-72" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb5-73"><a href="#cb5-73" aria-hidden="true" tabindex="-1"></a>\</span>
-<span id="cb5-74"><a href="#cb5-74" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-75"><a href="#cb5-75" aria-hidden="true" tabindex="-1"></a>Enfin, une <span class="co">[</span><span class="ot">extension Julia</span><span class="co">](https://www.julia-vscode.org/docs/stable/setup/)</span> est disponible pour VScode/VScodium, un environnement de développement que je vous conseille.</span>
-<span id="cb5-76"><a href="#cb5-76" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-77"><a href="#cb5-77" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Allons-y !</span><span class="co">](pop_isolees.qmd)</span></span>
+<div class="sourceCode" id="cb6" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Introduction"</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>\</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>Ces pages proposent une introduction à la simulation d'équations différentielles avec <span class="in">`Julia`</span>, centrée sur la simulation de modèles classiques en dynamique des populations.</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>Ces pages sont structurées comme suit :</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>la section sur les <span class="co">[</span><span class="ot">populations isolées</span><span class="co">](pop_isolees.qmd)</span> introduit les bases en dimension 1 (modèle de Malthus, modèle logistique et effets Allee)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>la section sur les <span class="co">[</span><span class="ot">populations exploitées</span><span class="co">](pop_exploitees.qmd)</span> introduit les diagrammes de bifurcations (prélèvements et effets Allee, interactions insectes-oiseaux)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>la section sur les <span class="co">[</span><span class="ot">populations en interaction</span><span class="co">](pop_interactions.qmd)</span> introduit la dimension 2, notamment via les représentations dans l'espace d'état, et traite des interactions entre populations sous l'angle des modèles proies-prédateurs (modèle de Lotka Volterra et <span class="co">[</span><span class="ot">modèle de Rosenzweig MacArthur</span><span class="co">](pop_interactions2.qmd)</span>)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>Le site contient aussi du <span class="co">[</span><span class="ot">matétiel supplémentaire</span><span class="co">](annexes.qmd)</span> pour compléments plus avancés (graphiques, methodes d'intégration alternatives, équations de réaction-diffusion).</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="fu">## Installation de Julia</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>La façon la plus simple d'installer <span class="in">`Julia`</span> est d'utiliser <span class="co">[</span><span class="ot">juliaup</span><span class="co">](https://github.com/JuliaLang/juliaup)</span>.</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>Sur Linux, installez <span class="in">`curl`</span> sur votre système^<span class="co">[</span><span class="ot">`sudo apt install curl` sur Ubuntu</span><span class="co">]</span>. Puis dans un terminal :</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>curl <span class="ot">-f</span>sSL https://install.julialang.org | sh</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>et procédez à l'installation.</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>Fermez et réouvrez votre terminal (ou rechargez votre fichier de préférences comme vous l'indique l'installateur de juliaup) pour pouvoir exécuter <span class="in">`Julia`</span>.</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>Puis, si vous souhaitez utiliser <span class="in">`Julia`</span> dans un notebook <span class="in">`jupyter`</span>, installez le package <span class="in">`IJulia`</span> depuis Julia comme suit^<span class="co">[</span><span class="ot">le profil utilisé doit semble-t-il être administrateur, et si il est tout nouvellement créé un redémarrage peut s'avérer nécessaire si vous rencontrez une erreur à l'exécution de `jupyterlab()` ci-dessous</span><span class="co">]</span>:</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>julia <span class="co"># executer julia dans un terminal</span></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>   _       _ _(_)_     |  Documentation: https://docs.julialang.org</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>  (_)     | (_) (_)    |</span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>   _ _   _| |_  __ _   |  Type <span class="ot">"</span><span class="st">?</span><span class="ot">"</span> <span class="kw">for</span> help, <span class="ot">"</span><span class="st">]?</span><span class="ot">"</span> <span class="kw">for</span> Pkg help.</span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>  | | | | | | |<span class="ot">/ _` </span><span class="ch">|</span><span class="ot">  </span><span class="ch">|</span></span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a><span class="ot">  </span><span class="ch">|</span><span class="ot"> </span><span class="ch">|</span><span class="ot"> </span><span class="ch">|</span><span class="ot">_</span><span class="ch">|</span><span class="ot"> </span><span class="ch">|</span><span class="ot"> </span><span class="ch">|</span><span class="ot"> </span><span class="ch">|</span><span class="ot"> </span><span class="ch">(</span><span class="ot">_</span><span class="ch">|</span><span class="ot"> </span><span class="ch">|</span><span class="ot">  </span><span class="ch">|</span><span class="ot">  Version 1.10.0 </span><span class="ch">(</span><span class="ot">2023-12-25</span><span class="ch">)</span></span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a><span class="ot"> _/</span> |\__<span class="ot">'</span><span class="ss">_|_|_|\__</span><span class="ot">'</span>_|  |  Official https://julialang.org/ release</span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>|__/                   |</span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>julia&gt; ]  <span class="co"># package mode</span></span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>(<span class="dt">@v1</span>.<span class="dv">10</span>) pkg&gt; add IJulia</span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>(<span class="dt">@v1</span>.<span class="dv">10</span>) pkg&gt; build IJulia</span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>Si vous avez déjà <span class="in">`jupyterlab`</span> installé, un noyau <span class="in">`Julia`</span> est ensuite disponible. Sinon vous pouvez l'installer et le démarrer directement depuis Julia :</span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a>julia&gt; using IJulia <span class="co"># tapez backspace d'abord</span></span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>                    <span class="co"># pour sortir du package mode</span></span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a>julia&gt; jupyterlab()</span>
+<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a>\</span>
+<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a><span class="in">`Julia`</span> a aussi un système de notebook propre <span class="in">`Pluto.jl`</span>:</span>
+<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a>julia&gt; ]   <span class="co"># package mode</span></span>
+<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a>(<span class="dt">@v1</span>.<span class="dv">10</span>) pkg&gt; add Pluto</span>
+<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a>julia&gt; using Pluto  <span class="co"># hit backspace first to exit package mode</span></span>
+<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a>\</span>
+<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a>Enfin, une <span class="co">[</span><span class="ot">extension Julia</span><span class="co">](https://www.julia-vscode.org/docs/stable/setup/)</span> est disponible pour VScode/VScodium, un environnement de développement que je vous conseille.</span>
+<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a><span class="fu">## Packages utilisés</span></span>
+<span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-78"><a href="#cb6-78" aria-hidden="true" tabindex="-1"></a>Nous allons utiliser différents package que je vous invite à installer avant de commencer (il est toujours possible de le faire en cours de route, mais cela peut prendre un certain temps selon la connexion internet et la machine).</span>
+<span id="cb6-79"><a href="#cb6-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-80"><a href="#cb6-80" aria-hidden="true" tabindex="-1"></a>Pour cela, il faut lancer Julia, entrer dans le *package mode* en appuyant sur la touche <span class="in">`]`</span>, puis installer les package via <span class="in">`add PackageName`</span>:</span>
+<span id="cb6-83"><a href="#cb6-83" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb6-84"><a href="#cb6-84" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb6-85"><a href="#cb6-85" aria-hidden="true" tabindex="-1"></a>julia&gt; ]   <span class="co"># package mode</span></span>
+<span id="cb6-86"><a href="#cb6-86" aria-hidden="true" tabindex="-1"></a>(<span class="dt">@v1</span>.<span class="dv">10</span>) pkg&gt; add Plots</span>
+<span id="cb6-87"><a href="#cb6-87" aria-hidden="true" tabindex="-1"></a>(<span class="dt">@v1</span>.<span class="dv">10</span>) pkg&gt; add DifferentialEquations</span>
+<span id="cb6-88"><a href="#cb6-88" aria-hidden="true" tabindex="-1"></a>(<span class="dt">@v1</span>.<span class="dv">10</span>) pkg&gt; add Dataframes</span>
+<span id="cb6-89"><a href="#cb6-89" aria-hidden="true" tabindex="-1"></a>(<span class="dt">@v1</span>.<span class="dv">10</span>) pkg&gt; add Polynomials</span>
+<span id="cb6-90"><a href="#cb6-90" aria-hidden="true" tabindex="-1"></a>(<span class="dt">@v1</span>.<span class="dv">10</span>) pkg&gt; add Symbolics</span>
+<span id="cb6-91"><a href="#cb6-91" aria-hidden="true" tabindex="-1"></a>(<span class="dt">@v1</span>.<span class="dv">10</span>) pkg&gt; add CairoMakie</span>
+<span id="cb6-92"><a href="#cb6-92" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-93"><a href="#cb6-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-94"><a href="#cb6-94" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Allons-y !</span><span class="co">](pop_isolees.qmd)</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

@@ -17,14 +17,14 @@ Le site contient aussi du [matétiel supplémentaire](annexes.qmd) pour complém
 
 ## Installation de Julia
 
-La façon la plus simple d'installer `Julia` est d'utiliser [juliaup](https://github.com/JuliaLang/juliaup). 
+La façon la plus simple d'installer `Julia` est d'utiliser [juliaup](https://github.com/JuliaLang/juliaup).
 
 Sur Linux, installez `curl` sur votre système^[`sudo apt install curl` sur Ubuntu]. Puis dans un terminal :
 ```{julia}
 #| eval: false
 curl -fsSL https://install.julialang.org | sh
 ```
-et procédez à l'installation. 
+et procédez à l'installation.
 
 Fermez et réouvrez votre terminal (ou rechargez votre fichier de préférences comme vous l'indique l'installateur de juliaup) pour pouvoir exécuter `Julia`.
 
@@ -36,20 +36,19 @@ julia # executer julia dans un terminal
   (_)     | (_) (_)    |
    _ _   _| |_  __ _   |  Type "?" for help, "]?" for Pkg help.
   | | | | | | |/ _` |  |
-  | | |_| | | | (_| |  |  Version 1.9.4 (2023-11-14)
+  | | |_| | | | (_| |  |  Version 1.10.0 (2023-12-25)
  _/ |\__'_|_|_|\__'_|  |  Official https://julialang.org/ release
 |__/                   |
 
 julia> ]  # package mode
-(@v1.9) pkg> add IJulia 
+(@v1.10) pkg> add IJulia
+(@v1.10) pkg> build IJulia
 ```
-
-
 
 Si vous avez déjà `jupyterlab` installé, un noyau `Julia` est ensuite disponible. Sinon vous pouvez l'installer et le démarrer directement depuis Julia :
 ```{julia}
 #| eval: false
-julia> using IJulia # tapez backspace d'abord 
+julia> using IJulia # tapez backspace d'abord
                     # pour sortir du package mode
 julia> jupyterlab()
 ```
@@ -59,11 +58,27 @@ julia> jupyterlab()
 ```{julia}
 #| eval: false
 julia> ]   # package mode
-(@v1.9) pkg> add Pluto
+(@v1.10) pkg> add Pluto
 julia> using Pluto  # hit backspace first to exit package mode
 ```
 \
 
 Enfin, une [extension Julia](https://www.julia-vscode.org/docs/stable/setup/) est disponible pour VScode/VScodium, un environnement de développement que je vous conseille.
+
+## Packages utilisés
+
+Nous allons utiliser différents package que je vous invite à installer avant de commencer (il est toujours possible de le faire en cours de route, mais cela peut prendre un certain temps selon la connexion internet et la machine).
+
+Pour cela, il faut lancer Julia, entrer dans le *package mode* en appuyant sur la touche `]`, puis installer les package via `add PackageName`:
+```{julia}
+#| eval: false
+julia> ]   # package mode
+(@v1.10) pkg> add Plots
+(@v1.10) pkg> add DifferentialEquations
+(@v1.10) pkg> add Dataframes
+(@v1.10) pkg> add Polynomials
+(@v1.10) pkg> add Symbolics
+(@v1.10) pkg> add CairoMakie
+```
 
 [Allons-y !](pop_isolees.qmd)
