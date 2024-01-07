@@ -204,6 +204,7 @@ plot!(
 ```
 
 ## Le modèle proie-prédateur de Lotka et Volterra {#sec-lv}
+<!--  STOP -->
 
 Nous considérons le modèle de dynamique de populations de @Lotka1925 et @Volterra1926 :
 

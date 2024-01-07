@@ -547,6 +547,7 @@ div.csl-indent {
 </section>
 <section id="sec-lv" class="level2">
 <h2 class="anchored" data-anchor-id="sec-lv">Le modèle proie-prédateur de Lotka et Volterra</h2>
+<!--  STOP -->
 <p>Nous considérons le modèle de dynamique de populations de <span class="citation" data-cites="Lotka1925">Lotka (<a href="#ref-Lotka1925" role="doc-biblioref">1925</a>)</span> et <span class="citation" data-cites="Volterra1926">Volterra (<a href="#ref-Volterra1926" role="doc-biblioref">1926</a>)</span> :</p>
 <p><span id="eq-lovo"><span class="math display">
 \left\{\begin{array}{l}
@@ -13973,210 +13974,211 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb13-216"><a href="#cb13-216" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
 <span id="cb13-217"><a href="#cb13-217" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-218"><a href="#cb13-218" aria-hidden="true" tabindex="-1"></a><span class="co">## Le modèle proie-prédateur de Lotka et Volterra {#sec-lv}</span></span>
-<span id="cb13-219"><a href="#cb13-219" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-220"><a href="#cb13-220" aria-hidden="true" tabindex="-1"></a>Nous considérons <span class="ot">le</span> modèle de dynamique de populations de <span class="dt">@Lotka1925</span> et <span class="dt">@Volterra1926</span> :</span>
-<span id="cb13-221"><a href="#cb13-221" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-222"><a href="#cb13-222" aria-hidden="true" tabindex="-1"></a><span class="wa">$$</span></span>
-<span id="cb13-223"><a href="#cb13-223" aria-hidden="true" tabindex="-1"></a>\left\{\begin{array}{l}</span>
-<span id="cb13-224"><a href="#cb13-224" aria-hidden="true" tabindex="-1"></a>\dot x = rx - c xy,\\</span>
-<span id="cb13-225"><a href="#cb13-225" aria-hidden="true" tabindex="-1"></a>\dot <span class="ot">y </span>= bxy - m <span class="ot">y</span>.</span>
-<span id="cb13-226"><a href="#cb13-226" aria-hidden="true" tabindex="-1"></a>\end{array}\right.</span>
-<span id="cb13-227"><a href="#cb13-227" aria-hidden="true" tabindex="-1"></a><span class="wa">$$</span> {<span class="co">#eq-lovo}</span></span>
-<span id="cb13-228"><a href="#cb13-228" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-229"><a href="#cb13-229" aria-hidden="true" tabindex="-1"></a>Avec <span class="dt">$x</span>$ la population de proies et <span class="dt">$y</span>$ la population de prédateurs.</span>
-<span id="cb13-230"><a href="#cb13-230" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-231"><a href="#cb13-231" aria-hidden="true" tabindex="-1"></a><span class="co">### Dynamiques</span></span>
-<span id="cb13-232"><a href="#cb13-232" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-233"><a href="#cb13-233" aria-hidden="true" tabindex="-1"></a>Il n<span class="ot">'</span><span class="ss">y a pas de difficulté particulière à la simulation par rapport au modèle de la tordeuse du bourgeon de l</span><span class="ot">'</span>épinette avec population d<span class="ot">'</span><span class="ss">oiseaux variables.</span></span>
-<span id="cb13-234"><a href="#cb13-234" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-237"><a href="#cb13-237" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb13-238"><a href="#cb13-238" aria-hidden="true" tabindex="-1"></a><span class="ss">#| output: true</span></span>
-<span id="cb13-239"><a href="#cb13-239" aria-hidden="true" tabindex="-1"></a><span class="ss">#| code-fold: true</span></span>
-<span id="cb13-240"><a href="#cb13-240" aria-hidden="true" tabindex="-1"></a><span class="ss"># conditions initiales</span></span>
-<span id="cb13-241"><a href="#cb13-241" aria-hidden="true" tabindex="-1"></a><span class="ss">x0 = 1.0</span></span>
-<span id="cb13-242"><a href="#cb13-242" aria-hidden="true" tabindex="-1"></a><span class="ss">y0 = 1.95</span></span>
-<span id="cb13-243"><a href="#cb13-243" aria-hidden="true" tabindex="-1"></a><span class="ss">etat0 = [x0, y0]</span></span>
-<span id="cb13-244"><a href="#cb13-244" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-245"><a href="#cb13-245" aria-hidden="true" tabindex="-1"></a><span class="ss"># paramètres</span></span>
-<span id="cb13-246"><a href="#cb13-246" aria-hidden="true" tabindex="-1"></a><span class="ss">r = 1.0</span></span>
-<span id="cb13-247"><a href="#cb13-247" aria-hidden="true" tabindex="-1"></a><span class="ss">c = 1.0</span></span>
-<span id="cb13-248"><a href="#cb13-248" aria-hidden="true" tabindex="-1"></a><span class="ss">b = 1.0</span></span>
-<span id="cb13-249"><a href="#cb13-249" aria-hidden="true" tabindex="-1"></a><span class="ss">m = 1.0</span></span>
-<span id="cb13-250"><a href="#cb13-250" aria-hidden="true" tabindex="-1"></a><span class="ss">par_lovo = [r, c, b, m]</span></span>
-<span id="cb13-251"><a href="#cb13-251" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-252"><a href="#cb13-252" aria-hidden="true" tabindex="-1"></a><span class="ss"># integration plus longue</span></span>
-<span id="cb13-253"><a href="#cb13-253" aria-hidden="true" tabindex="-1"></a><span class="ss">tspan = (0.0, 30.0)</span></span>
-<span id="cb13-254"><a href="#cb13-254" aria-hidden="true" tabindex="-1"></a><span class="ss">tstep = .01</span></span>
-<span id="cb13-255"><a href="#cb13-255" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-256"><a href="#cb13-256" aria-hidden="true" tabindex="-1"></a><span class="ss"># définition du modèle</span></span>
-<span id="cb13-257"><a href="#cb13-257" aria-hidden="true" tabindex="-1"></a><span class="ss">function lovo(u, par, t)</span></span>
-<span id="cb13-258"><a href="#cb13-258" aria-hidden="true" tabindex="-1"></a><span class="ss">    r, c, b, m = par</span></span>
-<span id="cb13-259"><a href="#cb13-259" aria-hidden="true" tabindex="-1"></a><span class="ss">    x = u[1]</span></span>
-<span id="cb13-260"><a href="#cb13-260" aria-hidden="true" tabindex="-1"></a><span class="ss">    y = u[2]</span></span>
-<span id="cb13-261"><a href="#cb13-261" aria-hidden="true" tabindex="-1"></a><span class="ss">    dx = r*x - c*x*y</span></span>
-<span id="cb13-262"><a href="#cb13-262" aria-hidden="true" tabindex="-1"></a><span class="ss">    dy = b*x*y - m*y</span></span>
-<span id="cb13-263"><a href="#cb13-263" aria-hidden="true" tabindex="-1"></a><span class="ss">    [dx, dy]</span></span>
-<span id="cb13-264"><a href="#cb13-264" aria-hidden="true" tabindex="-1"></a><span class="ss">end</span></span>
-<span id="cb13-265"><a href="#cb13-265" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-266"><a href="#cb13-266" aria-hidden="true" tabindex="-1"></a><span class="ss"># problème</span></span>
-<span id="cb13-267"><a href="#cb13-267" aria-hidden="true" tabindex="-1"></a><span class="ss">prob_lovo = ODEProblem(lovo, etat0, tspan, par_lovo, saveat = tstep)</span></span>
-<span id="cb13-268"><a href="#cb13-268" aria-hidden="true" tabindex="-1"></a><span class="ss"># intégration</span></span>
-<span id="cb13-269"><a href="#cb13-269" aria-hidden="true" tabindex="-1"></a><span class="ss">sol_lovo = solve(prob_lovo, reltol = 1e-6)</span></span>
-<span id="cb13-270"><a href="#cb13-270" aria-hidden="true" tabindex="-1"></a><span class="ss"># dataframe</span></span>
-<span id="cb13-271"><a href="#cb13-271" aria-hidden="true" tabindex="-1"></a><span class="ss">sol_lovo = DataFrame(sol_lovo)</span></span>
-<span id="cb13-272"><a href="#cb13-272" aria-hidden="true" tabindex="-1"></a><span class="ss">rename!(sol_lovo, :timestamp =&gt; :time, :value1 =&gt; :x, :value2 =&gt; :y)</span></span>
-<span id="cb13-273"><a href="#cb13-273" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-274"><a href="#cb13-274" aria-hidden="true" tabindex="-1"></a><span class="ss">Plv = plot(sol_lovo.time, sol_lovo.x,</span></span>
-<span id="cb13-275"><a href="#cb13-275" aria-hidden="true" tabindex="-1"></a><span class="ss">           linewidth = 2,</span></span>
-<span id="cb13-276"><a href="#cb13-276" aria-hidden="true" tabindex="-1"></a><span class="ss">           color = myblue,</span></span>
-<span id="cb13-277"><a href="#cb13-277" aria-hidden="true" tabindex="-1"></a><span class="ss">           label = "proies",</span></span>
-<span id="cb13-278"><a href="#cb13-278" aria-hidden="true" tabindex="-1"></a><span class="ss">           xlabel = "temps",</span></span>
-<span id="cb13-279"><a href="#cb13-279" aria-hidden="true" tabindex="-1"></a><span class="ss">           ylabel = "densité de populations",</span></span>
-<span id="cb13-280"><a href="#cb13-280" aria-hidden="true" tabindex="-1"></a><span class="ss">           title = "Modèle de Lotka Volterra",</span></span>
-<span id="cb13-281"><a href="#cb13-281" aria-hidden="true" tabindex="-1"></a><span class="ss">           margin = .5Plots.cm,</span></span>
-<span id="cb13-282"><a href="#cb13-282" aria-hidden="true" tabindex="-1"></a><span class="ss">           topmargin = 1Plots.cm)</span></span>
-<span id="cb13-283"><a href="#cb13-283" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-284"><a href="#cb13-284" aria-hidden="true" tabindex="-1"></a><span class="ss">plot!(Plv, sol_lovo.time, sol_lovo.y,</span></span>
-<span id="cb13-285"><a href="#cb13-285" aria-hidden="true" tabindex="-1"></a><span class="ss">      linewidth = 2,</span></span>
-<span id="cb13-286"><a href="#cb13-286" aria-hidden="true" tabindex="-1"></a><span class="ss">      color = myorange,</span></span>
-<span id="cb13-287"><a href="#cb13-287" aria-hidden="true" tabindex="-1"></a><span class="ss">      label = "prédateurs")</span></span>
-<span id="cb13-288"><a href="#cb13-288" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-289"><a href="#cb13-289" aria-hidden="true" tabindex="-1"></a><span class="ss">```</span></span>
-<span id="cb13-290"><a href="#cb13-290" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-291"><a href="#cb13-291" aria-hidden="true" tabindex="-1"></a><span class="ss">### Espace d</span><span class="ot">'</span>état</span>
-<span id="cb13-292"><a href="#cb13-292" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-293"><a href="#cb13-293" aria-hidden="true" tabindex="-1"></a>Commençons par tracer les isoclines nulles ainsi que l<span class="ot">'</span><span class="ss">orientation du champs de vecteur dans l</span><span class="ot">'</span>espace d<span class="ot">'</span><span class="ss">état. Ce dernier utilise la fonction `quiver()`.</span></span>
-<span id="cb13-296"><a href="#cb13-296" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb13-297"><a href="#cb13-297" aria-hidden="true" tabindex="-1"></a><span class="ss"># on redéfinit des fonctions qui renvoient les composantes de la dérivée mises à l</span><span class="ot">'</span>échelle</span>
-<span id="cb13-298"><a href="#cb13-298" aria-hidden="true" tabindex="-1"></a>scale = <span class="dv">10</span></span>
-<span id="cb13-299"><a href="#cb13-299" aria-hidden="true" tabindex="-1"></a>der_x(x, y) = lovo([x y], par_lovo, <span class="dv">0</span>)[<span class="dv">1</span>]/scale</span>
-<span id="cb13-300"><a href="#cb13-300" aria-hidden="true" tabindex="-1"></a>der_y(x, y) = lovo([x y], par_lovo, <span class="dv">0</span>)[<span class="dv">2</span>]/scale</span>
-<span id="cb13-301"><a href="#cb13-301" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-302"><a href="#cb13-302" aria-hidden="true" tabindex="-1"></a><span class="co"># on définit un ensemble de valeur de x et y formant une grille</span></span>
-<span id="cb13-303"><a href="#cb13-303" aria-hidden="true" tabindex="-1"></a><span class="co"># sur laquelle évaluer le champs de vecteurs</span></span>
-<span id="cb13-304"><a href="#cb13-304" aria-hidden="true" tabindex="-1"></a>xrange = range(<span class="dv">0</span>., <span class="dv">2</span>, <span class="fu">length</span>=<span class="dv">11</span>)<span class="ot">'</span><span class="ss">  # note </span><span class="ot">'</span> : on va broadcaster pour créer la grille via der_x.() et der_y.()</span>
-<span id="cb13-305"><a href="#cb13-305" aria-hidden="true" tabindex="-1"></a>yrange = range(<span class="dv">0</span>. ,<span class="dv">2</span>, <span class="fu">length</span>=<span class="dv">11</span>)</span>
-<span id="cb13-306"><a href="#cb13-306" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-307"><a href="#cb13-307" aria-hidden="true" tabindex="-1"></a><span class="co"># champs de vecteurs</span></span>
-<span id="cb13-308"><a href="#cb13-308" aria-hidden="true" tabindex="-1"></a>Plan = quiver(xrange, yrange,</span>
-<span id="cb13-309"><a href="#cb13-309" aria-hidden="true" tabindex="-1"></a>       quiver = (der_x.(xrange, yrange), der_y.(xrange, yrange)),</span>
-<span id="cb13-310"><a href="#cb13-310" aria-hidden="true" tabindex="-1"></a>       ylim = (-<span class="fl">0.05</span>, <span class="dv">2</span>),</span>
-<span id="cb13-311"><a href="#cb13-311" aria-hidden="true" tabindex="-1"></a>       xlim = (-<span class="fl">0.05</span>, <span class="dv">2</span>),</span>
-<span id="cb13-312"><a href="#cb13-312" aria-hidden="true" tabindex="-1"></a>       color = :lightgray,</span>
-<span id="cb13-313"><a href="#cb13-313" aria-hidden="true" tabindex="-1"></a>     grid = false,</span>
-<span id="cb13-314"><a href="#cb13-314" aria-hidden="true" tabindex="-1"></a>       title = <span class="ot">"</span><span class="st">Modèle de Lotka Volterra</span><span class="ot">"</span>,</span>
-<span id="cb13-315"><a href="#cb13-315" aria-hidden="true" tabindex="-1"></a>       xlabel = <span class="ot">"</span><span class="st">proies</span><span class="ot">"</span>,</span>
-<span id="cb13-316"><a href="#cb13-316" aria-hidden="true" tabindex="-1"></a>       ylabel = <span class="ot">"</span><span class="st">prédateurs</span><span class="ot">"</span>,</span>
-<span id="cb13-317"><a href="#cb13-317" aria-hidden="true" tabindex="-1"></a>       margin = .<span class="dv">5</span>Plots.cm,</span>
-<span id="cb13-318"><a href="#cb13-318" aria-hidden="true" tabindex="-1"></a>       topmargin = <span class="dv">1</span>Plots.cm)</span>
-<span id="cb13-319"><a href="#cb13-319" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb13-320"><a href="#cb13-320" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-321"><a href="#cb13-321" aria-hidden="true" tabindex="-1"></a>On rajoute les isoclines nulles et les équilibres :</span>
-<span id="cb13-324"><a href="#cb13-324" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb13-325"><a href="#cb13-325" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
-<span id="cb13-326"><a href="#cb13-326" aria-hidden="true" tabindex="-1"></a><span class="co"># isoclines nulles</span></span>
-<span id="cb13-327"><a href="#cb13-327" aria-hidden="true" tabindex="-1"></a>xplot = <span class="dv">0</span>:<span class="dv">2</span></span>
-<span id="cb13-328"><a href="#cb13-328" aria-hidden="true" tabindex="-1"></a>yplot = <span class="dv">0</span>:<span class="dv">2</span></span>
-<span id="cb13-329"><a href="#cb13-329" aria-hidden="true" tabindex="-1"></a>plot!(Plan, xplot, ones(<span class="fu">length</span>(xplot)).<span class="dt">*r</span>.<span class="ot">/c,</span></span>
-<span id="cb13-330"><a href="#cb13-330" aria-hidden="true" tabindex="-1"></a><span class="ot">      linewidth = 2,</span></span>
-<span id="cb13-331"><a href="#cb13-331" aria-hidden="true" tabindex="-1"></a><span class="ot">      color = mygreen,</span></span>
-<span id="cb13-332"><a href="#cb13-332" aria-hidden="true" tabindex="-1"></a><span class="ot">      label = "\$\\dot x = 0\$"</span><span class="ch">)</span></span>
-<span id="cb13-333"><a href="#cb13-333" aria-hidden="true" tabindex="-1"></a><span class="ot">plot!</span><span class="ch">(</span><span class="ot">Plan, zeros</span><span class="ch">(</span><span class="ot">length</span><span class="ch">(</span><span class="ot">yplot</span><span class="ch">))</span><span class="ot">, yplot,</span></span>
-<span id="cb13-334"><a href="#cb13-334" aria-hidden="true" tabindex="-1"></a><span class="ot">      linewidth = 2,</span></span>
-<span id="cb13-335"><a href="#cb13-335" aria-hidden="true" tabindex="-1"></a><span class="ot">      color = mygreen,</span></span>
-<span id="cb13-336"><a href="#cb13-336" aria-hidden="true" tabindex="-1"></a><span class="ot">      label = ""</span><span class="ch">)</span></span>
-<span id="cb13-337"><a href="#cb13-337" aria-hidden="true" tabindex="-1"></a><span class="ot">plot!</span><span class="ch">(</span><span class="ot">Plan, ones</span><span class="ch">(</span><span class="ot">length</span><span class="ch">(</span><span class="ot">yplot</span><span class="ch">))</span><span class="ot">.</span><span class="ch">*</span><span class="ot">m./</span>b, yplot,</span>
-<span id="cb13-338"><a href="#cb13-338" aria-hidden="true" tabindex="-1"></a>      linewidth = <span class="dv">2</span>,</span>
-<span id="cb13-339"><a href="#cb13-339" aria-hidden="true" tabindex="-1"></a>      color = myred,</span>
-<span id="cb13-340"><a href="#cb13-340" aria-hidden="true" tabindex="-1"></a>      label = <span class="ot">"</span><span class="st">\$\\dot y = 0\$</span><span class="ot">"</span>)</span>
-<span id="cb13-341"><a href="#cb13-341" aria-hidden="true" tabindex="-1"></a>plot!(Plan, xplot, zeros(<span class="fu">length</span>(xplot)),</span>
-<span id="cb13-342"><a href="#cb13-342" aria-hidden="true" tabindex="-1"></a>      linewidth = <span class="dv">2</span>,</span>
-<span id="cb13-343"><a href="#cb13-343" aria-hidden="true" tabindex="-1"></a>      color = myred,</span>
-<span id="cb13-344"><a href="#cb13-344" aria-hidden="true" tabindex="-1"></a>      label = <span class="ot">""</span>)</span>
-<span id="cb13-345"><a href="#cb13-345" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-346"><a href="#cb13-346" aria-hidden="true" tabindex="-1"></a><span class="co"># équilibres</span></span>
-<span id="cb13-347"><a href="#cb13-347" aria-hidden="true" tabindex="-1"></a>plot!(Plan, (<span class="dv">0</span>, <span class="dv">0</span>),</span>
-<span id="cb13-348"><a href="#cb13-348" aria-hidden="true" tabindex="-1"></a>      markershape = :circle,</span>
-<span id="cb13-349"><a href="#cb13-349" aria-hidden="true" tabindex="-1"></a>      color= myred,</span>
-<span id="cb13-350"><a href="#cb13-350" aria-hidden="true" tabindex="-1"></a>      label = <span class="ot">""</span>)</span>
-<span id="cb13-351"><a href="#cb13-351" aria-hidden="true" tabindex="-1"></a>plot!(Plan, (<span class="ot">m/b, r/c</span>),</span>
-<span id="cb13-352"><a href="#cb13-352" aria-hidden="true" tabindex="-1"></a>      markershape = :circle,</span>
-<span id="cb13-353"><a href="#cb13-353" aria-hidden="true" tabindex="-1"></a>      color= myorange,</span>
-<span id="cb13-354"><a href="#cb13-354" aria-hidden="true" tabindex="-1"></a>      label = <span class="ot">""</span>)</span>
-<span id="cb13-355"><a href="#cb13-355" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb13-356"><a href="#cb13-356" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-357"><a href="#cb13-357" aria-hidden="true" tabindex="-1"></a>Et enfin la trajectoire :</span>
-<span id="cb13-360"><a href="#cb13-360" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb13-361"><a href="#cb13-361" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
-<span id="cb13-362"><a href="#cb13-362" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
-<span id="cb13-363"><a href="#cb13-363" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-phase-lovo</span></span>
-<span id="cb13-364"><a href="#cb13-364" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Plan de phase du modèle de Lotka Volterra</span></span>
-<span id="cb13-365"><a href="#cb13-365" aria-hidden="true" tabindex="-1"></a><span class="co"># trajectoire</span></span>
-<span id="cb13-366"><a href="#cb13-366" aria-hidden="true" tabindex="-1"></a>plot!(Plan,  sol_lovo.x, sol_lovo.<span class="ot">y</span>,</span>
-<span id="cb13-367"><a href="#cb13-367" aria-hidden="true" tabindex="-1"></a>      color = myblue,</span>
-<span id="cb13-368"><a href="#cb13-368" aria-hidden="true" tabindex="-1"></a>      linewidth = <span class="dv">2</span>,</span>
-<span id="cb13-369"><a href="#cb13-369" aria-hidden="true" tabindex="-1"></a>      label = <span class="ot">"</span><span class="st">trajectoire</span><span class="ot">"</span>)</span>
-<span id="cb13-370"><a href="#cb13-370" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-371"><a href="#cb13-371" aria-hidden="true" tabindex="-1"></a>display(Plan)</span>
-<span id="cb13-372"><a href="#cb13-372" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb13-373"><a href="#cb13-373" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-374"><a href="#cb13-374" aria-hidden="true" tabindex="-1"></a><span class="fu">### Intégrale première</span></span>
-<span id="cb13-375"><a href="#cb13-375" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-376"><a href="#cb13-376" aria-hidden="true" tabindex="-1"></a>Nous illustrons en 3D l'intégrale première du modèle et superposons la trajectoire simulée plus haut sur ce graphique. L'intégrale première s'écrit :</span>
-<span id="cb13-377"><a href="#cb13-377" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-378"><a href="#cb13-378" aria-hidden="true" tabindex="-1"></a>H(x,y)= -r\log(y)+c y-m\log(x) + bx</span>
-<span id="cb13-379"><a href="#cb13-379" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-380"><a href="#cb13-380" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-219"><a href="#cb13-219" aria-hidden="true" tabindex="-1"></a>&lt;!--  STOP --&gt;</span>
+<span id="cb13-220"><a href="#cb13-220" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-221"><a href="#cb13-221" aria-hidden="true" tabindex="-1"></a>Nous considérons <span class="ot">le</span> modèle de dynamique de populations de <span class="dt">@Lotka1925</span> et <span class="dt">@Volterra1926</span> :</span>
+<span id="cb13-222"><a href="#cb13-222" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-223"><a href="#cb13-223" aria-hidden="true" tabindex="-1"></a><span class="wa">$$</span></span>
+<span id="cb13-224"><a href="#cb13-224" aria-hidden="true" tabindex="-1"></a>\left\{\begin{array}{l}</span>
+<span id="cb13-225"><a href="#cb13-225" aria-hidden="true" tabindex="-1"></a>\dot x = rx - c xy,\\</span>
+<span id="cb13-226"><a href="#cb13-226" aria-hidden="true" tabindex="-1"></a>\dot <span class="ot">y </span>= bxy - m <span class="ot">y</span>.</span>
+<span id="cb13-227"><a href="#cb13-227" aria-hidden="true" tabindex="-1"></a>\end{array}\right.</span>
+<span id="cb13-228"><a href="#cb13-228" aria-hidden="true" tabindex="-1"></a><span class="wa">$$</span> {<span class="co">#eq-lovo}</span></span>
+<span id="cb13-229"><a href="#cb13-229" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-230"><a href="#cb13-230" aria-hidden="true" tabindex="-1"></a>Avec <span class="dt">$x</span>$ la population de proies et <span class="dt">$y</span>$ la population de prédateurs.</span>
+<span id="cb13-231"><a href="#cb13-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-232"><a href="#cb13-232" aria-hidden="true" tabindex="-1"></a><span class="co">### Dynamiques</span></span>
+<span id="cb13-233"><a href="#cb13-233" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-234"><a href="#cb13-234" aria-hidden="true" tabindex="-1"></a>Il n<span class="ot">'</span><span class="ss">y a pas de difficulté particulière à la simulation par rapport au modèle de la tordeuse du bourgeon de l</span><span class="ot">'</span>épinette avec population d<span class="ot">'</span><span class="ss">oiseaux variables.</span></span>
+<span id="cb13-235"><a href="#cb13-235" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-238"><a href="#cb13-238" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb13-239"><a href="#cb13-239" aria-hidden="true" tabindex="-1"></a><span class="ss">#| output: true</span></span>
+<span id="cb13-240"><a href="#cb13-240" aria-hidden="true" tabindex="-1"></a><span class="ss">#| code-fold: true</span></span>
+<span id="cb13-241"><a href="#cb13-241" aria-hidden="true" tabindex="-1"></a><span class="ss"># conditions initiales</span></span>
+<span id="cb13-242"><a href="#cb13-242" aria-hidden="true" tabindex="-1"></a><span class="ss">x0 = 1.0</span></span>
+<span id="cb13-243"><a href="#cb13-243" aria-hidden="true" tabindex="-1"></a><span class="ss">y0 = 1.95</span></span>
+<span id="cb13-244"><a href="#cb13-244" aria-hidden="true" tabindex="-1"></a><span class="ss">etat0 = [x0, y0]</span></span>
+<span id="cb13-245"><a href="#cb13-245" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-246"><a href="#cb13-246" aria-hidden="true" tabindex="-1"></a><span class="ss"># paramètres</span></span>
+<span id="cb13-247"><a href="#cb13-247" aria-hidden="true" tabindex="-1"></a><span class="ss">r = 1.0</span></span>
+<span id="cb13-248"><a href="#cb13-248" aria-hidden="true" tabindex="-1"></a><span class="ss">c = 1.0</span></span>
+<span id="cb13-249"><a href="#cb13-249" aria-hidden="true" tabindex="-1"></a><span class="ss">b = 1.0</span></span>
+<span id="cb13-250"><a href="#cb13-250" aria-hidden="true" tabindex="-1"></a><span class="ss">m = 1.0</span></span>
+<span id="cb13-251"><a href="#cb13-251" aria-hidden="true" tabindex="-1"></a><span class="ss">par_lovo = [r, c, b, m]</span></span>
+<span id="cb13-252"><a href="#cb13-252" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-253"><a href="#cb13-253" aria-hidden="true" tabindex="-1"></a><span class="ss"># integration plus longue</span></span>
+<span id="cb13-254"><a href="#cb13-254" aria-hidden="true" tabindex="-1"></a><span class="ss">tspan = (0.0, 30.0)</span></span>
+<span id="cb13-255"><a href="#cb13-255" aria-hidden="true" tabindex="-1"></a><span class="ss">tstep = .01</span></span>
+<span id="cb13-256"><a href="#cb13-256" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-257"><a href="#cb13-257" aria-hidden="true" tabindex="-1"></a><span class="ss"># définition du modèle</span></span>
+<span id="cb13-258"><a href="#cb13-258" aria-hidden="true" tabindex="-1"></a><span class="ss">function lovo(u, par, t)</span></span>
+<span id="cb13-259"><a href="#cb13-259" aria-hidden="true" tabindex="-1"></a><span class="ss">    r, c, b, m = par</span></span>
+<span id="cb13-260"><a href="#cb13-260" aria-hidden="true" tabindex="-1"></a><span class="ss">    x = u[1]</span></span>
+<span id="cb13-261"><a href="#cb13-261" aria-hidden="true" tabindex="-1"></a><span class="ss">    y = u[2]</span></span>
+<span id="cb13-262"><a href="#cb13-262" aria-hidden="true" tabindex="-1"></a><span class="ss">    dx = r*x - c*x*y</span></span>
+<span id="cb13-263"><a href="#cb13-263" aria-hidden="true" tabindex="-1"></a><span class="ss">    dy = b*x*y - m*y</span></span>
+<span id="cb13-264"><a href="#cb13-264" aria-hidden="true" tabindex="-1"></a><span class="ss">    [dx, dy]</span></span>
+<span id="cb13-265"><a href="#cb13-265" aria-hidden="true" tabindex="-1"></a><span class="ss">end</span></span>
+<span id="cb13-266"><a href="#cb13-266" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-267"><a href="#cb13-267" aria-hidden="true" tabindex="-1"></a><span class="ss"># problème</span></span>
+<span id="cb13-268"><a href="#cb13-268" aria-hidden="true" tabindex="-1"></a><span class="ss">prob_lovo = ODEProblem(lovo, etat0, tspan, par_lovo, saveat = tstep)</span></span>
+<span id="cb13-269"><a href="#cb13-269" aria-hidden="true" tabindex="-1"></a><span class="ss"># intégration</span></span>
+<span id="cb13-270"><a href="#cb13-270" aria-hidden="true" tabindex="-1"></a><span class="ss">sol_lovo = solve(prob_lovo, reltol = 1e-6)</span></span>
+<span id="cb13-271"><a href="#cb13-271" aria-hidden="true" tabindex="-1"></a><span class="ss"># dataframe</span></span>
+<span id="cb13-272"><a href="#cb13-272" aria-hidden="true" tabindex="-1"></a><span class="ss">sol_lovo = DataFrame(sol_lovo)</span></span>
+<span id="cb13-273"><a href="#cb13-273" aria-hidden="true" tabindex="-1"></a><span class="ss">rename!(sol_lovo, :timestamp =&gt; :time, :value1 =&gt; :x, :value2 =&gt; :y)</span></span>
+<span id="cb13-274"><a href="#cb13-274" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-275"><a href="#cb13-275" aria-hidden="true" tabindex="-1"></a><span class="ss">Plv = plot(sol_lovo.time, sol_lovo.x,</span></span>
+<span id="cb13-276"><a href="#cb13-276" aria-hidden="true" tabindex="-1"></a><span class="ss">           linewidth = 2,</span></span>
+<span id="cb13-277"><a href="#cb13-277" aria-hidden="true" tabindex="-1"></a><span class="ss">           color = myblue,</span></span>
+<span id="cb13-278"><a href="#cb13-278" aria-hidden="true" tabindex="-1"></a><span class="ss">           label = "proies",</span></span>
+<span id="cb13-279"><a href="#cb13-279" aria-hidden="true" tabindex="-1"></a><span class="ss">           xlabel = "temps",</span></span>
+<span id="cb13-280"><a href="#cb13-280" aria-hidden="true" tabindex="-1"></a><span class="ss">           ylabel = "densité de populations",</span></span>
+<span id="cb13-281"><a href="#cb13-281" aria-hidden="true" tabindex="-1"></a><span class="ss">           title = "Modèle de Lotka Volterra",</span></span>
+<span id="cb13-282"><a href="#cb13-282" aria-hidden="true" tabindex="-1"></a><span class="ss">           margin = .5Plots.cm,</span></span>
+<span id="cb13-283"><a href="#cb13-283" aria-hidden="true" tabindex="-1"></a><span class="ss">           topmargin = 1Plots.cm)</span></span>
+<span id="cb13-284"><a href="#cb13-284" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-285"><a href="#cb13-285" aria-hidden="true" tabindex="-1"></a><span class="ss">plot!(Plv, sol_lovo.time, sol_lovo.y,</span></span>
+<span id="cb13-286"><a href="#cb13-286" aria-hidden="true" tabindex="-1"></a><span class="ss">      linewidth = 2,</span></span>
+<span id="cb13-287"><a href="#cb13-287" aria-hidden="true" tabindex="-1"></a><span class="ss">      color = myorange,</span></span>
+<span id="cb13-288"><a href="#cb13-288" aria-hidden="true" tabindex="-1"></a><span class="ss">      label = "prédateurs")</span></span>
+<span id="cb13-289"><a href="#cb13-289" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-290"><a href="#cb13-290" aria-hidden="true" tabindex="-1"></a><span class="ss">```</span></span>
+<span id="cb13-291"><a href="#cb13-291" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-292"><a href="#cb13-292" aria-hidden="true" tabindex="-1"></a><span class="ss">### Espace d</span><span class="ot">'</span>état</span>
+<span id="cb13-293"><a href="#cb13-293" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-294"><a href="#cb13-294" aria-hidden="true" tabindex="-1"></a>Commençons par tracer les isoclines nulles ainsi que l<span class="ot">'</span><span class="ss">orientation du champs de vecteur dans l</span><span class="ot">'</span>espace d<span class="ot">'</span><span class="ss">état. Ce dernier utilise la fonction `quiver()`.</span></span>
+<span id="cb13-297"><a href="#cb13-297" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb13-298"><a href="#cb13-298" aria-hidden="true" tabindex="-1"></a><span class="ss"># on redéfinit des fonctions qui renvoient les composantes de la dérivée mises à l</span><span class="ot">'</span>échelle</span>
+<span id="cb13-299"><a href="#cb13-299" aria-hidden="true" tabindex="-1"></a>scale = <span class="dv">10</span></span>
+<span id="cb13-300"><a href="#cb13-300" aria-hidden="true" tabindex="-1"></a>der_x(x, y) = lovo([x y], par_lovo, <span class="dv">0</span>)[<span class="dv">1</span>]/scale</span>
+<span id="cb13-301"><a href="#cb13-301" aria-hidden="true" tabindex="-1"></a>der_y(x, y) = lovo([x y], par_lovo, <span class="dv">0</span>)[<span class="dv">2</span>]/scale</span>
+<span id="cb13-302"><a href="#cb13-302" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-303"><a href="#cb13-303" aria-hidden="true" tabindex="-1"></a><span class="co"># on définit un ensemble de valeur de x et y formant une grille</span></span>
+<span id="cb13-304"><a href="#cb13-304" aria-hidden="true" tabindex="-1"></a><span class="co"># sur laquelle évaluer le champs de vecteurs</span></span>
+<span id="cb13-305"><a href="#cb13-305" aria-hidden="true" tabindex="-1"></a>xrange = range(<span class="dv">0</span>., <span class="dv">2</span>, <span class="fu">length</span>=<span class="dv">11</span>)<span class="ot">'</span><span class="ss">  # note </span><span class="ot">'</span> : on va broadcaster pour créer la grille via der_x.() et der_y.()</span>
+<span id="cb13-306"><a href="#cb13-306" aria-hidden="true" tabindex="-1"></a>yrange = range(<span class="dv">0</span>. ,<span class="dv">2</span>, <span class="fu">length</span>=<span class="dv">11</span>)</span>
+<span id="cb13-307"><a href="#cb13-307" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-308"><a href="#cb13-308" aria-hidden="true" tabindex="-1"></a><span class="co"># champs de vecteurs</span></span>
+<span id="cb13-309"><a href="#cb13-309" aria-hidden="true" tabindex="-1"></a>Plan = quiver(xrange, yrange,</span>
+<span id="cb13-310"><a href="#cb13-310" aria-hidden="true" tabindex="-1"></a>       quiver = (der_x.(xrange, yrange), der_y.(xrange, yrange)),</span>
+<span id="cb13-311"><a href="#cb13-311" aria-hidden="true" tabindex="-1"></a>       ylim = (-<span class="fl">0.05</span>, <span class="dv">2</span>),</span>
+<span id="cb13-312"><a href="#cb13-312" aria-hidden="true" tabindex="-1"></a>       xlim = (-<span class="fl">0.05</span>, <span class="dv">2</span>),</span>
+<span id="cb13-313"><a href="#cb13-313" aria-hidden="true" tabindex="-1"></a>       color = :lightgray,</span>
+<span id="cb13-314"><a href="#cb13-314" aria-hidden="true" tabindex="-1"></a>     grid = false,</span>
+<span id="cb13-315"><a href="#cb13-315" aria-hidden="true" tabindex="-1"></a>       title = <span class="ot">"</span><span class="st">Modèle de Lotka Volterra</span><span class="ot">"</span>,</span>
+<span id="cb13-316"><a href="#cb13-316" aria-hidden="true" tabindex="-1"></a>       xlabel = <span class="ot">"</span><span class="st">proies</span><span class="ot">"</span>,</span>
+<span id="cb13-317"><a href="#cb13-317" aria-hidden="true" tabindex="-1"></a>       ylabel = <span class="ot">"</span><span class="st">prédateurs</span><span class="ot">"</span>,</span>
+<span id="cb13-318"><a href="#cb13-318" aria-hidden="true" tabindex="-1"></a>       margin = .<span class="dv">5</span>Plots.cm,</span>
+<span id="cb13-319"><a href="#cb13-319" aria-hidden="true" tabindex="-1"></a>       topmargin = <span class="dv">1</span>Plots.cm)</span>
+<span id="cb13-320"><a href="#cb13-320" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-321"><a href="#cb13-321" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-322"><a href="#cb13-322" aria-hidden="true" tabindex="-1"></a>On rajoute les isoclines nulles et les équilibres :</span>
+<span id="cb13-325"><a href="#cb13-325" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb13-326"><a href="#cb13-326" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb13-327"><a href="#cb13-327" aria-hidden="true" tabindex="-1"></a><span class="co"># isoclines nulles</span></span>
+<span id="cb13-328"><a href="#cb13-328" aria-hidden="true" tabindex="-1"></a>xplot = <span class="dv">0</span>:<span class="dv">2</span></span>
+<span id="cb13-329"><a href="#cb13-329" aria-hidden="true" tabindex="-1"></a>yplot = <span class="dv">0</span>:<span class="dv">2</span></span>
+<span id="cb13-330"><a href="#cb13-330" aria-hidden="true" tabindex="-1"></a>plot!(Plan, xplot, ones(<span class="fu">length</span>(xplot)).<span class="dt">*r</span>.<span class="ot">/c,</span></span>
+<span id="cb13-331"><a href="#cb13-331" aria-hidden="true" tabindex="-1"></a><span class="ot">      linewidth = 2,</span></span>
+<span id="cb13-332"><a href="#cb13-332" aria-hidden="true" tabindex="-1"></a><span class="ot">      color = mygreen,</span></span>
+<span id="cb13-333"><a href="#cb13-333" aria-hidden="true" tabindex="-1"></a><span class="ot">      label = "\$\\dot x = 0\$"</span><span class="ch">)</span></span>
+<span id="cb13-334"><a href="#cb13-334" aria-hidden="true" tabindex="-1"></a><span class="ot">plot!</span><span class="ch">(</span><span class="ot">Plan, zeros</span><span class="ch">(</span><span class="ot">length</span><span class="ch">(</span><span class="ot">yplot</span><span class="ch">))</span><span class="ot">, yplot,</span></span>
+<span id="cb13-335"><a href="#cb13-335" aria-hidden="true" tabindex="-1"></a><span class="ot">      linewidth = 2,</span></span>
+<span id="cb13-336"><a href="#cb13-336" aria-hidden="true" tabindex="-1"></a><span class="ot">      color = mygreen,</span></span>
+<span id="cb13-337"><a href="#cb13-337" aria-hidden="true" tabindex="-1"></a><span class="ot">      label = ""</span><span class="ch">)</span></span>
+<span id="cb13-338"><a href="#cb13-338" aria-hidden="true" tabindex="-1"></a><span class="ot">plot!</span><span class="ch">(</span><span class="ot">Plan, ones</span><span class="ch">(</span><span class="ot">length</span><span class="ch">(</span><span class="ot">yplot</span><span class="ch">))</span><span class="ot">.</span><span class="ch">*</span><span class="ot">m./</span>b, yplot,</span>
+<span id="cb13-339"><a href="#cb13-339" aria-hidden="true" tabindex="-1"></a>      linewidth = <span class="dv">2</span>,</span>
+<span id="cb13-340"><a href="#cb13-340" aria-hidden="true" tabindex="-1"></a>      color = myred,</span>
+<span id="cb13-341"><a href="#cb13-341" aria-hidden="true" tabindex="-1"></a>      label = <span class="ot">"</span><span class="st">\$\\dot y = 0\$</span><span class="ot">"</span>)</span>
+<span id="cb13-342"><a href="#cb13-342" aria-hidden="true" tabindex="-1"></a>plot!(Plan, xplot, zeros(<span class="fu">length</span>(xplot)),</span>
+<span id="cb13-343"><a href="#cb13-343" aria-hidden="true" tabindex="-1"></a>      linewidth = <span class="dv">2</span>,</span>
+<span id="cb13-344"><a href="#cb13-344" aria-hidden="true" tabindex="-1"></a>      color = myred,</span>
+<span id="cb13-345"><a href="#cb13-345" aria-hidden="true" tabindex="-1"></a>      label = <span class="ot">""</span>)</span>
+<span id="cb13-346"><a href="#cb13-346" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-347"><a href="#cb13-347" aria-hidden="true" tabindex="-1"></a><span class="co"># équilibres</span></span>
+<span id="cb13-348"><a href="#cb13-348" aria-hidden="true" tabindex="-1"></a>plot!(Plan, (<span class="dv">0</span>, <span class="dv">0</span>),</span>
+<span id="cb13-349"><a href="#cb13-349" aria-hidden="true" tabindex="-1"></a>      markershape = :circle,</span>
+<span id="cb13-350"><a href="#cb13-350" aria-hidden="true" tabindex="-1"></a>      color= myred,</span>
+<span id="cb13-351"><a href="#cb13-351" aria-hidden="true" tabindex="-1"></a>      label = <span class="ot">""</span>)</span>
+<span id="cb13-352"><a href="#cb13-352" aria-hidden="true" tabindex="-1"></a>plot!(Plan, (<span class="ot">m/b, r/c</span>),</span>
+<span id="cb13-353"><a href="#cb13-353" aria-hidden="true" tabindex="-1"></a>      markershape = :circle,</span>
+<span id="cb13-354"><a href="#cb13-354" aria-hidden="true" tabindex="-1"></a>      color= myorange,</span>
+<span id="cb13-355"><a href="#cb13-355" aria-hidden="true" tabindex="-1"></a>      label = <span class="ot">""</span>)</span>
+<span id="cb13-356"><a href="#cb13-356" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-357"><a href="#cb13-357" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-358"><a href="#cb13-358" aria-hidden="true" tabindex="-1"></a>Et enfin la trajectoire :</span>
+<span id="cb13-361"><a href="#cb13-361" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb13-362"><a href="#cb13-362" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
+<span id="cb13-363"><a href="#cb13-363" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb13-364"><a href="#cb13-364" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-phase-lovo</span></span>
+<span id="cb13-365"><a href="#cb13-365" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Plan de phase du modèle de Lotka Volterra</span></span>
+<span id="cb13-366"><a href="#cb13-366" aria-hidden="true" tabindex="-1"></a><span class="co"># trajectoire</span></span>
+<span id="cb13-367"><a href="#cb13-367" aria-hidden="true" tabindex="-1"></a>plot!(Plan,  sol_lovo.x, sol_lovo.<span class="ot">y</span>,</span>
+<span id="cb13-368"><a href="#cb13-368" aria-hidden="true" tabindex="-1"></a>      color = myblue,</span>
+<span id="cb13-369"><a href="#cb13-369" aria-hidden="true" tabindex="-1"></a>      linewidth = <span class="dv">2</span>,</span>
+<span id="cb13-370"><a href="#cb13-370" aria-hidden="true" tabindex="-1"></a>      label = <span class="ot">"</span><span class="st">trajectoire</span><span class="ot">"</span>)</span>
+<span id="cb13-371"><a href="#cb13-371" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-372"><a href="#cb13-372" aria-hidden="true" tabindex="-1"></a>display(Plan)</span>
+<span id="cb13-373"><a href="#cb13-373" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-374"><a href="#cb13-374" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-375"><a href="#cb13-375" aria-hidden="true" tabindex="-1"></a><span class="fu">### Intégrale première</span></span>
+<span id="cb13-376"><a href="#cb13-376" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-377"><a href="#cb13-377" aria-hidden="true" tabindex="-1"></a>Nous illustrons en 3D l'intégrale première du modèle et superposons la trajectoire simulée plus haut sur ce graphique. L'intégrale première s'écrit :</span>
+<span id="cb13-378"><a href="#cb13-378" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-379"><a href="#cb13-379" aria-hidden="true" tabindex="-1"></a>H(x,y)= -r\log(y)+c y-m\log(x) + bx</span>
+<span id="cb13-380"><a href="#cb13-380" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb13-381"><a href="#cb13-381" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-384"><a href="#cb13-384" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb13-385"><a href="#cb13-385" aria-hidden="true" tabindex="-1"></a><span class="co"># l'intégrale première</span></span>
-<span id="cb13-386"><a href="#cb13-386" aria-hidden="true" tabindex="-1"></a>function int_prem(x, <span class="ot">y</span>, par = par_lovo)</span>
-<span id="cb13-387"><a href="#cb13-387" aria-hidden="true" tabindex="-1"></a>      r, c, b, <span class="ot">m = par</span></span>
-<span id="cb13-388"><a href="#cb13-388" aria-hidden="true" tabindex="-1"></a><span class="ot">      -r</span><span class="ch">*</span><span class="ot">log</span><span class="ch">(</span><span class="ot">y</span><span class="ch">)</span><span class="ot"> </span><span class="ch">+</span><span class="ot"> c</span><span class="ch">*</span><span class="ot">y - m</span><span class="ch">*</span><span class="ot">log</span><span class="ch">(</span><span class="ot">x</span><span class="ch">)</span><span class="ot"> </span><span class="ch">+</span><span class="ot"> b</span><span class="ch">*</span><span class="ot">x</span></span>
-<span id="cb13-389"><a href="#cb13-389" aria-hidden="true" tabindex="-1"></a><span class="ot">end</span></span>
-<span id="cb13-390"><a href="#cb13-390" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
-<span id="cb13-391"><a href="#cb13-391" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-392"><a href="#cb13-392" aria-hidden="true" tabindex="-1"></a><span class="ot">Pour tracer le graphique en 3D, nous utilisons le backend `plotly`.</span></span>
-<span id="cb13-393"><a href="#cb13-393" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-396"><a href="#cb13-396" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb13-397"><a href="#cb13-397" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
-<span id="cb13-398"><a href="#cb13-398" aria-hidden="true" tabindex="-1"></a><span class="ot">plotly</span><span class="ch">()</span></span>
-<span id="cb13-399"><a href="#cb13-399" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-400"><a href="#cb13-400" aria-hidden="true" tabindex="-1"></a><span class="co"># grille x, y</span></span>
-<span id="cb13-401"><a href="#cb13-401" aria-hidden="true" tabindex="-1"></a><span class="ot">xsurf =</span> .<span class="dv">2</span>: .<span class="dv">1</span>: <span class="dv">3</span></span>
-<span id="cb13-402"><a href="#cb13-402" aria-hidden="true" tabindex="-1"></a>ysurf = .<span class="dv">2</span>:.<span class="dv">1</span>: <span class="dv">3</span></span>
-<span id="cb13-403"><a href="#cb13-403" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-404"><a href="#cb13-404" aria-hidden="true" tabindex="-1"></a><span class="co"># calcul de la surface via une compréhension de liste</span></span>
-<span id="cb13-405"><a href="#cb13-405" aria-hidden="true" tabindex="-1"></a>zsurf = [int_prem(x, <span class="ot">y</span>, par_lovo) <span class="kw">for</span> x in xsurf, y in ysurf]</span>
-<span id="cb13-406"><a href="#cb13-406" aria-hidden="true" tabindex="-1"></a><span class="co"># et H(x0, y0)</span></span>
-<span id="cb13-407"><a href="#cb13-407" aria-hidden="true" tabindex="-1"></a>zplane = [int_prem(x0, y0, par_lovo) <span class="kw">for</span> x in xsurf, y in ysurf]</span>
-<span id="cb13-408"><a href="#cb13-408" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-409"><a href="#cb13-409" aria-hidden="true" tabindex="-1"></a><span class="co"># on trace H(x0, y0)</span></span>
-<span id="cb13-410"><a href="#cb13-410" aria-hidden="true" tabindex="-1"></a>Psurf = plot(xsurf, ysurf, zplane,</span>
-<span id="cb13-411"><a href="#cb13-411" aria-hidden="true" tabindex="-1"></a>              st = :surface,</span>
-<span id="cb13-412"><a href="#cb13-412" aria-hidden="true" tabindex="-1"></a>              color = myorange,</span>
-<span id="cb13-413"><a href="#cb13-413" aria-hidden="true" tabindex="-1"></a>              alpha =.<span class="dv">5</span>,</span>
-<span id="cb13-414"><a href="#cb13-414" aria-hidden="true" tabindex="-1"></a>              label = <span class="ot">""</span>)</span>
-<span id="cb13-415"><a href="#cb13-415" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-416"><a href="#cb13-416" aria-hidden="true" tabindex="-1"></a><span class="co"># l'intégrale première</span></span>
-<span id="cb13-417"><a href="#cb13-417" aria-hidden="true" tabindex="-1"></a>plot!(Psurf, xsurf, ysurf, zsurf,</span>
-<span id="cb13-418"><a href="#cb13-418" aria-hidden="true" tabindex="-1"></a>             st=:surface,</span>
-<span id="cb13-419"><a href="#cb13-419" aria-hidden="true" tabindex="-1"></a>             alpha = .<span class="dv">6</span>,</span>
-<span id="cb13-420"><a href="#cb13-420" aria-hidden="true" tabindex="-1"></a>             camera = (<span class="dv">30</span>, <span class="dv">10</span>),</span>
-<span id="cb13-421"><a href="#cb13-421" aria-hidden="true" tabindex="-1"></a>             color = :viridis,</span>
-<span id="cb13-422"><a href="#cb13-422" aria-hidden="true" tabindex="-1"></a>             xlabel = <span class="ot">"</span><span class="st">proies</span><span class="ot">"</span>,</span>
-<span id="cb13-423"><a href="#cb13-423" aria-hidden="true" tabindex="-1"></a>             ylabel = <span class="ot">"</span><span class="st">prédateurs</span><span class="ot">"</span>,</span>
-<span id="cb13-424"><a href="#cb13-424" aria-hidden="true" tabindex="-1"></a>             title = <span class="ot">"</span><span class="st">Intégrale première du modèle de Lotka Volterra</span><span class="ot">"</span>)</span>
-<span id="cb13-425"><a href="#cb13-425" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-426"><a href="#cb13-426" aria-hidden="true" tabindex="-1"></a><span class="co"># la trajectoire</span></span>
-<span id="cb13-427"><a href="#cb13-427" aria-hidden="true" tabindex="-1"></a>plot!(Psurf, sol_lovo.x, sol_lovo.<span class="ot">y, ones(length(sol_lovo.x)).*int_prem(x0, y0,</span> par_lovo),</span>
-<span id="cb13-428"><a href="#cb13-428" aria-hidden="true" tabindex="-1"></a>      color = myred,</span>
-<span id="cb13-429"><a href="#cb13-429" aria-hidden="true" tabindex="-1"></a>      lw=<span class="dv">4</span>,</span>
-<span id="cb13-430"><a href="#cb13-430" aria-hidden="true" tabindex="-1"></a>      label = <span class="ot">""</span>)</span>
-<span id="cb13-431"><a href="#cb13-431" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
-<span id="cb13-432"><a href="#cb13-432" aria-hidden="true" tabindex="-1"></a><span class="st">\</span></span>
-<span id="cb13-433"><a href="#cb13-433" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-434"><a href="#cb13-434" aria-hidden="true" tabindex="-1"></a><span class="st">Finissons ce TP en simulant le modèle de Rosenzweig MacArthur, [par ici](pop_interactions2.qmd).</span></span>
+<span id="cb13-382"><a href="#cb13-382" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-385"><a href="#cb13-385" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb13-386"><a href="#cb13-386" aria-hidden="true" tabindex="-1"></a><span class="co"># l'intégrale première</span></span>
+<span id="cb13-387"><a href="#cb13-387" aria-hidden="true" tabindex="-1"></a>function int_prem(x, <span class="ot">y</span>, par = par_lovo)</span>
+<span id="cb13-388"><a href="#cb13-388" aria-hidden="true" tabindex="-1"></a>      r, c, b, <span class="ot">m = par</span></span>
+<span id="cb13-389"><a href="#cb13-389" aria-hidden="true" tabindex="-1"></a><span class="ot">      -r</span><span class="ch">*</span><span class="ot">log</span><span class="ch">(</span><span class="ot">y</span><span class="ch">)</span><span class="ot"> </span><span class="ch">+</span><span class="ot"> c</span><span class="ch">*</span><span class="ot">y - m</span><span class="ch">*</span><span class="ot">log</span><span class="ch">(</span><span class="ot">x</span><span class="ch">)</span><span class="ot"> </span><span class="ch">+</span><span class="ot"> b</span><span class="ch">*</span><span class="ot">x</span></span>
+<span id="cb13-390"><a href="#cb13-390" aria-hidden="true" tabindex="-1"></a><span class="ot">end</span></span>
+<span id="cb13-391"><a href="#cb13-391" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
+<span id="cb13-392"><a href="#cb13-392" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-393"><a href="#cb13-393" aria-hidden="true" tabindex="-1"></a><span class="ot">Pour tracer le graphique en 3D, nous utilisons le backend `plotly`.</span></span>
+<span id="cb13-394"><a href="#cb13-394" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-397"><a href="#cb13-397" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb13-398"><a href="#cb13-398" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
+<span id="cb13-399"><a href="#cb13-399" aria-hidden="true" tabindex="-1"></a><span class="ot">plotly</span><span class="ch">()</span></span>
+<span id="cb13-400"><a href="#cb13-400" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-401"><a href="#cb13-401" aria-hidden="true" tabindex="-1"></a><span class="co"># grille x, y</span></span>
+<span id="cb13-402"><a href="#cb13-402" aria-hidden="true" tabindex="-1"></a><span class="ot">xsurf =</span> .<span class="dv">2</span>: .<span class="dv">1</span>: <span class="dv">3</span></span>
+<span id="cb13-403"><a href="#cb13-403" aria-hidden="true" tabindex="-1"></a>ysurf = .<span class="dv">2</span>:.<span class="dv">1</span>: <span class="dv">3</span></span>
+<span id="cb13-404"><a href="#cb13-404" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-405"><a href="#cb13-405" aria-hidden="true" tabindex="-1"></a><span class="co"># calcul de la surface via une compréhension de liste</span></span>
+<span id="cb13-406"><a href="#cb13-406" aria-hidden="true" tabindex="-1"></a>zsurf = [int_prem(x, <span class="ot">y</span>, par_lovo) <span class="kw">for</span> x in xsurf, y in ysurf]</span>
+<span id="cb13-407"><a href="#cb13-407" aria-hidden="true" tabindex="-1"></a><span class="co"># et H(x0, y0)</span></span>
+<span id="cb13-408"><a href="#cb13-408" aria-hidden="true" tabindex="-1"></a>zplane = [int_prem(x0, y0, par_lovo) <span class="kw">for</span> x in xsurf, y in ysurf]</span>
+<span id="cb13-409"><a href="#cb13-409" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-410"><a href="#cb13-410" aria-hidden="true" tabindex="-1"></a><span class="co"># on trace H(x0, y0)</span></span>
+<span id="cb13-411"><a href="#cb13-411" aria-hidden="true" tabindex="-1"></a>Psurf = plot(xsurf, ysurf, zplane,</span>
+<span id="cb13-412"><a href="#cb13-412" aria-hidden="true" tabindex="-1"></a>              st = :surface,</span>
+<span id="cb13-413"><a href="#cb13-413" aria-hidden="true" tabindex="-1"></a>              color = myorange,</span>
+<span id="cb13-414"><a href="#cb13-414" aria-hidden="true" tabindex="-1"></a>              alpha =.<span class="dv">5</span>,</span>
+<span id="cb13-415"><a href="#cb13-415" aria-hidden="true" tabindex="-1"></a>              label = <span class="ot">""</span>)</span>
+<span id="cb13-416"><a href="#cb13-416" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-417"><a href="#cb13-417" aria-hidden="true" tabindex="-1"></a><span class="co"># l'intégrale première</span></span>
+<span id="cb13-418"><a href="#cb13-418" aria-hidden="true" tabindex="-1"></a>plot!(Psurf, xsurf, ysurf, zsurf,</span>
+<span id="cb13-419"><a href="#cb13-419" aria-hidden="true" tabindex="-1"></a>             st=:surface,</span>
+<span id="cb13-420"><a href="#cb13-420" aria-hidden="true" tabindex="-1"></a>             alpha = .<span class="dv">6</span>,</span>
+<span id="cb13-421"><a href="#cb13-421" aria-hidden="true" tabindex="-1"></a>             camera = (<span class="dv">30</span>, <span class="dv">10</span>),</span>
+<span id="cb13-422"><a href="#cb13-422" aria-hidden="true" tabindex="-1"></a>             color = :viridis,</span>
+<span id="cb13-423"><a href="#cb13-423" aria-hidden="true" tabindex="-1"></a>             xlabel = <span class="ot">"</span><span class="st">proies</span><span class="ot">"</span>,</span>
+<span id="cb13-424"><a href="#cb13-424" aria-hidden="true" tabindex="-1"></a>             ylabel = <span class="ot">"</span><span class="st">prédateurs</span><span class="ot">"</span>,</span>
+<span id="cb13-425"><a href="#cb13-425" aria-hidden="true" tabindex="-1"></a>             title = <span class="ot">"</span><span class="st">Intégrale première du modèle de Lotka Volterra</span><span class="ot">"</span>)</span>
+<span id="cb13-426"><a href="#cb13-426" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-427"><a href="#cb13-427" aria-hidden="true" tabindex="-1"></a><span class="co"># la trajectoire</span></span>
+<span id="cb13-428"><a href="#cb13-428" aria-hidden="true" tabindex="-1"></a>plot!(Psurf, sol_lovo.x, sol_lovo.<span class="ot">y, ones(length(sol_lovo.x)).*int_prem(x0, y0,</span> par_lovo),</span>
+<span id="cb13-429"><a href="#cb13-429" aria-hidden="true" tabindex="-1"></a>      color = myred,</span>
+<span id="cb13-430"><a href="#cb13-430" aria-hidden="true" tabindex="-1"></a>      lw=<span class="dv">4</span>,</span>
+<span id="cb13-431"><a href="#cb13-431" aria-hidden="true" tabindex="-1"></a>      label = <span class="ot">""</span>)</span>
+<span id="cb13-432"><a href="#cb13-432" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
+<span id="cb13-433"><a href="#cb13-433" aria-hidden="true" tabindex="-1"></a><span class="st">\</span></span>
+<span id="cb13-434"><a href="#cb13-434" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-435"><a href="#cb13-435" aria-hidden="true" tabindex="-1"></a><span class="st">Finissons ce TP en simulant le modèle de Rosenzweig MacArthur, [par ici](pop_interactions2.qmd).</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
