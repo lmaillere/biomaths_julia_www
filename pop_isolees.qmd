@@ -112,8 +112,8 @@ plot(sol_malthus.time, sol_malthus.x,
     palette = :tab10,
     linewidth = 2,
     title = "\n Modèle de Malthus \$n=$n, m=$m\$",
-    label = "population \$x\$",  
-    ylabel = "densité de population \$x(t)\$", 
+    label = "population \$x\$",
+    ylabel = "densité de population \$x(t)\$",
     xlabel = "temps \$t\$",
     margin = .5Plots.cm,
     topmargin = 1Plots.cm)
@@ -129,7 +129,7 @@ $$ {#eq-logistic}
 avec $r$ le taux de croissance intrinsèque de la population et $K$ la capacité de charge de l'environnement.
 
 
-Il n'y a pas de difficulté particulière par rapport aux simulations précedentes. On va réutiliser la condition initiale et les paramètres de temps définis précédemment. 
+Il n'y a pas de difficulté particulière par rapport aux simulations précedentes. On va réutiliser la condition initiale et les paramètres de temps définis précédemment.
 
 Il faut cependant définir les paramètres du modèle @eq-logistic :
 ```{julia}
@@ -177,9 +177,9 @@ plot(sol_logistic.time, sol_logistic.x,
     palette = :tab10,
     linewidth = 2,
     title = "\n Modèle logistique \$r=$r, K=$K\$",
-    label = "population \$x\$",  
+    label = "population \$x\$",
     legend = :right,
-    ylabel = "densité de population \$x(t)\$", 
+    ylabel = "densité de population \$x(t)\$",
     xlabel = "temps \$t\$",
     margin = .5Plots.cm,
     topmargin = 1Plots.cm)
@@ -211,7 +211,7 @@ On s'intéresse à un modèle de dynamique de population avec "effets Allee fort
 $$
 \dot x = r x \left(\frac{x}{\epsilon}-1\right)\left(1-\frac{x}{K}\right),
 $$ {#eq-allee}
-avec $r$ le taux de croissance intrinsèque de la population (par analogie avec la logistique), $K$ la capacité de charge de l'environnement et $\epsilon$ le seuil en dessous duquel la population n'est pas viable ('seuil de Allee'). 
+avec $r$ le taux de croissance intrinsèque de la population (par analogie avec la logistique), $K$ la capacité de charge de l'environnement et $\epsilon$ le seuil en dessous duquel la population n'est pas viable ('seuil de Allee').
 
 Nous souhaitons illustrer la bistabilité caractéristique du comportement de ce modèle à partir de la simulation depuis plusieurs conditions initiales.
 
@@ -238,7 +238,7 @@ function int_allee(x0, tspan = tspan_allee, param = par_allee)
                           tspan,            # tspan
                           param,            # paramètres
                           saveat = tstep)   # option de sortie
-    
+
     sol_allee = solve(prob_allee)
     sol_allee = DataFrame(sol_allee)
     rename!(sol_allee, :timestamp => :time, :value => :x)
@@ -262,7 +262,7 @@ init_cgrad = palette([:steelblue, :lightblue], length(x0vec))
 P = plot(palette = init_cgrad,
          title = "\n Modèle à effets Allee \$r=$r, K=$K\$, \$ϵ=$epsilon\$",
          legend = :right,
-         ylabel = "densité de population \$x(t)\$", 
+         ylabel = "densité de population \$x(t)\$",
          xlabel = "temps \$t\$",
          margin = .5Plots.cm,
          topmargin = 1Plots.cm)
