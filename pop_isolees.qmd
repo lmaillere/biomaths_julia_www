@@ -32,7 +32,7 @@ Nous définissons les paramètres, et les encapsulons dans un vecteur de paramè
 
 ```{julia}
 n = 3.0     # natalité
-m = 2.0     # morrtalité
+m = 2.0     # mortalité
 par_malthus = [n, m] # packing in an array
 ```
 
