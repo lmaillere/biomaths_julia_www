@@ -204,7 +204,6 @@ plot!(
 ```
 
 ## Le modèle proie-prédateur de Lotka et Volterra {#sec-lv}
-<!--  STOP -->
 
 Nous considérons le modèle de dynamique de populations de @Lotka1925 et @Volterra1926 :
 
@@ -455,6 +454,7 @@ plot!(
 )
 
 # la trajectoire
+# un simple plot avec 3 coordonnees: x et y de la solution, et z = H(x,y)
 plot!(
     figsurf,
     sol_lovo.x,
