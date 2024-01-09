@@ -146,7 +146,7 @@ Nous considérons ici le modèle "logistique" proposé par @verhulst1838 :
 $$
 \dot x = r x \left(1-\frac{x}{K}\right),
 $$ {#eq-logistic}
-avec $r$ le taux de croissance intrinsèque de la population et $K$ la capacité de charge de l'environnement.
+avec $r$ le taux de croisance intrinsèque de la population et $K$ la capacité de charge de l'environnement.
 
 
 Il n'y a pas de difficulté particulière par rapport aux simulations précedentes. On va réutiliser la condition initiale et les paramètres de temps définis précédemment.
