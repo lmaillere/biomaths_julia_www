@@ -236,7 +236,7 @@ b = 1.0
 m = 1.0
 par_lovo = [r, c, b, m]
 
-# integration plus longue
+# temps d'integration
 tspan = (0.0, 30.0)
 tstep = .01
 
@@ -247,60 +247,75 @@ function lovo(u, par, t)
     y = u[2]
     dx = r*x - c*x*y
     dy = b*x*y - m*y
-    [dx, dy]
+    return [dx, dy]
 end
 
 # problème
 prob_lovo = ODEProblem(lovo, etat0, tspan, par_lovo, saveat = tstep)
+
 # intégration
 sol_lovo = solve(prob_lovo, reltol = 1e-6)
+
 # dataframe
 sol_lovo = DataFrame(sol_lovo)
 rename!(sol_lovo, :timestamp => :time, :value1 => :x, :value2 => :y)
 
-Plv = plot(sol_lovo.time, sol_lovo.x,
-           linewidth = 2,
-           color = myblue,
-           label = "proies",
-           xlabel = "temps",
-           ylabel = "densité de populations",
-           title = "Modèle de Lotka Volterra",
-           margin = .5Plots.cm,
-           topmargin = 1Plots.cm)
+figlv = plot(
+    sol_lovo.time,
+    sol_lovo.x;
+    linewidth = 2,
+    color = myblue,
+    label = "proies",
+    xlabel = "temps",
+    ylabel = "densité de populations",
+    title = "Modèle de Lotka Volterra",
+    margin = .5Plots.cm,
+    topmargin = 1Plots.cm,
+)
 
-plot!(Plv, sol_lovo.time, sol_lovo.y,
-      linewidth = 2,
-      color = myorange,
-      label = "prédateurs")
-
+plot!(
+    figlv,
+    sol_lovo.time,
+    sol_lovo.y;
+    linewidth = 2,
+    color = myorange,
+    label = "prédateurs",
+)
 ```
 
 ### Espace d'état
 
 Commençons par tracer les isoclines nulles ainsi que l'orientation du champs de vecteur dans l'espace d'état. Ce dernier utilise la fonction `quiver()`.
+
+::: {.callout-caution}
+Ce qui suit fonctionne avec `Plots.jl`, néanmoins la façon de tracer le champs de vecteurs semble vraiment peu naturelle. La librairie graphique `Makie` que nous verrons un peu plus loin permet de faire ces représentations bien plus facilement, comme nous le voyons [ici](annexe_LV_makieplot.qmd).
+:::
+
 ```{julia}
-# on redéfinit des fonctions qui renvoient les composantes de la dérivée mises à l'échelle
+# fonctions qui renvoient les composantes de la dérivée mises à l'échelle
 scale = 10
 der_x(x, y) = lovo([x y], par_lovo, 0)[1]/scale
 der_y(x, y) = lovo([x y], par_lovo, 0)[2]/scale
 
-# on définit un ensemble de valeur de x et y formant une grille
-# sur laquelle évaluer le champs de vecteurs
-xrange = range(0., 2, length=11)'  # note ' : on va broadcaster pour créer la grille via der_x.() et der_y.()
+# valeur de x et y formant une grille sur laquelle évaluer le champs de vecteurs
+xrange = range(0., 2, length=11)'  # note the quote : broadcast pour créer une grille via der_x.() et der_y.()
 yrange = range(0. ,2, length=11)
 
 # champs de vecteurs
-Plan = quiver(xrange, yrange,
-       quiver = (der_x.(xrange, yrange), der_y.(xrange, yrange)),
-       ylim = (-0.05, 2),
-       xlim = (-0.05, 2),
-       color = :lightgray,
-	 grid = false,
-       title = "Modèle de Lotka Volterra",
-       xlabel = "proies",
-       ylabel = "prédateurs",
-       margin = .5Plots.cm,
-       topmargin = 1Plots.cm)
+figplan = quiver(
+    xrange,
+    yrange,
+    quiver = (der_x.(xrange, yrange), der_y.(xrange, yrange));
+    ylim = (-0.05, 2),
+    xlim = (-0.05, 2),
+    color = :lightgray,
+    grid = false,
+    title = "Modèle de Lotka Volterra",
+    xlabel = "proies",
+    ylabel = "prédateurs",
+    margin = .5Plots.cm,
+    topmargin = 1Plots.cm,
+)
 ```
 
 On rajoute les isoclines nulles et les équilibres :
@@ -309,29 +324,29 @@ On rajoute les isoclines nulles et les équilibres :
 # isoclines nulles
 xplot = 0:2
 yplot = 0:2
-plot!(Plan, xplot, ones(length(xplot)).*r./c,
+plot!(figplan, xplot, ones(length(xplot)).*r./c,
       linewidth = 2,
       color = mygreen,
       label = "\$\\dot x = 0\$")
-plot!(Plan, zeros(length(yplot)), yplot,
+plot!(figplan, zeros(length(yplot)), yplot,
       linewidth = 2,
       color = mygreen,
       label = "")
-plot!(Plan, ones(length(yplot)).*m./b, yplot,
+plot!(figplan, ones(length(yplot)).*m./b, yplot,
       linewidth = 2,
       color = myred,
       label = "\$\\dot y = 0\$")
-plot!(Plan, xplot, zeros(length(xplot)),
+plot!(figplan, xplot, zeros(length(xplot)),
       linewidth = 2,
       color = myred,
       label = "")
 
 # équilibres
-plot!(Plan, (0, 0),
+plot!(figplan, (0, 0),
       markershape = :circle,
       color= myred,
       label = "")
-plot!(Plan, (m/b, r/c),
+plot!(figplan, (m/b, r/c),
       markershape = :circle,
       color= myorange,
       label = "")
@@ -344,12 +359,12 @@ Et enfin la trajectoire :
 #| label: fig-phase-lovo
 #| fig-cap: Plan de phase du modèle de Lotka Volterra
 # trajectoire
-plot!(Plan,  sol_lovo.x, sol_lovo.y,
+plot!(figplan,  sol_lovo.x, sol_lovo.y,
       color = myblue,
       linewidth = 2,
       label = "trajectoire")
 
-display(Plan)
+display(figplan)
 ```
 
 ### Intégrale première
