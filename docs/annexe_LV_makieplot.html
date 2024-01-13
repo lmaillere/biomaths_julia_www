@@ -240,9 +240,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
 <span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="co"># problème</span></span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>prob_lovo <span class="op">=</span> <span class="fu">ODEProblem</span>(lovo, etat0, tspan, par_lovo, saveat <span class="op">=</span> tstep)</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>prob_lovo <span class="op">=</span> <span class="fu">ODEProblem</span>(lovo, etat0, tspan, par_lovo; saveat <span class="op">=</span> tstep)</span>
 <span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="co"># intégration</span></span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>sol_lovo <span class="op">=</span> <span class="fu">solve</span>(prob_lovo, reltol <span class="op">=</span> <span class="fl">1e-6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>sol_lovo <span class="op">=</span> <span class="fu">solve</span>(prob_lovo; reltol <span class="op">=</span> <span class="fl">1e-6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>L’objectif est de créer une figure avec trois panels. dans la colonne de gauche, le premier panel représentera la dynamique temporelle, le second le plan de phase, et dans la colonne de droite nous représenterons la figure 3D avec l’intégrale première.</p>
@@ -250,155 +250,160 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CairoMakie</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># on crée la figure avec un fond gris clair</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> <span class="fu">Figure</span>(backgroundcolor <span class="op">=</span> <span class="fu">RGBf</span>(<span class="fl">0.98</span>, <span class="fl">0.98</span>, <span class="fl">0.98</span>),</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>              size <span class="op">=</span> (<span class="fl">1000</span>, <span class="fl">600</span>)) </span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># déclare les différents panels comme des éléments gridlayout contenant les plots</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>panela <span class="op">=</span> fig[<span class="fl">1</span>, <span class="fl">1</span>] <span class="op">=</span> <span class="fu">GridLayout</span>()</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>panelb <span class="op">=</span> fig[<span class="fl">2</span>, <span class="fl">1</span>] <span class="op">=</span> <span class="fu">GridLayout</span>()</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>panelc <span class="op">=</span> fig[<span class="op">:</span>, <span class="fl">2</span>] <span class="op">=</span> <span class="fu">GridLayout</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> <span class="fu">Figure</span>(</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>       backgroundcolor <span class="op">=</span> <span class="fu">RGBf</span>(<span class="fl">0.98</span>, <span class="fl">0.98</span>, <span class="fl">0.98</span>),</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>       size <span class="op">=</span> (<span class="fl">1000</span>, <span class="fl">600</span>),</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># déclare les différents panels comme des éléments gridlayout contenant les plots</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>panela <span class="op">=</span> fig[<span class="fl">1</span>, <span class="fl">1</span>] <span class="op">=</span> <span class="fu">GridLayout</span>()</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>panelb <span class="op">=</span> fig[<span class="fl">2</span>, <span class="fl">1</span>] <span class="op">=</span> <span class="fu">GridLayout</span>()</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>panelc <span class="op">=</span> fig[<span class="op">:</span>, <span class="fl">2</span>] <span class="op">=</span> <span class="fu">GridLayout</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>On commence par remplir le premier panel avec les dynamiques :</p>
 <div class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>ax1 <span class="op">=</span> <span class="fu">Axis</span>(panela[<span class="fl">1</span>,<span class="fl">1</span>],</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>           <span class="co">#xlabel = L"temps$$",</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>           ylabel <span class="op">=</span> L<span class="st">"densités de populations</span><span class="sc">$$</span><span class="st">",</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="st">           </span>title<span class="st">="</span>Dynamiques<span class="st">")</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># pour avoir un xlabel plus proche de l'axe on le définit séparément en réglant manuellement l'espacement/padding</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">Label</span>(panela[<span class="fl">1</span>,<span class="fl">1</span>,<span class="fu">Bottom</span>()], L<span class="st">"temps</span><span class="sc">$$</span><span class="st">", </span>padding<span class="st">=(0,0,0,20))</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">lines!</span>(ax1, sol_lovo.t, sol_lovo[<span class="fl">1</span>,<span class="op">:</span>],</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>       linewidth <span class="op">=</span> <span class="fl">2</span>,</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>       label <span class="op">=</span> L<span class="st">"</span><span class="sc">$</span>x<span class="st">(t)</span><span class="sc">$</span><span class="st">")</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>lines<span class="st">!(ax1, sol_lovo.t, sol_lovo[2,:],</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>       linewidth <span class="op">=</span> <span class="fl">2</span>,</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>       label <span class="op">=</span> L<span class="st">"</span><span class="sc">$</span>y<span class="st">(t)</span><span class="sc">$</span><span class="st">")</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>axislegend<span class="st">(ax1, position = :lt, </span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>           labelsize <span class="op">=</span> <span class="fl">12</span>, </span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>           padding <span class="op">=</span> (<span class="fl">5</span>,<span class="fl">5</span>,<span class="fl">0</span>,<span class="fl">0</span>),</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>           rowgap <span class="op">=</span> <span class="op">-</span><span class="fl">5</span>)</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>fig</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>ax1 <span class="op">=</span> <span class="fu">Axis</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>       panela[<span class="fl">1</span>,<span class="fl">1</span>],</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>       ylabel <span class="op">=</span> L<span class="st">"densités de populations</span><span class="sc">$$</span><span class="st">",</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="st">       </span>title<span class="st">="</span>Dynamiques<span class="st">",</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># pour avoir un xlabel plus proche de l'axe on le définit séparément en réglant manuellement l'espacement/padding</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="fu">Label</span>(panela[<span class="fl">1</span>,<span class="fl">1</span>,<span class="fu">Bottom</span>()], L<span class="st">"temps</span><span class="sc">$$</span><span class="st">"; </span>padding<span class="st">=(0,0,0,20))</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># dynamiques de populations</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="fu">lines!</span>(ax1, sol_lovo.t, sol_lovo[<span class="fl">1</span>,<span class="op">:</span>]; linewidth <span class="op">=</span> <span class="fl">2</span>, label <span class="op">=</span> L<span class="st">"</span><span class="sc">$</span>x<span class="st">(t)</span><span class="sc">$</span><span class="st">")</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>lines<span class="st">!(ax1, sol_lovo.t, sol_lovo[2,:]; linewidth = 2, label = L"</span><span class="op">$</span><span class="fu">y</span>(t)<span class="op">$</span><span class="st">")</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co"># légende avec quelques ajustements d'espacement interne</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="fu">axislegend</span>(ax1; position <span class="op">=</span> <span class="op">:</span>lt, labelsize <span class="op">=</span> <span class="fl">12</span>, padding <span class="op">=</span> (<span class="fl">5</span>,<span class="fl">5</span>,<span class="fl">0</span>,<span class="fl">0</span>), rowgap <span class="op">=</span> <span class="op">-</span><span class="fl">5</span>)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>fig</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="18">
 <p><img src="annexe_LV_makieplot_files/figure-html/cell-4-output-1.svg" class="img-fluid"></p>
 </div>
 </div>
-<p>Puis on remplit le second panel avec le plan de phase :</p>
+<p>Puis on complète le second panel avec le plan de phase :</p>
 <div class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>ax2 <span class="op">=</span> <span class="fu">Axis</span>(panelb[<span class="fl">1</span>,<span class="fl">1</span>],</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>           xlabel <span class="op">=</span> L<span class="st">"population </span><span class="sc">$</span>x<span class="sc">$</span><span class="st">",</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="st">           </span>ylabel<span class="st"> = L"</span>population <span class="op">$</span>y<span class="op">$</span><span class="st">",</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>           title <span class="op">=</span> <span class="st">"Plan de phase"</span>,</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>           xticks <span class="op">=</span> (<span class="fl">0</span><span class="op">:</span><span class="fl">.5</span><span class="op">:</span><span class="fl">2</span>),</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>           yticks <span class="op">=</span> (<span class="fl">0</span><span class="op">:</span><span class="fl">.5</span><span class="op">:</span><span class="fl">2</span>))</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co"># champs de vecteur</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>scale <span class="op">=</span> <span class="fl">10</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>xrange <span class="op">=</span> <span class="fu">range</span>(<span class="fl">0</span>, <span class="fl">2.75</span>, length<span class="op">=</span><span class="fl">11</span>)  </span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>yrange <span class="op">=</span> <span class="fu">range</span>(<span class="fl">0</span>, <span class="fl">2.75</span>, length<span class="op">=</span><span class="fl">11</span>)</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>derx <span class="op">=</span> [<span class="fu">lovo</span>([x y], par_lovo, <span class="fl">0</span>)[<span class="fl">1</span>]<span class="op">/</span>scale for x <span class="kw">in</span> xrange, y <span class="kw">in</span> yrange]</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>dery <span class="op">=</span> [<span class="fu">lovo</span>([x y], par_lovo, <span class="fl">0</span>)[<span class="fl">2</span>]<span class="op">/</span>scale for x <span class="kw">in</span> xrange, y <span class="kw">in</span> yrange]</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="fu">arrows!</span>(ax2, xrange, yrange, derx, dery, </span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>        color <span class="op">=</span> <span class="op">:</span>lightgray, </span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>        arrowsize <span class="op">=</span> <span class="fl">10</span>)</span>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>ax2 <span class="op">=</span> <span class="fu">Axis</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>       panelb[<span class="fl">1</span>,<span class="fl">1</span>];</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>       xlabel <span class="op">=</span> L<span class="st">"population </span><span class="sc">$</span>x<span class="sc">$</span><span class="st">",</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="st">       </span>ylabel<span class="st"> = L"</span>population <span class="op">$</span>y<span class="op">$</span><span class="st">",</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>       title <span class="op">=</span> <span class="st">"Plan de phase"</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>       xticks <span class="op">=</span> (<span class="fl">0</span><span class="op">:</span><span class="fl">.5</span><span class="op">:</span><span class="fl">2</span>),</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>       yticks <span class="op">=</span> (<span class="fl">0</span><span class="op">:</span><span class="fl">.5</span><span class="op">:</span><span class="fl">2</span>),</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co"># champs de vecteur</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>scale <span class="op">=</span> <span class="fl">10</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>xrange <span class="op">=</span> <span class="fu">range</span>(<span class="fl">0</span>, <span class="fl">2.75</span>, length<span class="op">=</span><span class="fl">11</span>)</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>yrange <span class="op">=</span> <span class="fu">range</span>(<span class="fl">0</span>, <span class="fl">2.75</span>, length<span class="op">=</span><span class="fl">11</span>)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>derx <span class="op">=</span> [<span class="fu">lovo</span>([x y], par_lovo, <span class="fl">0</span>)[<span class="fl">1</span>]<span class="op">/</span>scale for x <span class="kw">in</span> xrange, y <span class="kw">in</span> yrange]</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>dery <span class="op">=</span> [<span class="fu">lovo</span>([x y], par_lovo, <span class="fl">0</span>)[<span class="fl">2</span>]<span class="op">/</span>scale for x <span class="kw">in</span> xrange, y <span class="kw">in</span> yrange]</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="fu">arrows!</span>(ax2, xrange, yrange, derx, dery; color <span class="op">=</span> <span class="op">:</span>lightgray, arrowsize <span class="op">=</span> <span class="fl">10</span>)</span>
 <span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="co"># nullclines</span></span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="fu">lines!</span>(ax2, xrange, [r<span class="op">/</span>c for x <span class="kw">in</span> xrange],</span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>       color <span class="op">=</span> <span class="fu">Cycled</span>(<span class="fl">2</span>),</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>       linewidth <span class="op">=</span> <span class="fl">2</span>,</span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>       label <span class="op">=</span> L<span class="st">"</span><span class="sc">$</span><span class="st">\</span>dot<span class="st">{x}$ nullcline"</span>)</span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="fu">lines!</span>(ax2, [<span class="fl">0</span> for y <span class="kw">in</span> yrange], yrange,</span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>       linewidth <span class="op">=</span> <span class="fl">2</span>,</span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>       color <span class="op">=</span> <span class="fu">Cycled</span>(<span class="fl">2</span>))</span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a><span class="fu">lines!</span>(ax2, [m<span class="op">/</span>b for y <span class="kw">in</span> yrange], yrange,</span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>       color <span class="op">=</span> <span class="fu">Cycled</span>(<span class="fl">3</span>),</span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>       linewidth <span class="op">=</span> <span class="fl">2</span>,</span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>       label <span class="op">=</span> L<span class="st">"</span><span class="sc">$</span><span class="st">\</span>dot<span class="st">{y}$ nullcline"</span>)</span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a><span class="fu">lines!</span>(ax2, xrange, [<span class="fl">0</span> for y <span class="kw">in</span> yrange],</span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>       color <span class="op">=</span> <span class="fu">Cycled</span>(<span class="fl">3</span>),</span>
-<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>       linewidth <span class="op">=</span> <span class="fl">2</span>)</span>
-<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a><span class="co"># équilibres</span></span>
-<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a><span class="fu">scatter!</span>(ax2, <span class="fu">Point2f</span>(<span class="fl">0</span>,<span class="fl">0</span>),</span>
-<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>         color <span class="op">=</span> <span class="fu">Cycled</span>(<span class="fl">4</span>))</span>
-<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a><span class="fu">scatter!</span>(ax2, <span class="fu">Point2f</span>(m<span class="op">/</span>b, r<span class="op">/</span>c),</span>
-<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>         color <span class="op">=</span> <span class="fu">Cycled</span>(<span class="fl">4</span>))</span>
-<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a><span class="co"># trajectoire</span></span>
-<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a><span class="fu">lines!</span>(ax2, sol_lovo[<span class="fl">1</span>, <span class="op">:</span>], sol_lovo[<span class="fl">2</span>, <span class="op">:</span>],</span>
-<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>       color <span class="op">=</span> <span class="fu">Cycled</span>(<span class="fl">1</span>),</span>
-<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>       linewidth <span class="op">=</span> <span class="fl">2</span>)</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="fu">lines!</span>(</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    ax2,</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    xrange,</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    [r<span class="op">/</span>c for x <span class="kw">in</span> xrange];</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    color <span class="op">=</span> <span class="fu">Cycled</span>(<span class="fl">2</span>),</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    linewidth <span class="op">=</span> <span class="fl">2</span>,</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>    label <span class="op">=</span> L<span class="st">"</span><span class="sc">$</span><span class="st">\</span>dot<span class="st">{x}$ nullcline"</span>,</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a><span class="fu">lines!</span>(ax2, [<span class="fl">0</span> for y <span class="kw">in</span> yrange], yrange; linewidth <span class="op">=</span> <span class="fl">2</span>, color <span class="op">=</span> <span class="fu">Cycled</span>(<span class="fl">2</span>))</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a><span class="fu">lines!</span>(</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>    ax2,</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>    [m<span class="op">/</span>b for y <span class="kw">in</span> yrange],</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>    yrange;</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>    color <span class="op">=</span> <span class="fu">Cycled</span>(<span class="fl">3</span>),</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>    linewidth <span class="op">=</span> <span class="fl">2</span>,</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>    label <span class="op">=</span> L<span class="st">"</span><span class="sc">$</span><span class="st">\</span>dot<span class="st">{y}$ nullcline"</span>,</span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a><span class="fu">lines!</span>(ax2, xrange, [<span class="fl">0</span> for y <span class="kw">in</span> yrange]; color <span class="op">=</span> <span class="fu">Cycled</span>(<span class="fl">3</span>), linewidth <span class="op">=</span> <span class="fl">2</span>)</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a><span class="co"># équilibres</span></span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a><span class="fu">scatter!</span>(ax2, <span class="fu">Point2f</span>(<span class="fl">0</span>,<span class="fl">0</span>); color <span class="op">=</span> <span class="fu">Cycled</span>(<span class="fl">4</span>))</span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a><span class="fu">scatter!</span>(ax2, <span class="fu">Point2f</span>(m<span class="op">/</span>b, r<span class="op">/</span>c); color <span class="op">=</span> <span class="fu">Cycled</span>(<span class="fl">4</span>))</span>
 <span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a><span class="fu">xlims!</span>(ax2, <span class="op">-</span><span class="fl">0.1</span>, <span class="fl">2.75</span>)</span>
-<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a><span class="fu">ylims!</span>(ax2, <span class="op">-</span><span class="fl">0.1</span>, <span class="fl">2.75</span>)</span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a><span class="co"># trajectoire</span></span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a><span class="fu">lines!</span>(ax2, sol_lovo[<span class="fl">1</span>, <span class="op">:</span>], sol_lovo[<span class="fl">2</span>, <span class="op">:</span>], color <span class="op">=</span> <span class="fu">Cycled</span>(<span class="fl">1</span>), linewidth <span class="op">=</span> <span class="fl">2</span>)</span>
 <span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a><span class="fu">axislegend</span>(ax2, position <span class="op">=</span> <span class="op">:</span>rt, </span>
-<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>           labelsize <span class="op">=</span> <span class="fl">12</span>, </span>
-<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>           padding <span class="op">=</span> (<span class="fl">5</span>,<span class="fl">5</span>,<span class="fl">0</span>,<span class="fl">0</span>), </span>
-<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>           rowgap <span class="op">=</span> <span class="op">-</span><span class="fl">5</span>)</span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a><span class="fu">xlims!</span>(ax2, <span class="op">-</span><span class="fl">0.1</span>, <span class="fl">2.75</span>)</span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a><span class="fu">ylims!</span>(ax2, <span class="op">-</span><span class="fl">0.1</span>, <span class="fl">2.75</span>)</span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a><span class="fu">axislegend</span>(ax2; position <span class="op">=</span> <span class="op">:</span>rt, labelsize <span class="op">=</span> <span class="fl">12</span>, padding <span class="op">=</span> (<span class="fl">5</span>,<span class="fl">5</span>,<span class="fl">0</span>,<span class="fl">0</span>), rowgap <span class="op">=</span> <span class="op">-</span><span class="fl">5</span>)</span>
 <span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>fig</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="5">
+<div class="cell-output cell-output-display" data-execution_count="19">
 <p><img src="annexe_LV_makieplot_files/figure-html/cell-5-output-1.svg" class="img-fluid"></p>
 </div>
 </div>
-<p>Finalement on remplit le troisième panel avec la représentation 3D, en commencant par redéfinir l’intégrale première</p>
+<p>Finalement on complète le troisième panel avec la représentation 3D, en commencant par redéfinir l’intégrale première</p>
 <div class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># l'intégrale première</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">int_prem</span>(x, y, par <span class="op">=</span> par_lovo)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>      r, c, b, m <span class="op">=</span> par</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">-r*log</span>(y) <span class="op">+</span> c<span class="op">*</span>y <span class="op">-</span> <span class="fu">m*log</span>(x) <span class="op">+</span> b<span class="op">*</span>x</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> <span class="fu">-r*log</span>(y) <span class="op">+</span> c<span class="op">*</span>y <span class="op">-</span> <span class="fu">m*log</span>(x) <span class="op">+</span> b<span class="op">*</span>x</span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># système d'axe 3D en première colonne de panel c, avec réglage de la caméra</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>ax3 <span class="op">=</span> <span class="fu">Axis3</span>(panelc[<span class="fl">1</span>, <span class="fl">1</span>], </span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>            title <span class="op">=</span> <span class="st">"Intégrale première"</span>,</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>            titlegap <span class="op">=</span> <span class="op">-</span><span class="fl">50</span>,</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>            xlabel <span class="op">=</span> L<span class="st">"population </span><span class="sc">$</span>x<span class="sc">$</span><span class="st">",</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="st">            </span>ylabel<span class="st"> = L"</span>population <span class="op">$</span>y<span class="op">$</span><span class="st">",</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>            zlabel <span class="op">=</span> L<span class="st">"</span><span class="sc">$</span>H<span class="st">(x,y)</span><span class="sc">$</span><span class="st">",</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="st">            </span>azimuth<span class="st"> = 0.5,</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>            elevation <span class="op">=</span> <span class="fl">0.2</span>)</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co"># grille x, y</span></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>xsurf <span class="op">=</span> <span class="fl">.2</span><span class="op">:</span> <span class="fl">.1</span><span class="op">:</span> <span class="fl">3</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>ysurf <span class="op">=</span> <span class="fl">.2</span><span class="op">:</span><span class="fl">.1</span><span class="op">:</span> <span class="fl">3</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co"># calcul de la surface via une compréhension de liste</span></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>hsurf <span class="op">=</span> [<span class="fu">int_prem</span>(x, y, par_lovo) for x <span class="kw">in</span> xsurf, y <span class="kw">in</span> ysurf]</span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>hplane <span class="op">=</span> [<span class="fu">int_prem</span>(x0, y0, par_lovo) for x <span class="kw">in</span> xsurf, y <span class="kw">in</span> ysurf]</span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="co"># tracé de H(x,y) et du plan z = H(x0,y0)</span></span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>hs <span class="op">=</span> <span class="fu">surface!</span>(ax3, xsurf, ysurf, hsurf, alpha<span class="op">=</span><span class="fl">.5</span>)</span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="fu">surface!</span>(ax3, xsurf, ysurf, hplane, color <span class="op">=</span> <span class="fu">fill</span>(<span class="op">:</span>red,<span class="fl">100</span>,<span class="fl">100</span>), alpha <span class="op">=</span> <span class="fl">.3</span>)</span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="co"># ajout de la trajectoire simulée</span></span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="fu">lines!</span>(ax3, sol_lovo[<span class="fl">1</span>,<span class="op">:</span>], sol_lovo[<span class="fl">2</span>,<span class="op">:</span>], </span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>       [<span class="fu">int_prem</span>(x0, y0) for x <span class="kw">in</span> sol_lovo[<span class="fl">1</span>,<span class="op">:</span>]],</span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>       color <span class="op">=</span> <span class="fu">Cycled</span>(<span class="fl">4</span>),</span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>       linewidth <span class="op">=</span> <span class="fl">3</span>)</span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a><span class="co"># ajout d'une colorbar reprise sur le plot de H(x,y) avec une hauteur relative sur la colonne</span></span>
-<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a><span class="co"># la colorbar est en 2e colonne du panelc</span></span>
-<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a><span class="fu">Colorbar</span>(panelc[<span class="fl">1</span>, <span class="fl">2</span>], hs, height <span class="op">=</span> <span class="fu">Relative</span>(<span class="fl">.55</span>))</span>
-<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a><span class="co"># colonne 2 plus large</span></span>
-<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a><span class="fu">colsize!</span>(fig.layout, <span class="fl">2</span>, <span class="fu">Auto</span>(<span class="fl">1.5</span>))</span>
-<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a><span class="co"># modification des espacements entre lignes et colonnes</span></span>
-<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a><span class="fu">colgap!</span>(fig.layout, <span class="fl">60</span>)</span>
-<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a><span class="fu">colgap!</span>(panelc, <span class="op">-</span><span class="fl">10</span>)</span>
-<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a><span class="fu">rowgap!</span>(fig.layout, <span class="fl">10</span>)</span>
-<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a><span class="co"># titre général</span></span>
-<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>supertitle <span class="op">=</span> <span class="fu">Label</span>(fig[<span class="fl">0</span>, <span class="op">:</span>], <span class="st">"Modèle de Lotka Volterra"</span>, fontsize <span class="op">=</span> <span class="fl">30</span>)</span>
-<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>fig</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="7">
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>ax3 <span class="op">=</span> <span class="fu">Axis3</span>(</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>       panelc[<span class="fl">1</span>, <span class="fl">1</span>];</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>       title <span class="op">=</span> <span class="st">"Intégrale première"</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>       titlegap <span class="op">=</span> <span class="op">-</span><span class="fl">50</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>       xlabel <span class="op">=</span> L<span class="st">"population </span><span class="sc">$</span>x<span class="sc">$</span><span class="st">",</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="st">       </span>ylabel<span class="st"> = L"</span>population <span class="op">$</span>y<span class="op">$</span><span class="st">",</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>       zlabel <span class="op">=</span> L<span class="st">"</span><span class="sc">$</span>H<span class="st">(x,y)</span><span class="sc">$</span><span class="st">",</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="st">       </span>azimuth<span class="st"> = 0.5,</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>       elevation <span class="op">=</span> <span class="fl">0.2</span>,</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># grille x, y</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>xsurf <span class="op">=</span> <span class="fl">0.2</span><span class="op">:</span><span class="fl">0.1</span><span class="op">:</span><span class="fl">3.0</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>ysurf <span class="op">=</span> <span class="fl">0.2</span><span class="op">:</span><span class="fl">0.1</span><span class="op">:</span><span class="fl">3.0</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="co"># calcul de la surface via une compréhension de liste</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>hsurf <span class="op">=</span> [<span class="fu">int_prem</span>(x, y, par_lovo) for x <span class="kw">in</span> xsurf, y <span class="kw">in</span> ysurf]</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>hplane <span class="op">=</span> [<span class="fu">int_prem</span>(x0, y0, par_lovo) for x <span class="kw">in</span> xsurf, y <span class="kw">in</span> ysurf]</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="co"># tracé de H(x,y) et du plan z = H(x0,y0)</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>hs <span class="op">=</span> <span class="fu">surface!</span>(ax3, xsurf, ysurf, hsurf; alpha<span class="op">=</span><span class="fl">.5</span>)</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="fu">surface!</span>(ax3, xsurf, ysurf, hplane; color <span class="op">=</span> <span class="fu">fill</span>(<span class="op">:</span>red, <span class="fl">100</span>, <span class="fl">100</span>), alpha <span class="op">=</span> <span class="fl">.3</span>)</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="co"># ajout de la trajectoire simulée</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a><span class="fu">lines!</span>(</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>    ax3,</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    sol_lovo[<span class="fl">1</span>,<span class="op">:</span>],</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>    sol_lovo[<span class="fl">2</span>,<span class="op">:</span>],</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>    [<span class="fu">int_prem</span>(x0, y0, par_lovo) for x <span class="kw">in</span> sol_lovo[<span class="fl">1</span>,<span class="op">:</span>]];</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>    color <span class="op">=</span> <span class="fu">Cycled</span>(<span class="fl">4</span>),</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>    linewidth <span class="op">=</span> <span class="fl">3</span>,</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a><span class="co"># ajout d'une colorbar reprise sur le plot de H(x,y) avec une hauteur relative sur la colonne</span></span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a><span class="co"># la colorbar est en 2e colonne du panelc</span></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a><span class="fu">Colorbar</span>(panelc[<span class="fl">1</span>, <span class="fl">2</span>], hs, height <span class="op">=</span> <span class="fu">Relative</span>(<span class="fl">.55</span>))</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a><span class="co"># colonne 2 plus large</span></span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a><span class="fu">colsize!</span>(fig.layout, <span class="fl">2</span>, <span class="fu">Auto</span>(<span class="fl">1.5</span>))</span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a><span class="co"># modification des espacements entre lignes et colonnes</span></span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a><span class="fu">colgap!</span>(fig.layout, <span class="fl">60</span>)</span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a><span class="fu">colgap!</span>(panelc, <span class="op">-</span><span class="fl">10</span>)</span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a><span class="fu">rowgap!</span>(fig.layout, <span class="fl">10</span>)</span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a><span class="co"># titre général en ligne 0</span></span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>supertitle <span class="op">=</span> <span class="fu">Label</span>(fig[<span class="fl">0</span>, <span class="op">:</span>], <span class="st">"Modèle de Lotka Volterra"</span>, fontsize <span class="op">=</span> <span class="fl">30</span>)</span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>fig</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="21">
 <div id="fig-lv-complex" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="annexe_LV_makieplot_files/figure-html/fig-lv-complex-output-1.svg" class="img-fluid figure-img"></p>
@@ -739,9 +744,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a><span class="ot">end</span></span>
 <span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a><span class="co"># problème</span></span>
-<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a><span class="ot">prob_lovo = ODEProblem</span><span class="ch">(</span><span class="ot">lovo, etat0, tspan, par_lovo, saveat = tstep</span><span class="ch">)</span></span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a><span class="ot">prob_lovo = ODEProblem</span><span class="ch">(</span><span class="ot">lovo, etat0, tspan, par_lovo; saveat = tstep</span><span class="ch">)</span></span>
 <span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a><span class="co"># intégration</span></span>
-<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a><span class="ot">sol_lovo = solve</span><span class="ch">(</span><span class="ot">prob_lovo, reltol = 1e-6</span><span class="ch">)</span></span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a><span class="ot">sol_lovo = solve</span><span class="ch">(</span><span class="ot">prob_lovo; reltol = 1e-6</span><span class="ch">)</span></span>
 <span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
 <span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a><span class="ot">L'objectif est de créer une figure avec trois panels. dans la colonne de gauche, le premier panel représentera la dynamique temporelle, le second le plan de phase, et dans la colonne de droite nous représenterons la figure 3D avec l'intégrale première.</span></span>
@@ -750,164 +755,169 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a><span class="ot">using CairoMakie</span></span>
 <span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a><span class="co"># on crée la figure avec un fond gris clair</span></span>
-<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a><span class="ot">fig = Figure</span><span class="ch">(</span><span class="ot">backgroundcolor = RGBf</span><span class="ch">(</span><span class="ot">0.98, 0.98, 0.98</span><span class="ch">)</span><span class="ot">,</span></span>
-<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a><span class="ot">              size = </span><span class="ch">(</span><span class="ot">1000, 600</span><span class="ch">))</span><span class="ot"> </span></span>
-<span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a><span class="co"># déclare les différents panels comme des éléments gridlayout contenant les plots</span></span>
-<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a><span class="ot">panela = fig</span><span class="ch">[</span><span class="bn">1, 1</span><span class="ch">]</span><span class="ot"> = GridLayout</span><span class="ch">()</span></span>
-<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a><span class="ot">panelb = fig</span><span class="ch">[</span><span class="bn">2, 1</span><span class="ch">]</span><span class="ot"> = GridLayout</span><span class="ch">()</span></span>
-<span id="cb7-63"><a href="#cb7-63" aria-hidden="true" tabindex="-1"></a><span class="ot">panelc = fig</span><span class="ch">[</span><span class="bn">:, 2</span><span class="ch">]</span><span class="ot"> = GridLayout</span><span class="ch">()</span></span>
-<span id="cb7-64"><a href="#cb7-64" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
-<span id="cb7-65"><a href="#cb7-65" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-66"><a href="#cb7-66" aria-hidden="true" tabindex="-1"></a><span class="ot">On commence par remplir le premier panel avec les dynamiques :</span></span>
+<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a><span class="ot">fig = Figure</span><span class="ch">(</span></span>
+<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a><span class="ot">       backgroundcolor = RGBf</span><span class="ch">(</span><span class="ot">0.98, 0.98, 0.98</span><span class="ch">)</span><span class="ot">,</span></span>
+<span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a><span class="ot">       size = </span><span class="ch">(</span><span class="ot">1000, 600</span><span class="ch">)</span><span class="ot">,</span></span>
+<span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a><span class="ch">)</span></span>
+<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a><span class="co"># déclare les différents panels comme des éléments gridlayout contenant les plots</span></span>
+<span id="cb7-63"><a href="#cb7-63" aria-hidden="true" tabindex="-1"></a><span class="ot">panela = fig</span><span class="ch">[</span><span class="bn">1, 1</span><span class="ch">]</span><span class="ot"> = GridLayout</span><span class="ch">()</span></span>
+<span id="cb7-64"><a href="#cb7-64" aria-hidden="true" tabindex="-1"></a><span class="ot">panelb = fig</span><span class="ch">[</span><span class="bn">2, 1</span><span class="ch">]</span><span class="ot"> = GridLayout</span><span class="ch">()</span></span>
+<span id="cb7-65"><a href="#cb7-65" aria-hidden="true" tabindex="-1"></a><span class="ot">panelc = fig</span><span class="ch">[</span><span class="bn">:, 2</span><span class="ch">]</span><span class="ot"> = GridLayout</span><span class="ch">()</span></span>
+<span id="cb7-66"><a href="#cb7-66" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
 <span id="cb7-67"><a href="#cb7-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-70"><a href="#cb7-70" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb7-71"><a href="#cb7-71" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
-<span id="cb7-72"><a href="#cb7-72" aria-hidden="true" tabindex="-1"></a><span class="ot">ax1 = Axis</span><span class="ch">(</span><span class="ot">panela</span><span class="ch">[</span><span class="bn">1,1</span><span class="ch">]</span><span class="ot">,</span></span>
-<span id="cb7-73"><a href="#cb7-73" aria-hidden="true" tabindex="-1"></a><span class="co">           #xlabel = L"temps$$",</span></span>
-<span id="cb7-74"><a href="#cb7-74" aria-hidden="true" tabindex="-1"></a><span class="ot">           ylabel = L"densités de populations</span><span class="wa">$$</span><span class="ot">",</span></span>
-<span id="cb7-75"><a href="#cb7-75" aria-hidden="true" tabindex="-1"></a><span class="ot">           title="Dynamiques"</span><span class="ch">)</span></span>
-<span id="cb7-76"><a href="#cb7-76" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-77"><a href="#cb7-77" aria-hidden="true" tabindex="-1"></a><span class="co"># pour avoir un xlabel plus proche de l'axe on le définit séparément en réglant manuellement l'espacement/padding</span></span>
-<span id="cb7-78"><a href="#cb7-78" aria-hidden="true" tabindex="-1"></a><span class="ot">Label</span><span class="ch">(</span><span class="ot">panela</span><span class="ch">[</span><span class="bn">1,1,Bottom()</span><span class="ch">]</span><span class="ot">, L"temps</span><span class="wa">$$</span><span class="ot">", padding=</span><span class="ch">(</span><span class="ot">0,0,0,20</span><span class="ch">))</span></span>
+<span id="cb7-68"><a href="#cb7-68" aria-hidden="true" tabindex="-1"></a><span class="ot">On commence par remplir le premier panel avec les dynamiques :</span></span>
+<span id="cb7-69"><a href="#cb7-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-72"><a href="#cb7-72" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb7-73"><a href="#cb7-73" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
+<span id="cb7-74"><a href="#cb7-74" aria-hidden="true" tabindex="-1"></a><span class="ot">ax1 = Axis</span><span class="ch">(</span></span>
+<span id="cb7-75"><a href="#cb7-75" aria-hidden="true" tabindex="-1"></a><span class="ot">       panela</span><span class="ch">[</span><span class="bn">1,1</span><span class="ch">]</span><span class="ot">,</span></span>
+<span id="cb7-76"><a href="#cb7-76" aria-hidden="true" tabindex="-1"></a><span class="ot">       ylabel = L"densités de populations</span><span class="wa">$$</span><span class="ot">",</span></span>
+<span id="cb7-77"><a href="#cb7-77" aria-hidden="true" tabindex="-1"></a><span class="ot">       title="Dynamiques",</span></span>
+<span id="cb7-78"><a href="#cb7-78" aria-hidden="true" tabindex="-1"></a><span class="ch">)</span></span>
 <span id="cb7-79"><a href="#cb7-79" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-80"><a href="#cb7-80" aria-hidden="true" tabindex="-1"></a><span class="ot">lines!</span><span class="ch">(</span><span class="ot">ax1, sol_lovo.t, sol_lovo</span><span class="ch">[</span><span class="bn">1,:</span><span class="ch">]</span><span class="ot">,</span></span>
-<span id="cb7-81"><a href="#cb7-81" aria-hidden="true" tabindex="-1"></a><span class="ot">       linewidth = 2,</span></span>
-<span id="cb7-82"><a href="#cb7-82" aria-hidden="true" tabindex="-1"></a><span class="ot">       label = L"</span><span class="dt">$x</span><span class="ch">(</span><span class="ot">t</span><span class="ch">)</span><span class="wa">$"</span><span class="ch">)</span></span>
-<span id="cb7-83"><a href="#cb7-83" aria-hidden="true" tabindex="-1"></a><span class="ot">lines!</span><span class="ch">(</span><span class="ot">ax1, sol_lovo.t, sol_lovo</span><span class="ch">[</span><span class="bn">2,:</span><span class="ch">]</span><span class="ot">,</span></span>
-<span id="cb7-84"><a href="#cb7-84" aria-hidden="true" tabindex="-1"></a><span class="ot">       linewidth = 2,</span></span>
-<span id="cb7-85"><a href="#cb7-85" aria-hidden="true" tabindex="-1"></a><span class="ot">       label = L"</span><span class="dt">$y</span><span class="ch">(</span><span class="ot">t</span><span class="ch">)</span><span class="wa">$"</span><span class="ch">)</span></span>
-<span id="cb7-86"><a href="#cb7-86" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-87"><a href="#cb7-87" aria-hidden="true" tabindex="-1"></a><span class="ot">axislegend</span><span class="ch">(</span><span class="ot">ax1, position = :lt, </span></span>
-<span id="cb7-88"><a href="#cb7-88" aria-hidden="true" tabindex="-1"></a><span class="ot">           labelsize = 12, </span></span>
-<span id="cb7-89"><a href="#cb7-89" aria-hidden="true" tabindex="-1"></a><span class="ot">           padding = </span><span class="ch">(</span><span class="ot">5,5,0,0</span><span class="ch">)</span><span class="ot">,</span></span>
-<span id="cb7-90"><a href="#cb7-90" aria-hidden="true" tabindex="-1"></a><span class="ot">           rowgap = -5</span><span class="ch">)</span></span>
-<span id="cb7-91"><a href="#cb7-91" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-92"><a href="#cb7-92" aria-hidden="true" tabindex="-1"></a><span class="ot">fig</span></span>
-<span id="cb7-93"><a href="#cb7-93" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
-<span id="cb7-94"><a href="#cb7-94" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-95"><a href="#cb7-95" aria-hidden="true" tabindex="-1"></a><span class="ot">Puis on remplit le second panel avec le plan de phase :</span></span>
-<span id="cb7-96"><a href="#cb7-96" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-99"><a href="#cb7-99" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb7-100"><a href="#cb7-100" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
-<span id="cb7-101"><a href="#cb7-101" aria-hidden="true" tabindex="-1"></a><span class="ot">ax2 = Axis</span><span class="ch">(</span><span class="ot">panelb</span><span class="ch">[</span><span class="bn">1,1</span><span class="ch">]</span><span class="ot">,</span></span>
-<span id="cb7-102"><a href="#cb7-102" aria-hidden="true" tabindex="-1"></a><span class="ot">           xlabel = L"population </span><span class="dt">$x</span><span class="wa">$"</span><span class="ot">,</span></span>
-<span id="cb7-103"><a href="#cb7-103" aria-hidden="true" tabindex="-1"></a><span class="ot">           ylabel = L"population </span><span class="dt">$y</span><span class="wa">$"</span><span class="ot">,</span></span>
-<span id="cb7-104"><a href="#cb7-104" aria-hidden="true" tabindex="-1"></a><span class="ot">           title = "Plan de phase",</span></span>
-<span id="cb7-105"><a href="#cb7-105" aria-hidden="true" tabindex="-1"></a><span class="ot">           xticks = </span><span class="ch">(</span><span class="ot">0:.5:2</span><span class="ch">)</span><span class="ot">,</span></span>
-<span id="cb7-106"><a href="#cb7-106" aria-hidden="true" tabindex="-1"></a><span class="ot">           yticks = </span><span class="ch">(</span><span class="ot">0:.5:2</span><span class="ch">))</span></span>
-<span id="cb7-107"><a href="#cb7-107" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-108"><a href="#cb7-108" aria-hidden="true" tabindex="-1"></a><span class="co"># champs de vecteur</span></span>
-<span id="cb7-109"><a href="#cb7-109" aria-hidden="true" tabindex="-1"></a><span class="ot">scale = 10</span></span>
-<span id="cb7-110"><a href="#cb7-110" aria-hidden="true" tabindex="-1"></a><span class="ot">xrange = range</span><span class="ch">(</span><span class="ot">0, 2.75, length=11</span><span class="ch">)</span><span class="ot">  </span></span>
-<span id="cb7-111"><a href="#cb7-111" aria-hidden="true" tabindex="-1"></a><span class="ot">yrange = range</span><span class="ch">(</span><span class="ot">0, 2.75, length=11</span><span class="ch">)</span></span>
-<span id="cb7-112"><a href="#cb7-112" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-113"><a href="#cb7-113" aria-hidden="true" tabindex="-1"></a><span class="ot">derx = </span><span class="ch">[</span><span class="bn">lovo([x y</span><span class="ch">]</span><span class="ot">, par_lovo, 0</span><span class="ch">)[</span><span class="bn">1</span><span class="ch">]</span><span class="ot">/scale for x in xrange, y in yrange]</span></span>
-<span id="cb7-114"><a href="#cb7-114" aria-hidden="true" tabindex="-1"></a><span class="ot">dery = </span><span class="ch">[</span><span class="bn">lovo([x y</span><span class="ch">]</span><span class="ot">, par_lovo, 0</span><span class="ch">)[</span><span class="bn">2</span><span class="ch">]</span><span class="ot">/scale for x in xrange, y in yrange]</span></span>
-<span id="cb7-115"><a href="#cb7-115" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-116"><a href="#cb7-116" aria-hidden="true" tabindex="-1"></a><span class="ot">arrows!</span><span class="ch">(</span><span class="ot">ax2, xrange, yrange, derx, dery, </span></span>
-<span id="cb7-117"><a href="#cb7-117" aria-hidden="true" tabindex="-1"></a><span class="ot">        color = :lightgray, </span></span>
-<span id="cb7-118"><a href="#cb7-118" aria-hidden="true" tabindex="-1"></a><span class="ot">        arrowsize = 10</span><span class="ch">)</span></span>
-<span id="cb7-119"><a href="#cb7-119" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-120"><a href="#cb7-120" aria-hidden="true" tabindex="-1"></a><span class="co"># nullclines</span></span>
-<span id="cb7-121"><a href="#cb7-121" aria-hidden="true" tabindex="-1"></a><span class="ot">lines!</span><span class="ch">(</span><span class="ot">ax2, xrange, </span><span class="ch">[</span><span class="bn">r/c for x in xrange</span><span class="ch">]</span><span class="ot">,</span></span>
-<span id="cb7-122"><a href="#cb7-122" aria-hidden="true" tabindex="-1"></a><span class="ot">       color = Cycled</span><span class="ch">(</span><span class="ot">2</span><span class="ch">)</span><span class="ot">,</span></span>
-<span id="cb7-123"><a href="#cb7-123" aria-hidden="true" tabindex="-1"></a><span class="ot">       linewidth = 2,</span></span>
-<span id="cb7-124"><a href="#cb7-124" aria-hidden="true" tabindex="-1"></a><span class="ot">       label = L"</span><span class="wa">$\</span><span class="ot">dot{x}</span><span class="ch">$</span><span class="ot"> nullcline"</span><span class="ch">)</span></span>
-<span id="cb7-125"><a href="#cb7-125" aria-hidden="true" tabindex="-1"></a><span class="ot">lines!</span><span class="ch">(</span><span class="ot">ax2, </span><span class="ch">[</span><span class="bn">0 for y in yrange</span><span class="ch">]</span><span class="ot">, yrange,</span></span>
-<span id="cb7-126"><a href="#cb7-126" aria-hidden="true" tabindex="-1"></a><span class="ot">       linewidth = 2,</span></span>
-<span id="cb7-127"><a href="#cb7-127" aria-hidden="true" tabindex="-1"></a><span class="ot">       color = Cycled</span><span class="ch">(</span><span class="ot">2</span><span class="ch">))</span></span>
-<span id="cb7-128"><a href="#cb7-128" aria-hidden="true" tabindex="-1"></a><span class="ot">lines!</span><span class="ch">(</span><span class="ot">ax2, </span><span class="ch">[</span><span class="bn">m/b for y in yrange</span><span class="ch">]</span><span class="ot">, yrange,</span></span>
-<span id="cb7-129"><a href="#cb7-129" aria-hidden="true" tabindex="-1"></a><span class="ot">       color = Cycled</span><span class="ch">(</span><span class="ot">3</span><span class="ch">)</span><span class="ot">,</span></span>
-<span id="cb7-130"><a href="#cb7-130" aria-hidden="true" tabindex="-1"></a><span class="ot">       linewidth = 2,</span></span>
-<span id="cb7-131"><a href="#cb7-131" aria-hidden="true" tabindex="-1"></a><span class="ot">       label = L"</span><span class="wa">$\</span><span class="ot">dot{y}</span><span class="ch">$</span><span class="ot"> nullcline"</span><span class="ch">)</span></span>
-<span id="cb7-132"><a href="#cb7-132" aria-hidden="true" tabindex="-1"></a><span class="ot">lines!</span><span class="ch">(</span><span class="ot">ax2, xrange, </span><span class="ch">[</span><span class="bn">0 for y in yrange</span><span class="ch">]</span><span class="ot">,</span></span>
-<span id="cb7-133"><a href="#cb7-133" aria-hidden="true" tabindex="-1"></a><span class="ot">       color = Cycled</span><span class="ch">(</span><span class="ot">3</span><span class="ch">)</span><span class="ot">,</span></span>
-<span id="cb7-134"><a href="#cb7-134" aria-hidden="true" tabindex="-1"></a><span class="ot">       linewidth = 2</span><span class="ch">)</span></span>
-<span id="cb7-135"><a href="#cb7-135" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-136"><a href="#cb7-136" aria-hidden="true" tabindex="-1"></a><span class="co"># équilibres</span></span>
-<span id="cb7-137"><a href="#cb7-137" aria-hidden="true" tabindex="-1"></a><span class="ot">scatter!</span><span class="ch">(</span><span class="ot">ax2, Point2f</span><span class="ch">(</span><span class="ot">0,0</span><span class="ch">)</span><span class="ot">,</span></span>
-<span id="cb7-138"><a href="#cb7-138" aria-hidden="true" tabindex="-1"></a><span class="ot">         color = Cycled</span><span class="ch">(</span><span class="ot">4</span><span class="ch">))</span></span>
-<span id="cb7-139"><a href="#cb7-139" aria-hidden="true" tabindex="-1"></a><span class="ot">scatter!</span><span class="ch">(</span><span class="ot">ax2, Point2f</span><span class="ch">(</span><span class="ot">m/b, r/c</span><span class="ch">)</span><span class="ot">,</span></span>
-<span id="cb7-140"><a href="#cb7-140" aria-hidden="true" tabindex="-1"></a><span class="ot">         color = Cycled</span><span class="ch">(</span><span class="ot">4</span><span class="ch">))</span></span>
+<span id="cb7-80"><a href="#cb7-80" aria-hidden="true" tabindex="-1"></a><span class="co"># pour avoir un xlabel plus proche de l'axe on le définit séparément en réglant manuellement l'espacement/padding</span></span>
+<span id="cb7-81"><a href="#cb7-81" aria-hidden="true" tabindex="-1"></a><span class="ot">Label</span><span class="ch">(</span><span class="ot">panela</span><span class="ch">[</span><span class="bn">1,1,Bottom()</span><span class="ch">]</span><span class="ot">, L"temps</span><span class="wa">$$</span><span class="ot">"; padding=</span><span class="ch">(</span><span class="ot">0,0,0,20</span><span class="ch">))</span></span>
+<span id="cb7-82"><a href="#cb7-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-83"><a href="#cb7-83" aria-hidden="true" tabindex="-1"></a><span class="co"># dynamiques de populations</span></span>
+<span id="cb7-84"><a href="#cb7-84" aria-hidden="true" tabindex="-1"></a><span class="ot">lines!</span><span class="ch">(</span><span class="ot">ax1, sol_lovo.t, sol_lovo</span><span class="ch">[</span><span class="bn">1,:</span><span class="ch">]</span><span class="ot">; linewidth = 2, label = L"</span><span class="dt">$x</span><span class="ch">(</span><span class="ot">t</span><span class="ch">)</span><span class="wa">$"</span><span class="ch">)</span></span>
+<span id="cb7-85"><a href="#cb7-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-86"><a href="#cb7-86" aria-hidden="true" tabindex="-1"></a><span class="ot">lines!</span><span class="ch">(</span><span class="ot">ax1, sol_lovo.t, sol_lovo</span><span class="ch">[</span><span class="bn">2,:</span><span class="ch">]</span><span class="ot">; linewidth = 2, label = L"</span><span class="dt">$y</span><span class="ch">(</span><span class="ot">t</span><span class="ch">)</span><span class="wa">$"</span><span class="ch">)</span></span>
+<span id="cb7-87"><a href="#cb7-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-88"><a href="#cb7-88" aria-hidden="true" tabindex="-1"></a><span class="co"># légende avec quelques ajustements d'espacement interne</span></span>
+<span id="cb7-89"><a href="#cb7-89" aria-hidden="true" tabindex="-1"></a><span class="ot">axislegend</span><span class="ch">(</span><span class="ot">ax1; position = :lt, labelsize = 12, padding = </span><span class="ch">(</span><span class="ot">5,5,0,0</span><span class="ch">)</span><span class="ot">, rowgap = -5</span><span class="ch">)</span></span>
+<span id="cb7-90"><a href="#cb7-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-91"><a href="#cb7-91" aria-hidden="true" tabindex="-1"></a><span class="ot">fig</span></span>
+<span id="cb7-92"><a href="#cb7-92" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
+<span id="cb7-93"><a href="#cb7-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-94"><a href="#cb7-94" aria-hidden="true" tabindex="-1"></a><span class="ot">Puis on complète le second panel avec le plan de phase :</span></span>
+<span id="cb7-95"><a href="#cb7-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-98"><a href="#cb7-98" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb7-99"><a href="#cb7-99" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
+<span id="cb7-100"><a href="#cb7-100" aria-hidden="true" tabindex="-1"></a><span class="ot">ax2 = Axis</span><span class="ch">(</span></span>
+<span id="cb7-101"><a href="#cb7-101" aria-hidden="true" tabindex="-1"></a><span class="ot">       panelb</span><span class="ch">[</span><span class="bn">1,1</span><span class="ch">]</span><span class="ot">;</span></span>
+<span id="cb7-102"><a href="#cb7-102" aria-hidden="true" tabindex="-1"></a><span class="ot">       xlabel = L"population </span><span class="dt">$x</span><span class="wa">$"</span><span class="ot">,</span></span>
+<span id="cb7-103"><a href="#cb7-103" aria-hidden="true" tabindex="-1"></a><span class="ot">       ylabel = L"population </span><span class="dt">$y</span><span class="wa">$"</span><span class="ot">,</span></span>
+<span id="cb7-104"><a href="#cb7-104" aria-hidden="true" tabindex="-1"></a><span class="ot">       title = "Plan de phase",</span></span>
+<span id="cb7-105"><a href="#cb7-105" aria-hidden="true" tabindex="-1"></a><span class="ot">       xticks = </span><span class="ch">(</span><span class="ot">0:.5:2</span><span class="ch">)</span><span class="ot">,</span></span>
+<span id="cb7-106"><a href="#cb7-106" aria-hidden="true" tabindex="-1"></a><span class="ot">       yticks = </span><span class="ch">(</span><span class="ot">0:.5:2</span><span class="ch">)</span><span class="ot">,</span></span>
+<span id="cb7-107"><a href="#cb7-107" aria-hidden="true" tabindex="-1"></a><span class="ch">)</span></span>
+<span id="cb7-108"><a href="#cb7-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-109"><a href="#cb7-109" aria-hidden="true" tabindex="-1"></a><span class="co"># champs de vecteur</span></span>
+<span id="cb7-110"><a href="#cb7-110" aria-hidden="true" tabindex="-1"></a><span class="ot">scale = 10</span></span>
+<span id="cb7-111"><a href="#cb7-111" aria-hidden="true" tabindex="-1"></a><span class="ot">xrange = range</span><span class="ch">(</span><span class="ot">0, 2.75, length=11</span><span class="ch">)</span></span>
+<span id="cb7-112"><a href="#cb7-112" aria-hidden="true" tabindex="-1"></a><span class="ot">yrange = range</span><span class="ch">(</span><span class="ot">0, 2.75, length=11</span><span class="ch">)</span></span>
+<span id="cb7-113"><a href="#cb7-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-114"><a href="#cb7-114" aria-hidden="true" tabindex="-1"></a><span class="ot">derx = </span><span class="ch">[</span><span class="bn">lovo([x y</span><span class="ch">]</span><span class="ot">, par_lovo, 0</span><span class="ch">)[</span><span class="bn">1</span><span class="ch">]</span><span class="ot">/scale for x in xrange, y in yrange]</span></span>
+<span id="cb7-115"><a href="#cb7-115" aria-hidden="true" tabindex="-1"></a><span class="ot">dery = </span><span class="ch">[</span><span class="bn">lovo([x y</span><span class="ch">]</span><span class="ot">, par_lovo, 0</span><span class="ch">)[</span><span class="bn">2</span><span class="ch">]</span><span class="ot">/scale for x in xrange, y in yrange]</span></span>
+<span id="cb7-116"><a href="#cb7-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-117"><a href="#cb7-117" aria-hidden="true" tabindex="-1"></a><span class="ot">arrows!</span><span class="ch">(</span><span class="ot">ax2, xrange, yrange, derx, dery; color = :lightgray, arrowsize = 10</span><span class="ch">)</span></span>
+<span id="cb7-118"><a href="#cb7-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-119"><a href="#cb7-119" aria-hidden="true" tabindex="-1"></a><span class="co"># nullclines</span></span>
+<span id="cb7-120"><a href="#cb7-120" aria-hidden="true" tabindex="-1"></a><span class="ot">lines!</span><span class="ch">(</span></span>
+<span id="cb7-121"><a href="#cb7-121" aria-hidden="true" tabindex="-1"></a><span class="ot">    ax2,</span></span>
+<span id="cb7-122"><a href="#cb7-122" aria-hidden="true" tabindex="-1"></a><span class="ot">    xrange,</span></span>
+<span id="cb7-123"><a href="#cb7-123" aria-hidden="true" tabindex="-1"></a><span class="ot">    </span><span class="ch">[</span><span class="bn">r/c for x in xrange</span><span class="ch">]</span><span class="ot">;</span></span>
+<span id="cb7-124"><a href="#cb7-124" aria-hidden="true" tabindex="-1"></a><span class="ot">    color = Cycled</span><span class="ch">(</span><span class="ot">2</span><span class="ch">)</span><span class="ot">,</span></span>
+<span id="cb7-125"><a href="#cb7-125" aria-hidden="true" tabindex="-1"></a><span class="ot">    linewidth = 2,</span></span>
+<span id="cb7-126"><a href="#cb7-126" aria-hidden="true" tabindex="-1"></a><span class="ot">    label = L"</span><span class="wa">$\</span><span class="ot">dot{x}</span><span class="ch">$</span><span class="ot"> nullcline",</span></span>
+<span id="cb7-127"><a href="#cb7-127" aria-hidden="true" tabindex="-1"></a><span class="ch">)</span></span>
+<span id="cb7-128"><a href="#cb7-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-129"><a href="#cb7-129" aria-hidden="true" tabindex="-1"></a><span class="ot">lines!</span><span class="ch">(</span><span class="ot">ax2, </span><span class="ch">[</span><span class="bn">0 for y in yrange</span><span class="ch">]</span><span class="ot">, yrange; linewidth = 2, color = Cycled</span><span class="ch">(</span><span class="ot">2</span><span class="ch">))</span></span>
+<span id="cb7-130"><a href="#cb7-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-131"><a href="#cb7-131" aria-hidden="true" tabindex="-1"></a><span class="ot">lines!</span><span class="ch">(</span></span>
+<span id="cb7-132"><a href="#cb7-132" aria-hidden="true" tabindex="-1"></a><span class="ot">    ax2,</span></span>
+<span id="cb7-133"><a href="#cb7-133" aria-hidden="true" tabindex="-1"></a><span class="ot">    </span><span class="ch">[</span><span class="bn">m/b for y in yrange</span><span class="ch">]</span><span class="ot">,</span></span>
+<span id="cb7-134"><a href="#cb7-134" aria-hidden="true" tabindex="-1"></a><span class="ot">    yrange;</span></span>
+<span id="cb7-135"><a href="#cb7-135" aria-hidden="true" tabindex="-1"></a><span class="ot">    color = Cycled</span><span class="ch">(</span><span class="ot">3</span><span class="ch">)</span><span class="ot">,</span></span>
+<span id="cb7-136"><a href="#cb7-136" aria-hidden="true" tabindex="-1"></a><span class="ot">    linewidth = 2,</span></span>
+<span id="cb7-137"><a href="#cb7-137" aria-hidden="true" tabindex="-1"></a><span class="ot">    label = L"</span><span class="wa">$\</span><span class="ot">dot{y}</span><span class="ch">$</span><span class="ot"> nullcline",</span></span>
+<span id="cb7-138"><a href="#cb7-138" aria-hidden="true" tabindex="-1"></a><span class="ch">)</span></span>
+<span id="cb7-139"><a href="#cb7-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-140"><a href="#cb7-140" aria-hidden="true" tabindex="-1"></a><span class="ot">lines!</span><span class="ch">(</span><span class="ot">ax2, xrange, </span><span class="ch">[</span><span class="bn">0 for y in yrange</span><span class="ch">]</span><span class="ot">; color = Cycled</span><span class="ch">(</span><span class="ot">3</span><span class="ch">)</span><span class="ot">, linewidth = 2</span><span class="ch">)</span></span>
 <span id="cb7-141"><a href="#cb7-141" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-142"><a href="#cb7-142" aria-hidden="true" tabindex="-1"></a><span class="co"># trajectoire</span></span>
-<span id="cb7-143"><a href="#cb7-143" aria-hidden="true" tabindex="-1"></a><span class="ot">lines!</span><span class="ch">(</span><span class="ot">ax2, sol_lovo</span><span class="ch">[</span><span class="bn">1, :</span><span class="ch">]</span><span class="ot">, sol_lovo</span><span class="ch">[</span><span class="bn">2, :</span><span class="ch">]</span><span class="ot">,</span></span>
-<span id="cb7-144"><a href="#cb7-144" aria-hidden="true" tabindex="-1"></a><span class="ot">       color = Cycled</span><span class="ch">(</span><span class="ot">1</span><span class="ch">)</span><span class="ot">,</span></span>
-<span id="cb7-145"><a href="#cb7-145" aria-hidden="true" tabindex="-1"></a><span class="ot">       linewidth = 2</span><span class="ch">)</span></span>
-<span id="cb7-146"><a href="#cb7-146" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-147"><a href="#cb7-147" aria-hidden="true" tabindex="-1"></a><span class="ot">xlims!</span><span class="ch">(</span><span class="ot">ax2, -0.1, 2.75</span><span class="ch">)</span></span>
-<span id="cb7-148"><a href="#cb7-148" aria-hidden="true" tabindex="-1"></a><span class="ot">ylims!</span><span class="ch">(</span><span class="ot">ax2, -0.1, 2.75</span><span class="ch">)</span></span>
-<span id="cb7-149"><a href="#cb7-149" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-150"><a href="#cb7-150" aria-hidden="true" tabindex="-1"></a><span class="ot">axislegend</span><span class="ch">(</span><span class="ot">ax2, position = :rt, </span></span>
-<span id="cb7-151"><a href="#cb7-151" aria-hidden="true" tabindex="-1"></a><span class="ot">           labelsize = 12, </span></span>
-<span id="cb7-152"><a href="#cb7-152" aria-hidden="true" tabindex="-1"></a><span class="ot">           padding = </span><span class="ch">(</span><span class="ot">5,5,0,0</span><span class="ch">)</span><span class="ot">, </span></span>
-<span id="cb7-153"><a href="#cb7-153" aria-hidden="true" tabindex="-1"></a><span class="ot">           rowgap = -5</span><span class="ch">)</span></span>
-<span id="cb7-154"><a href="#cb7-154" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-155"><a href="#cb7-155" aria-hidden="true" tabindex="-1"></a><span class="ot">fig</span></span>
-<span id="cb7-156"><a href="#cb7-156" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
-<span id="cb7-157"><a href="#cb7-157" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-158"><a href="#cb7-158" aria-hidden="true" tabindex="-1"></a><span class="ot">Finalement on remplit le troisième panel avec la représentation 3D, en commencant par redéfinir l'intégrale première</span></span>
-<span id="cb7-159"><a href="#cb7-159" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-162"><a href="#cb7-162" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb7-163"><a href="#cb7-163" aria-hidden="true" tabindex="-1"></a><span class="co"># l'intégrale première</span></span>
-<span id="cb7-164"><a href="#cb7-164" aria-hidden="true" tabindex="-1"></a><span class="ot">function int_prem</span><span class="ch">(</span><span class="ot">x, y, par = par_lovo</span><span class="ch">)</span></span>
-<span id="cb7-165"><a href="#cb7-165" aria-hidden="true" tabindex="-1"></a><span class="ot">      r, c, b, m = par</span></span>
-<span id="cb7-166"><a href="#cb7-166" aria-hidden="true" tabindex="-1"></a><span class="ot">      -r*</span><span class="fu">log</span>(y) + c<span class="dt">*y</span> - <span class="ot">m*log</span><span class="ch">(</span><span class="ot">x</span><span class="ch">)</span><span class="ot"> </span><span class="ch">+</span><span class="ot"> b*x</span></span>
-<span id="cb7-167"><a href="#cb7-167" aria-hidden="true" tabindex="-1"></a>end</span>
-<span id="cb7-168"><a href="#cb7-168" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-142"><a href="#cb7-142" aria-hidden="true" tabindex="-1"></a><span class="co"># équilibres</span></span>
+<span id="cb7-143"><a href="#cb7-143" aria-hidden="true" tabindex="-1"></a><span class="ot">scatter!</span><span class="ch">(</span><span class="ot">ax2, Point2f</span><span class="ch">(</span><span class="ot">0,0</span><span class="ch">)</span><span class="ot">; color = Cycled</span><span class="ch">(</span><span class="ot">4</span><span class="ch">))</span></span>
+<span id="cb7-144"><a href="#cb7-144" aria-hidden="true" tabindex="-1"></a><span class="ot">scatter!</span><span class="ch">(</span><span class="ot">ax2, Point2f</span><span class="ch">(</span><span class="ot">m/b, r/c</span><span class="ch">)</span><span class="ot">; color = Cycled</span><span class="ch">(</span><span class="ot">4</span><span class="ch">))</span></span>
+<span id="cb7-145"><a href="#cb7-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-146"><a href="#cb7-146" aria-hidden="true" tabindex="-1"></a><span class="co"># trajectoire</span></span>
+<span id="cb7-147"><a href="#cb7-147" aria-hidden="true" tabindex="-1"></a><span class="ot">lines!</span><span class="ch">(</span><span class="ot">ax2, sol_lovo</span><span class="ch">[</span><span class="bn">1, :</span><span class="ch">]</span><span class="ot">, sol_lovo</span><span class="ch">[</span><span class="bn">2, :</span><span class="ch">]</span><span class="ot">, color = Cycled</span><span class="ch">(</span><span class="ot">1</span><span class="ch">)</span><span class="ot">, linewidth = 2</span><span class="ch">)</span></span>
+<span id="cb7-148"><a href="#cb7-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-149"><a href="#cb7-149" aria-hidden="true" tabindex="-1"></a><span class="ot">xlims!</span><span class="ch">(</span><span class="ot">ax2, -0.1, 2.75</span><span class="ch">)</span></span>
+<span id="cb7-150"><a href="#cb7-150" aria-hidden="true" tabindex="-1"></a><span class="ot">ylims!</span><span class="ch">(</span><span class="ot">ax2, -0.1, 2.75</span><span class="ch">)</span></span>
+<span id="cb7-151"><a href="#cb7-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-152"><a href="#cb7-152" aria-hidden="true" tabindex="-1"></a><span class="ot">axislegend</span><span class="ch">(</span><span class="ot">ax2; position = :rt, labelsize = 12, padding = </span><span class="ch">(</span><span class="ot">5,5,0,0</span><span class="ch">)</span><span class="ot">, rowgap = -5</span><span class="ch">)</span></span>
+<span id="cb7-153"><a href="#cb7-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-154"><a href="#cb7-154" aria-hidden="true" tabindex="-1"></a><span class="ot">fig</span></span>
+<span id="cb7-155"><a href="#cb7-155" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
+<span id="cb7-156"><a href="#cb7-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-157"><a href="#cb7-157" aria-hidden="true" tabindex="-1"></a><span class="ot">Finalement on complète le troisième panel avec la représentation 3D, en commencant par redéfinir l'intégrale première</span></span>
+<span id="cb7-158"><a href="#cb7-158" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-161"><a href="#cb7-161" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb7-162"><a href="#cb7-162" aria-hidden="true" tabindex="-1"></a><span class="co"># l'intégrale première</span></span>
+<span id="cb7-163"><a href="#cb7-163" aria-hidden="true" tabindex="-1"></a><span class="ot">function int_prem</span><span class="ch">(</span><span class="ot">x, y, par = par_lovo</span><span class="ch">)</span></span>
+<span id="cb7-164"><a href="#cb7-164" aria-hidden="true" tabindex="-1"></a><span class="ot">      r, c, b, m = par</span></span>
+<span id="cb7-165"><a href="#cb7-165" aria-hidden="true" tabindex="-1"></a><span class="ot">      return -r*</span><span class="fu">log</span>(y) + c<span class="dt">*y</span> - <span class="ot">m*log</span><span class="ch">(</span><span class="ot">x</span><span class="ch">)</span><span class="ot"> </span><span class="ch">+</span><span class="ot"> b*x</span></span>
+<span id="cb7-166"><a href="#cb7-166" aria-hidden="true" tabindex="-1"></a>end</span>
+<span id="cb7-167"><a href="#cb7-167" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-168"><a href="#cb7-168" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-169"><a href="#cb7-169" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-170"><a href="#cb7-170" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-173"><a href="#cb7-173" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb7-174"><a href="#cb7-174" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
-<span id="cb7-175"><a href="#cb7-175" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-LV-complex</span></span>
-<span id="cb7-176"><a href="#cb7-176" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Figure illustrant le comportement du modèle de Lotka Volterra</span></span>
-<span id="cb7-177"><a href="#cb7-177" aria-hidden="true" tabindex="-1"></a><span class="co"># système d'axe 3D en première colonne de panel c, avec réglage de la caméra</span></span>
-<span id="cb7-178"><a href="#cb7-178" aria-hidden="true" tabindex="-1"></a>ax3 = Axis3(panelc[<span class="dv">1</span>, <span class="dv">1</span>], </span>
-<span id="cb7-179"><a href="#cb7-179" aria-hidden="true" tabindex="-1"></a>            title = <span class="ot">"</span><span class="st">Intégrale première</span><span class="ot">"</span>,</span>
-<span id="cb7-180"><a href="#cb7-180" aria-hidden="true" tabindex="-1"></a>            titlegap = -<span class="dv">50</span>,</span>
-<span id="cb7-181"><a href="#cb7-181" aria-hidden="true" tabindex="-1"></a>            xlabel = L<span class="ot">"</span><span class="st">population </span><span class="dt">$x</span><span class="wa">$"</span><span class="st">,</span></span>
-<span id="cb7-182"><a href="#cb7-182" aria-hidden="true" tabindex="-1"></a><span class="st">            ylabel = L</span><span class="ot">"</span>population <span class="dt">$y</span><span class="wa">$"</span>,</span>
-<span id="cb7-183"><a href="#cb7-183" aria-hidden="true" tabindex="-1"></a>            zlabel = L<span class="ot">"</span><span class="dt">$H</span><span class="st">(x,y)</span><span class="wa">$"</span><span class="st">,</span></span>
-<span id="cb7-184"><a href="#cb7-184" aria-hidden="true" tabindex="-1"></a><span class="st">            azimuth = 0.5,</span></span>
-<span id="cb7-185"><a href="#cb7-185" aria-hidden="true" tabindex="-1"></a><span class="st">            elevation = 0.2)</span></span>
-<span id="cb7-186"><a href="#cb7-186" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-187"><a href="#cb7-187" aria-hidden="true" tabindex="-1"></a><span class="st"># grille x, y</span></span>
-<span id="cb7-188"><a href="#cb7-188" aria-hidden="true" tabindex="-1"></a><span class="st">xsurf = .2: .1: 3</span></span>
-<span id="cb7-189"><a href="#cb7-189" aria-hidden="true" tabindex="-1"></a><span class="st">ysurf = .2:.1: 3</span></span>
-<span id="cb7-190"><a href="#cb7-190" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-191"><a href="#cb7-191" aria-hidden="true" tabindex="-1"></a><span class="st"># calcul de la surface via une compréhension de liste</span></span>
-<span id="cb7-192"><a href="#cb7-192" aria-hidden="true" tabindex="-1"></a><span class="st">hsurf = [int_prem(x, y, par_lovo) for x in xsurf, y in ysurf]</span></span>
-<span id="cb7-193"><a href="#cb7-193" aria-hidden="true" tabindex="-1"></a><span class="st">hplane = [int_prem(x0, y0, par_lovo) for x in xsurf, y in ysurf]</span></span>
-<span id="cb7-194"><a href="#cb7-194" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-195"><a href="#cb7-195" aria-hidden="true" tabindex="-1"></a><span class="st"># tracé de H(x,y) et du plan z = H(x0,y0)</span></span>
-<span id="cb7-196"><a href="#cb7-196" aria-hidden="true" tabindex="-1"></a><span class="st">hs = surface!(ax3, xsurf, ysurf, hsurf, alpha=.5)</span></span>
-<span id="cb7-197"><a href="#cb7-197" aria-hidden="true" tabindex="-1"></a><span class="st">surface!(ax3, xsurf, ysurf, hplane, color = fill(:red,100,100), alpha = .3)</span></span>
-<span id="cb7-198"><a href="#cb7-198" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-199"><a href="#cb7-199" aria-hidden="true" tabindex="-1"></a><span class="st"># ajout de la trajectoire simulée</span></span>
-<span id="cb7-200"><a href="#cb7-200" aria-hidden="true" tabindex="-1"></a><span class="st">lines!(ax3, sol_lovo[1,:], sol_lovo[2,:], </span></span>
-<span id="cb7-201"><a href="#cb7-201" aria-hidden="true" tabindex="-1"></a><span class="st">       [int_prem(x0, y0) for x in sol_lovo[1,:]],</span></span>
-<span id="cb7-202"><a href="#cb7-202" aria-hidden="true" tabindex="-1"></a><span class="st">       color = Cycled(4),</span></span>
-<span id="cb7-203"><a href="#cb7-203" aria-hidden="true" tabindex="-1"></a><span class="st">       linewidth = 3)</span></span>
-<span id="cb7-204"><a href="#cb7-204" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-205"><a href="#cb7-205" aria-hidden="true" tabindex="-1"></a><span class="st"># ajout d'une colorbar reprise sur le plot de H(x,y) avec une hauteur relative sur la colonne</span></span>
-<span id="cb7-206"><a href="#cb7-206" aria-hidden="true" tabindex="-1"></a><span class="st"># la colorbar est en 2e colonne du panelc</span></span>
-<span id="cb7-207"><a href="#cb7-207" aria-hidden="true" tabindex="-1"></a><span class="st">Colorbar(panelc[1, 2], hs, height = Relative(.55))</span></span>
-<span id="cb7-208"><a href="#cb7-208" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-209"><a href="#cb7-209" aria-hidden="true" tabindex="-1"></a><span class="st"># colonne 2 plus large</span></span>
-<span id="cb7-210"><a href="#cb7-210" aria-hidden="true" tabindex="-1"></a><span class="st">colsize!(fig.layout, 2, Auto(1.5))</span></span>
-<span id="cb7-211"><a href="#cb7-211" aria-hidden="true" tabindex="-1"></a><span class="st"># modification des espacements entre lignes et colonnes</span></span>
-<span id="cb7-212"><a href="#cb7-212" aria-hidden="true" tabindex="-1"></a><span class="st">colgap!(fig.layout, 60)</span></span>
-<span id="cb7-213"><a href="#cb7-213" aria-hidden="true" tabindex="-1"></a><span class="st">colgap!(panelc, -10)</span></span>
-<span id="cb7-214"><a href="#cb7-214" aria-hidden="true" tabindex="-1"></a><span class="st">rowgap!(fig.layout, 10)</span></span>
-<span id="cb7-215"><a href="#cb7-215" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-216"><a href="#cb7-216" aria-hidden="true" tabindex="-1"></a><span class="st"># titre général</span></span>
-<span id="cb7-217"><a href="#cb7-217" aria-hidden="true" tabindex="-1"></a><span class="st">supertitle = Label(fig[0, :], </span><span class="ot">"</span>Modèle de Lotka Volterra<span class="ot">"</span><span class="st">, fontsize = 30)</span></span>
-<span id="cb7-218"><a href="#cb7-218" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-219"><a href="#cb7-219" aria-hidden="true" tabindex="-1"></a><span class="st">fig</span></span>
-<span id="cb7-220"><a href="#cb7-220" aria-hidden="true" tabindex="-1"></a><span class="st">```</span></span>
-<span id="cb7-221"><a href="#cb7-221" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-222"><a href="#cb7-222" aria-hidden="true" tabindex="-1"></a><span class="st">et voilà !</span></span>
+<span id="cb7-172"><a href="#cb7-172" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb7-173"><a href="#cb7-173" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
+<span id="cb7-174"><a href="#cb7-174" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-LV-complex</span></span>
+<span id="cb7-175"><a href="#cb7-175" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Figure illustrant le comportement du modèle de Lotka Volterra</span></span>
+<span id="cb7-176"><a href="#cb7-176" aria-hidden="true" tabindex="-1"></a><span class="co"># système d'axe 3D en première colonne de panel c, avec réglage de la caméra</span></span>
+<span id="cb7-177"><a href="#cb7-177" aria-hidden="true" tabindex="-1"></a>ax3 = Axis3(</span>
+<span id="cb7-178"><a href="#cb7-178" aria-hidden="true" tabindex="-1"></a>       panelc[<span class="dv">1</span>, <span class="dv">1</span>];</span>
+<span id="cb7-179"><a href="#cb7-179" aria-hidden="true" tabindex="-1"></a>       title = <span class="ot">"</span><span class="st">Intégrale première</span><span class="ot">"</span>,</span>
+<span id="cb7-180"><a href="#cb7-180" aria-hidden="true" tabindex="-1"></a>       titlegap = -<span class="dv">50</span>,</span>
+<span id="cb7-181"><a href="#cb7-181" aria-hidden="true" tabindex="-1"></a>       xlabel = L<span class="ot">"</span><span class="st">population </span><span class="dt">$x</span><span class="wa">$"</span><span class="st">,</span></span>
+<span id="cb7-182"><a href="#cb7-182" aria-hidden="true" tabindex="-1"></a><span class="st">       ylabel = L</span><span class="ot">"</span>population <span class="dt">$y</span><span class="wa">$"</span>,</span>
+<span id="cb7-183"><a href="#cb7-183" aria-hidden="true" tabindex="-1"></a>       zlabel = L<span class="ot">"</span><span class="dt">$H</span><span class="st">(x,y)</span><span class="wa">$"</span><span class="st">,</span></span>
+<span id="cb7-184"><a href="#cb7-184" aria-hidden="true" tabindex="-1"></a><span class="st">       azimuth = 0.5,</span></span>
+<span id="cb7-185"><a href="#cb7-185" aria-hidden="true" tabindex="-1"></a><span class="st">       elevation = 0.2,</span></span>
+<span id="cb7-186"><a href="#cb7-186" aria-hidden="true" tabindex="-1"></a><span class="st">)</span></span>
+<span id="cb7-187"><a href="#cb7-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-188"><a href="#cb7-188" aria-hidden="true" tabindex="-1"></a><span class="st"># grille x, y</span></span>
+<span id="cb7-189"><a href="#cb7-189" aria-hidden="true" tabindex="-1"></a><span class="st">xsurf = 0.2:0.1:3.0</span></span>
+<span id="cb7-190"><a href="#cb7-190" aria-hidden="true" tabindex="-1"></a><span class="st">ysurf = 0.2:0.1:3.0</span></span>
+<span id="cb7-191"><a href="#cb7-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-192"><a href="#cb7-192" aria-hidden="true" tabindex="-1"></a><span class="st"># calcul de la surface via une compréhension de liste</span></span>
+<span id="cb7-193"><a href="#cb7-193" aria-hidden="true" tabindex="-1"></a><span class="st">hsurf = [int_prem(x, y, par_lovo) for x in xsurf, y in ysurf]</span></span>
+<span id="cb7-194"><a href="#cb7-194" aria-hidden="true" tabindex="-1"></a><span class="st">hplane = [int_prem(x0, y0, par_lovo) for x in xsurf, y in ysurf]</span></span>
+<span id="cb7-195"><a href="#cb7-195" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-196"><a href="#cb7-196" aria-hidden="true" tabindex="-1"></a><span class="st"># tracé de H(x,y) et du plan z = H(x0,y0)</span></span>
+<span id="cb7-197"><a href="#cb7-197" aria-hidden="true" tabindex="-1"></a><span class="st">hs = surface!(ax3, xsurf, ysurf, hsurf; alpha=.5)</span></span>
+<span id="cb7-198"><a href="#cb7-198" aria-hidden="true" tabindex="-1"></a><span class="st">surface!(ax3, xsurf, ysurf, hplane; color = fill(:red, 100, 100), alpha = .3)</span></span>
+<span id="cb7-199"><a href="#cb7-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-200"><a href="#cb7-200" aria-hidden="true" tabindex="-1"></a><span class="st"># ajout de la trajectoire simulée</span></span>
+<span id="cb7-201"><a href="#cb7-201" aria-hidden="true" tabindex="-1"></a><span class="st">lines!(</span></span>
+<span id="cb7-202"><a href="#cb7-202" aria-hidden="true" tabindex="-1"></a><span class="st">    ax3,</span></span>
+<span id="cb7-203"><a href="#cb7-203" aria-hidden="true" tabindex="-1"></a><span class="st">    sol_lovo[1,:],</span></span>
+<span id="cb7-204"><a href="#cb7-204" aria-hidden="true" tabindex="-1"></a><span class="st">    sol_lovo[2,:],</span></span>
+<span id="cb7-205"><a href="#cb7-205" aria-hidden="true" tabindex="-1"></a><span class="st">    [int_prem(x0, y0, par_lovo) for x in sol_lovo[1,:]];</span></span>
+<span id="cb7-206"><a href="#cb7-206" aria-hidden="true" tabindex="-1"></a><span class="st">    color = Cycled(4),</span></span>
+<span id="cb7-207"><a href="#cb7-207" aria-hidden="true" tabindex="-1"></a><span class="st">    linewidth = 3,</span></span>
+<span id="cb7-208"><a href="#cb7-208" aria-hidden="true" tabindex="-1"></a><span class="st">)</span></span>
+<span id="cb7-209"><a href="#cb7-209" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-210"><a href="#cb7-210" aria-hidden="true" tabindex="-1"></a><span class="st"># ajout d'une colorbar reprise sur le plot de H(x,y) avec une hauteur relative sur la colonne</span></span>
+<span id="cb7-211"><a href="#cb7-211" aria-hidden="true" tabindex="-1"></a><span class="st"># la colorbar est en 2e colonne du panelc</span></span>
+<span id="cb7-212"><a href="#cb7-212" aria-hidden="true" tabindex="-1"></a><span class="st">Colorbar(panelc[1, 2], hs, height = Relative(.55))</span></span>
+<span id="cb7-213"><a href="#cb7-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-214"><a href="#cb7-214" aria-hidden="true" tabindex="-1"></a><span class="st"># colonne 2 plus large</span></span>
+<span id="cb7-215"><a href="#cb7-215" aria-hidden="true" tabindex="-1"></a><span class="st">colsize!(fig.layout, 2, Auto(1.5))</span></span>
+<span id="cb7-216"><a href="#cb7-216" aria-hidden="true" tabindex="-1"></a><span class="st"># modification des espacements entre lignes et colonnes</span></span>
+<span id="cb7-217"><a href="#cb7-217" aria-hidden="true" tabindex="-1"></a><span class="st">colgap!(fig.layout, 60)</span></span>
+<span id="cb7-218"><a href="#cb7-218" aria-hidden="true" tabindex="-1"></a><span class="st">colgap!(panelc, -10)</span></span>
+<span id="cb7-219"><a href="#cb7-219" aria-hidden="true" tabindex="-1"></a><span class="st">rowgap!(fig.layout, 10)</span></span>
+<span id="cb7-220"><a href="#cb7-220" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-221"><a href="#cb7-221" aria-hidden="true" tabindex="-1"></a><span class="st"># titre général en ligne 0</span></span>
+<span id="cb7-222"><a href="#cb7-222" aria-hidden="true" tabindex="-1"></a><span class="st">supertitle = Label(fig[0, :], </span><span class="ot">"</span>Modèle de Lotka Volterra<span class="ot">"</span><span class="st">, fontsize = 30)</span></span>
+<span id="cb7-223"><a href="#cb7-223" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-224"><a href="#cb7-224" aria-hidden="true" tabindex="-1"></a><span class="st">fig</span></span>
+<span id="cb7-225"><a href="#cb7-225" aria-hidden="true" tabindex="-1"></a><span class="st">```</span></span>
+<span id="cb7-226"><a href="#cb7-226" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-227"><a href="#cb7-227" aria-hidden="true" tabindex="-1"></a><span class="st">et voilà !</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
