@@ -320,7 +320,7 @@ arrows!(
 ```
 
 ::: {.callout-caution}
-Dans les compréhensions de listes à plusieurs variables/listes, la syntaxe a son importance:
+Dans les compréhensions de listes à plusieurs variables/itérateurs, la syntaxe a son importance:
 
 - `[1 for x in xrange, y in yrange]` crée un array de taille `length(xrange)` par `length(yrange)`
 
@@ -356,7 +356,7 @@ fig2
 ### Diagramme de bifurcations
 <!-- STOP -->
 
-Pour finir, nous allons tracer le diagramme de bifurcation du modèle de Rosenzweig MacArthur $y^*$ en fonction de $K$, en identifiant les bifurcations transcritique et de Hopf vues en cours, et en estimant et représentant les extremas du cycle limite apparaissant pour $K$ grand.
+Pour finir, nous allons tracer le diagramme de bifurcation du modèle de Rosenzweig MacArthur: asymptotiques des prédateurs $y^*$ en fonction de $K$, en identifiant les bifurcations transcritique et de Hopf vues en cours, et en estimant et représentant les extremas du cycle limite apparaissant pour $K$ grand.
 
 Pour rappel, il y a 3 situations asymptotiques distinctes pour le modèle de Rosenzweig MacArthur :
 
@@ -373,62 +373,88 @@ Dans un premier temps nous allons calculer et représenter les différents équi
 
 Nous faisons une boucle sur les valeurs de $K$ et calculons les équilibres.
 ```{julia}
+#| output: false
 K_step = 0.1
 
 # before transcritical
-K_plot1 = 0: K_step: m*h/(b-m)
+K_plot1 = 0:K_step:m*h/(b-m)
 y_eq01 = ones(length(K_plot1)).*0
 
 # between transcritical and Hopf
-K_plot2 = m*h/(b-m): K_step: h+2*m*h/(b-m)
+K_plot2 = m*h/(b-m):K_step:h+2*m*h/(b-m)
 y_eq02 = ones(length(K_plot2)).*0
-y_co2 = [r/c*(h+m*h/(b-m))*(1-m*h/(b-m)/K_p) for K_p in K_plot2]  # may have broadcasted
+y_co2 = [r/c*(h+m*h/(b-m))*(1-m*h/(b-m)/K_p) for K_p in K_plot2]
 
 # above Hopf
-K_plot3 = h+2*m*h/(b-m)-K_step/5: (K_step/10) :8
+K_plot3 = h+2*m*h/(b-m)-K_step/5:(K_step/10):8
 y_eq03 = ones(length(K_plot3)).*0
-y_co3 = [r/c*(h+m*h/(b-m))*(1-m*h/(b-m)/K_p) for K_p in K_plot3]; # may have broadcasted
+y_co3 = [r/c*(h+m*h/(b-m))*(1-m*h/(b-m)/K_p) for K_p in K_plot3]
 ```
 
 Et nous commençons le tracé de la figure :
 ```{julia}
 #| code-fold: true
 #| output: true
-fig3 = Figure(backgroundcolor = :transparent,
-              size = (600,400),   # size
-              fontsize = 18)
+# création d'une figure
+fig3 = Figure(;
+    backgroundcolor = :transparent,
+    size = (600,400),
+    fontsize = 18,
+)
 
 # on crée un système d'axes en position [1,1] dans la figure
-ax31 = Axis(fig3[1,1],
-           xlabel = L"capacité de charge $K$",
-           ylabel = L"densité de population $y^*$",
-           title = "Diagramme de bifurcations pour le\n modèle de Rosenzweig MacArthur")
+ax31 = Axis(
+    fig3[1,1];
+    xlabel = L"capacité de charge $K$",
+    ylabel = L"densité de population $y^*$",
+    title = "Diagramme de bifurcations pour le\n modèle de Rosenzweig MacArthur",
+)
 
-# on trace la population x
+# on trace la population x su ax31
 # left of transcritical
-lines!(ax31, K_plot1, y_eq01,
-       color = Cycled(1),
-       linewidth = 2,
-       label = L"branche stable$$")
+lines!(
+    ax31,
+    K_plot1,
+    y_eq01;
+    color = Cycled(1),
+    linewidth = 2,
+    label = L"branche stable$$", # $$ to keep the latex font
+)
 
 # between transcritical and Hopf
-lines!(ax31, K_plot2, y_eq02,
-       color = Cycled(2),
-       linewidth = 2,
-       label = L"branche instable$$")
+lines!(
+    ax31,
+    K_plot2,
+    y_eq02;
+    color = Cycled(2),
+    linewidth = 2,
+    label = L"branche instable$$",
+)
 
-lines!(ax31, K_plot2, y_co2,
-       color = Cycled(1),
-       linewidth = 2)
+lines!(
+    ax31,
+    K_plot2,
+    y_co2;
+    color = Cycled(1),
+    linewidth = 2,
+)
 
 # right of Hopf
-lines!(ax31, K_plot3, y_eq03,
-       color = Cycled(2),
-       linewidth = 2)
+lines!(
+    ax31,
+    K_plot3,
+    y_eq03;
+    color = Cycled(2),
+    linewidth = 2,
+)
 
-lines!(ax31, K_plot3, y_co3,
-       color = Cycled(2),
-       linewidth = 2)
+lines!(
+    ax31,
+    K_plot3,
+    y_co3;
+    color = Cycled(2),
+    linewidth = 2,
+)
 
 fig3
 ```
@@ -438,46 +464,48 @@ fig3
 Pour estimer le cycle limite pour chaque la valeur de $K$ nous allons simuler le modèle pendant un transitoire assez long, puis repartir de cette valeur de l'état, simuler un cycle et récupérer les extremas pour les tracer. Nous utilisons une méthode basée sur `remake` pour modifier le problème d'intégration^[voir aussi l'[annexe](annexe_integrator.qmd)].
 
 ```{julia}
-# transient integration time
-t_trans = (0.0, 8000.)
+# "long" transient integration time
+t_trans = (0.0, 8000.0)
 
 # for storage
-i = 1
 y_cmin = zero(K_plot3)
 y_cmax = zero(K_plot3)
 ```
 
 
 ```{julia}
+# define generic simulation problem
 rma_pbe = ODEProblem(rma, etat0, t_trans, par_rma)
 
 # estimate limit cycle through loop on K
-for Kc in K_plot3               # loop on K values
-  par_rmac = [r, Kc, c, h, b, m]    # set parameters
+for (i, Kc) in enumerate(K_plot3)     # loop on (index, K) values of K_plot3
+    par_rmac = [r, Kc, c, h, b, m]    # set parameters
 
-  # transient initial value problem; simulation
-  rma_trans_pbe =  remake(rma_pbe, p = par_rmac)
-  # with such arguments `solve` yields only the final value of the simulation
-  post_trans2 = solve(rma_trans_pbe,
-                      save_everystep = false,
-                      save_start = false,
-                      abstol=1e-6, reltol=1e-6)
+    # transient initial value problem; remake problem with par = par_rmac
+    rma_trans_pbe =  remake(rma_pbe; p = par_rmac)
+    # with such arguments `solve` yields only final value of simulation
+    post_trans2 = solve(
+        rma_trans_pbe;
+        save_everystep = false,
+        save_start = false,
+        abstol=1e-6,
+        reltol=1e-6,
+    )
 
-  # limit cycle initial value problem; simulation
-  rma_cycle_pbe =  remake(rma_pbe,
-                          p = par_rmac,
-                          u0 = post_trans2[:,1],
-                          tspan = tspan,
-                          saveat = tstep)
+    # limit cycle initial value problem; simulation
+    rma_cycle_pbe =  remake(
+        rma_pbe;
+        p = par_rmac,
+        u0 = post_trans2[:,1], # initial condition from transient simulation
+        tspan = tspan,
+        saveat = tstep,
+    )
+    # simulation
+    sol_cycle = solve(rma_cycle_pbe; abstol=1e-6, reltol=1e-6)
 
-  sol_cycle = solve(rma_cycle_pbe, abstol=1e-6, reltol=1e-6)
-
-  # get the extrema of y
-  y_cmin[i] = minimum(sol_cycle[2,:])
-  y_cmax[i] = maximum(sol_cycle[2,:])
-
-  i+=1
-  #return post_trans2
+    # get the extrema of y, store at index i
+    y_cmin[i] = minimum(sol_cycle[2,:])
+    y_cmax[i] = maximum(sol_cycle[2,:])
 end
 ```
 
@@ -489,14 +517,22 @@ Finalement, on inclut les branches calculées dans le diagramme de bifurcations.
 #| code-fold: true
 #| label: fig-bifurcation-rma
 #| fig-cap: Diagramme de bifurcations du modèle de Rosenzweig MacArthur.
-lines!(ax31, K_plot3, y_cmin,
-       color = Cycled(3),
-       linewidth = 2,
-       label = L"cycle limite$$")
+lines!(
+    ax31,
+    K_plot3,
+    y_cmin;
+    color = Cycled(3),
+    linewidth = 2,
+    label = L"cycle limite$$",
+)
 
-lines!(ax31, K_plot3, y_cmax,
-       color = Cycled(3),
-       linewidth = 2)
+lines!(
+    ax31,
+    K_plot3,
+    y_cmax;
+    color = Cycled(3),
+    linewidth = 2,
+)
 
 axislegend(ax31, position = :lt, labelsize = 14)
 
