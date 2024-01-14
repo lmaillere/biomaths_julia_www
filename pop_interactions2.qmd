@@ -352,9 +352,14 @@ rowgap!(fig2.layout, 20)
 fig2
 ```
 
+On peut sauvegarder la figure dans différents formats (e.g. png, pdf)
+
+```{julia}
+save("rma_fig.png", fig2)
+save("rma_fig.pdf", fig2)
+```
 
 ### Diagramme de bifurcations
-<!-- STOP -->
 
 Pour finir, nous allons tracer le diagramme de bifurcation du modèle de Rosenzweig MacArthur: asymptotiques des prédateurs $y^*$ en fonction de $K$, en identifiant les bifurcations transcritique et de Hopf vues en cours, et en estimant et représentant les extremas du cycle limite apparaissant pour $K$ grand.
 
