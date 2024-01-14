@@ -363,5 +363,12 @@ display(fig)      # actually shows the plot P
 ```
 \
 
+On peut sauvegarder la figure dans différents formats (e.g. png, pdf) :
+
+```{julia}
+savefig(fig, "dyn_allee.pdf")
+savefig(fig, "dyn_allee.png")
+```
+
 Passons aux [populations exploitées](pop_exploitees.qmd).
 
