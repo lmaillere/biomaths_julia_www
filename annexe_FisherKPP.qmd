@@ -17,17 +17,17 @@ with $u(t,x)$ the population density at time $t$ and position $x$ (scaled to the
 Let us first import the packages used for the simulation:
 
 ```{julia}
-using MethodOfLines, 
+using MethodOfLines,
       ModelingToolkit,
-      DomainSets, 
-      OrdinaryDiffEq, 
-      Plots, 
+      DomainSets,
+      OrdinaryDiffEq,
+      Plots,
       LaTeXStrings
 ```
 
-## Model definition 
+## Model definition
 
-`MethodsOfLines.jl` makes use of `ModelingToolkit.jl` to symbolically define the model to integrate. 
+`MethodsOfLines.jl` makes use of `ModelingToolkit.jl` to symbolically define the model to integrate.
 
 Let us first define the time and space parameters:
 
@@ -114,9 +114,18 @@ sol = solve(prob, Tsit5(), saveat = .1)
 
 We retrieve the components of the solution for easier manipulation:
 
+::: {.callout-warning}
+At the present moment (Jan. 16 2024) the following code does not work with Julia 1.10 and `MethodOfLines` v0.10.4
+because of an update in a julia symbolic package, see [this post](https://discourse.julialang.org/t/methodoflines/108387/4) on Julia discourse. everything should go back to normal next update.
+:::
+
 ```{julia}
-gridx = sol[x]
-gridt = sol[t]
+gridx = sol.u
+```
+```{julia}
+gridt = sol.t
+```
+```{julia}
 solu = sol[u(t,x)]
 ```
 
@@ -126,8 +135,8 @@ And we plot the animation of the solution through time:
 anim = @animate for i in eachindex(gridt)
     plot(gridx, solu[i, :],
          xlabel = "position "*L"$x$",
-         ylabel = "population density "*L"$u$", 
-         label = L"$u(x,t)$", 
+         ylabel = "population density "*L"$u$",
+         label = L"$u(x,t)$",
          title = "t=$(gridt[i])")
 end
 
