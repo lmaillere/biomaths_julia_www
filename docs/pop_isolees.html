@@ -263,7 +263,7 @@ div.csl-indent {
 <section id="préliminaires" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="préliminaires">Préliminaires</h3>
 <div class="page-columns page-full"><p>Pour simuler ce modèle, c’est à dire intégrer numériquement les solutions au problème de Cauchy correspondant à l’<a href="#eq-malthus">Equation&nbsp;1</a> avec <span class="math inline">x(0)=x_0\geq0</span>, nous allons utiliser les routines de <code>DifferentialEquations.jl</code> avec la méthode par défaut. Nous utiliserons aussi le package <code>Plots.jl</code> pour les représentations graphiques<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;si vous n’avez jamais installé un package, il faudra commencer par le faire avant de pouvoir l’utiliser…</p></li></div></div>
-<div class="cell" data-execution_count="1">
+<div class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">DifferentialEquations</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -271,17 +271,17 @@ div.csl-indent {
 <section id="conditions-initiales-paramètres-et-temps" class="level3">
 <h3 class="anchored" data-anchor-id="conditions-initiales-paramètres-et-temps">Conditions initiales, paramètres et temps</h3>
 <p>Nous définissions la condition initiale de la simulation :</p>
-<div class="cell" data-execution_count="2">
+<div class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>x0 <span class="op">=</span> <span class="fl">0.1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Nous définissons les paramètres, et les encapsulons dans un vecteur de paramètres :</p>
-<div class="cell" data-execution_count="3">
+<div class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="fl">3.0</span>     <span class="co"># natalité</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> <span class="fl">2.0</span>     <span class="co"># mortalité</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>par_malthus <span class="op">=</span> [n, m] <span class="co"># packing in an array</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Enfin, les propriétés du temps d’intégration :</p>
-<div class="cell" data-execution_count="4">
+<div class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>tspan <span class="op">=</span> (<span class="fl">0.0</span>, <span class="fl">10.0</span>)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>tstep <span class="op">=</span> <span class="fl">0.1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -289,7 +289,7 @@ div.csl-indent {
 <section id="système-dynamique" class="level3">
 <h3 class="anchored" data-anchor-id="système-dynamique">Système dynamique</h3>
 <p>On définit le modèle comme une fonction renvoyant la dérivée de <span class="math inline">x</span> en fonction de l’état (<code>u</code> est la notation pour <code>DifferentialEquations.jl</code>), de paramètres (<code>p</code>), et du temps (<code>t</code>). L’ordre des arguments est important, c’est sous cette forme que les routines d’intégration attendent le modèle.</p>
-<div class="cell" data-execution_count="5">
+<div class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">malthus</span>(u, p, t)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    n, m <span class="op">=</span> p                <span class="co"># unpacking</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> u[<span class="fl">1</span>]                <span class="co"># use x notation</span></span>
@@ -313,7 +313,7 @@ Note
 <section id="intégration" class="level3">
 <h3 class="anchored" data-anchor-id="intégration">Intégration</h3>
 <p>On commence par définir le problème de Cauchy à intégrer, comme un <code>ODEProblem</code> avec arguments: le modèle, la condition initiale, les bornes d’intégration, les paramètres ainsi que l’option <code>saveat = tstep</code> permettant de récupérer la solution tout les <code>tstep</code> pas de temps (il y a plein d’options de sortie de l’intégration, dont même une fonction du temps !)</p>
-<div class="cell" data-execution_count="6">
+<div class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>prob_malthus <span class="op">=</span> <span class="fu">ODEProblem</span>(</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    malthus,          <span class="co"># modèle</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    x0,               <span class="co"># condition initiale</span></span>
@@ -323,11 +323,11 @@ Note
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>On intègre le modèle via <code>solve</code>, défini par <code>DifferentialEquations.jl</code> pour des <code>struct</code> de type <code>ODEProblem</code> :</p>
-<div class="cell" data-execution_count="7">
+<div class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>sol_malthus <span class="op">=</span> <span class="fu">solve</span>(prob_malthus)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Le type de solution renvoyé par le solveur est assez complexe et comprend de nombreux champs informatifs sur le calcul. On peut accéder au temps de simulation via <code>sol_malthus.t</code> :</p>
-<div class="cell" data-execution_count="8">
+<div class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">first</span>(sol_malthus.t, <span class="fl">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="33">
 <pre><code>3-element Vector{Float64}:
@@ -337,7 +337,7 @@ Note
 </div>
 </div>
 <p>ainsi qu’aux valeurs de la variable <span class="math inline">x</span> calculées le long du temps via <code>sol_matlhus.u</code> :</p>
-<div class="cell" data-execution_count="9">
+<div class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">first</span>(sol_malthus.u, <span class="fl">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="34">
 <pre><code>3-element Vector{Float64}:
@@ -347,7 +347,7 @@ Note
 </div>
 </div>
 <p>Même si ce n’est pas indispensable, il est possible de transformer la solution renvoyée facilement en <code>DataFrame</code>, qui peut permettre des manipulations plus faciles.</p>
-<div class="cell" data-execution_count="10">
+<div class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">DataFrames</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>sol_malthus <span class="op">=</span> <span class="fu">DataFrame</span>(sol_malthus)</span>
@@ -367,7 +367,7 @@ Note
 </div>
 </div>
 <p>si bien que :</p>
-<div class="cell" data-execution_count="11">
+<div class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">first</span>(sol_malthus, <span class="fl">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="36">
 <div><div style="float: left;"><span>3×2 DataFrame</span></div><div style="clear: both;"></div></div><div class="data-frame" style="overflow-x: scroll;">
@@ -409,7 +409,7 @@ Note
 <section id="représentation-graphique" class="level3">
 <h3 class="anchored" data-anchor-id="représentation-graphique">Représentation graphique</h3>
 <p>On peut représenter graphiquement la simulation de la croissance de la population au cours du temps (ici via le dataframe).</p>
-<div class="cell" data-execution_count="12">
+<div class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    sol_malthus.time,                   <span class="co"># abscisses</span></span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    sol_malthus.x;                      <span class="co"># ordonnées</span></span>
@@ -495,7 +495,7 @@ Note
 \tag{2}</span></span> avec <span class="math inline">r</span> le taux de croissance intrinsèque de la population et <span class="math inline">K</span> la capacité de charge de l’environnement.</p>
 <p>Il n’y a pas de difficulté particulière par rapport aux simulations précedentes. On va réutiliser la condition initiale et les paramètres de temps définis précédemment.</p>
 <p>Il faut cependant définir les paramètres du modèle <a href="#eq-logistic">Equation&nbsp;2</a> :</p>
-<div class="cell" data-execution_count="13">
+<div class="cell" data-execution_count="14">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> <span class="fl">1.0</span>      <span class="co"># natalité</span></span>
@@ -504,7 +504,7 @@ Note
 </details>
 </div>
 <p>ainsi que le nouveau système dynamique :</p>
-<div class="cell" data-execution_count="14">
+<div class="cell" data-execution_count="15">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">logistic</span>(u, p, t)</span>
@@ -515,7 +515,7 @@ Note
 </details>
 </div>
 <p>et le problème de Cauchy correspondant :</p>
-<div class="cell" data-execution_count="15">
+<div class="cell" data-execution_count="16">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>prob_logistic <span class="op">=</span> <span class="fu">ODEProblem</span>(</span>
@@ -528,7 +528,7 @@ Note
 </details>
 </div>
 <p>On simule et on transforme la solution en dataframe :</p>
-<div class="cell" data-execution_count="16">
+<div class="cell" data-execution_count="17">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>sol_logistic <span class="op">=</span> <span class="fu">solve</span>(prob_logistic)</span>
@@ -538,7 +538,7 @@ Note
 </details>
 </div>
 <p>On trace la solution, en rajoutant les équilibres stable (<span class="math inline">x=K</span>) et instable (<span class="math inline">x=0</span>) :</p>
-<div class="cell" data-execution_count="17">
+<div class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># solution</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    sol_logistic.time,</span>
@@ -650,7 +650,7 @@ Note
 \tag{3}</span></span> avec <span class="math inline">r</span> le taux de croissance intrinsèque de la population (par analogie avec la logistique), <span class="math inline">K</span> la capacité de charge de l’environnement et <span class="math inline">\epsilon</span> le seuil en dessous duquel la population n’est pas viable (‘seuil de Allee’).</p>
 <p>Nous souhaitons illustrer la bistabilité caractéristique du comportement de ce modèle à partir de la simulation depuis plusieurs conditions initiales.</p>
 <p>Commençons par définir le modèle et les paramètres (en conservant les <span class="math inline">r</span> et <span class="math inline">K</span> précédents):</p>
-<div class="cell" data-execution_count="18">
+<div class="cell" data-execution_count="19">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>epsilon <span class="op">=</span> <span class="fl">2</span>                 <span class="co"># seuil de Allee</span></span>
@@ -665,7 +665,7 @@ Note
 </details>
 </div>
 <p>Nous définissons une fonction qui réalise une simulation en un seul appel depuis une condition initiale <span class="math inline">x_0</span> :</p>
-<div class="cell" data-execution_count="19">
+<div class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">int_allee</span>(x0, tspan <span class="op">=</span> tspan_allee, param <span class="op">=</span> par_allee)</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    prob_allee <span class="op">=</span> <span class="fu">ODEProblem</span>(</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>        allee,            <span class="co"># modèle</span></span>
@@ -696,12 +696,12 @@ Note
 </div>
 </div>
 <p>Nous définissons un vecteur de conditions initiales différentes :</p>
-<div class="cell" data-execution_count="20">
+<div class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>x0step <span class="op">=</span> <span class="fl">1.35</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>x0vec <span class="op">=</span> x0step<span class="op">:</span>x0step<span class="op">:</span>K     <span class="co"># range de valeur</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="page-columns page-full"><p>Finalement on réalise la figure. La stratégie diffère un peu de ce qui a été vu ci-dessus. Nous commençons par initier un graphique <code>fig</code>, et faisons une boucle <code>for</code> pour tracer chacune des simulations correspondant aux différentes conditions initiales<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> :</p><div class="no-row-height column-margin column-container"><li id="fn3"><p><sup>3</sup>&nbsp;la palette de couleur est accessoire, juste pour l’esthétique</p></li></div></div>
-<div class="cell" data-execution_count="21">
+<div class="cell" data-execution_count="22">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># custom color palette</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>init_cgrad <span class="op">=</span> <span class="fu">palette</span>([<span class="op">:</span>steelblue, <span class="op">:</span>lightblue], <span class="fu">length</span>(x0vec))</span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -824,7 +824,7 @@ Note
 <p><br>
 </p>
 <p>On peut sauvegarder la figure dans différents formats (e.g.&nbsp;png, pdf) :</p>
-<div class="cell" data-execution_count="22">
+<div class="cell" data-execution_count="23">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">savefig</span>(fig, <span class="st">"dyn_allee.pdf"</span>)</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">savefig</span>(fig, <span class="st">"dyn_allee.png"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -1505,10 +1505,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb25-412"><a href="#cb25-412" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
 <span id="cb25-413"><a href="#cb25-413" aria-hidden="true" tabindex="-1"></a>savefig(fig, <span class="ot">"</span><span class="st">dyn_allee.pdf</span><span class="ot">"</span>)</span>
 <span id="cb25-414"><a href="#cb25-414" aria-hidden="true" tabindex="-1"></a>savefig(fig, <span class="ot">"</span><span class="st">dyn_allee.png</span><span class="ot">"</span>)</span>
-<span id="cb25-415"><a href="#cb25-415" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-416"><a href="#cb25-416" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb25-417"><a href="#cb25-417" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-418"><a href="#cb25-418" aria-hidden="true" tabindex="-1"></a>Passons aux <span class="co">[</span><span class="ot">populations exploitées</span><span class="co">](pop_exploitees.qmd)</span>.</span>
+<span id="cb25-415"><a href="#cb25-415" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb25-416"><a href="#cb25-416" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-417"><a href="#cb25-417" aria-hidden="true" tabindex="-1"></a>Passons aux <span class="co">[</span><span class="ot">populations exploitées</span><span class="co">](pop_exploitees.qmd)</span>.</span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

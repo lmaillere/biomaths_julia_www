@@ -120,18 +120,16 @@ because of an update in a julia symbolic package, see [this post](https://discou
 :::
 
 ```{julia}
+#| eval: false
 gridx = sol.u
-```
-```{julia}
 gridt = sol.t
-```
-```{julia}
 solu = sol[u(t,x)]
 ```
 
 And we plot the animation of the solution through time:
 ```{julia}
 #| output: true
+#| eval: false
 anim = @animate for i in eachindex(gridt)
     plot(gridx, solu[i, :],
          xlabel = "position "*L"$x$",
