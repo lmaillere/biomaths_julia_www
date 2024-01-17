@@ -276,7 +276,7 @@ div.csl-indent {
 </ul>
 <p>Pour ce dernier point, nous allons définir des types (<code>struct</code>) spécifiques.</p>
 <p>Nous commençons par importer les packages que nous allons utiliser:</p>
-<div class="cell" data-execution_count="1">
+<div class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">StaticArrays</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">DifferentialEquations</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CairoMakie</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -286,7 +286,7 @@ div.csl-indent {
 <h3 class="anchored" data-anchor-id="type-spécifique-pour-les-paramètres">Type spécifique pour les paramètres</h3>
 <p>Nous définissons un <code>struct</code> pour les paramètres du modèle de Rosenzweig MacArthur.</p>
 <p>Type pour les paramètres :</p>
-<div class="cell" data-execution_count="2">
+<div class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@kwdef</span> <span class="kw">struct</span> ParRma</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    r<span class="op">::</span><span class="dt">Number </span><span class="op">=</span> <span class="fl">1.0</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    K<span class="op">::</span><span class="dt">Number </span><span class="op">=</span> <span class="fl">10.0</span></span>
@@ -310,7 +310,7 @@ Note
 </div>
 </div>
 <p>On peut créer des objets de type <code>ParRma</code> via les <code>constructor</code> ; on accède à un champ particulier via <code>objet.champ</code> :</p>
-<div class="cell" data-execution_count="3">
+<div class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>p_rma <span class="op">=</span> <span class="fu">ParRma</span>() <span class="co"># constructor with default values</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>p_rma2 <span class="op">=</span> <span class="fu">ParRma</span>(K <span class="op">=</span> <span class="fl">8.0</span>) <span class="co"># default values except K = 20.0</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -341,7 +341,7 @@ Note
 <h3 class="anchored" data-anchor-id="fonctions">Fonctions</h3>
 <p>Nous définissons les différentes fonctions impliquées dans le modèle de Rosenzweig MacArthur, la logistique et la réponse fonctionnelle de Holling II.</p>
 <p>Pour la logistique :</p>
-<div class="cell" data-execution_count="4">
+<div class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">logistic</span>(x<span class="op">::</span><span class="dt">Number</span>, p<span class="op">::</span><span class="dt">ParRma</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    (; r, K) <span class="op">=</span> p    <span class="co"># deconstruct/get r and K from p</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="fu">r*x*</span>(<span class="fl">1</span><span class="op">-</span>x<span class="op">/</span>K)</span>
@@ -364,7 +364,7 @@ Note
 </div>
 </div>
 <p>Pour la réponse fonctionnelle (sans le paramètre <span class="math inline">c</span>) :</p>
-<div class="cell" data-execution_count="5">
+<div class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">holling2</span>(x<span class="op">::</span><span class="dt">Number</span>, p<span class="op">::</span><span class="dt">ParRma</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    (; h) <span class="op">=</span> p   <span class="co"># deconstruct h from p</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> x<span class="op">/</span>(x<span class="op">+</span>h)</span>
@@ -374,13 +374,13 @@ Note
 <section id="conditions-initiales" class="level3">
 <h3 class="anchored" data-anchor-id="conditions-initiales">Conditions initiales</h3>
 <p>Pour utiliser les static arrays avec <code>DifferentialEquations.jl</code> il faut que la condition initiale (donc l’état) et les dérivées soient des static arrays (ici un <code>SVector</code>)</p>
-<div class="cell" data-execution_count="6">
+<div class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> x0 <span class="op">=</span> <span class="fl">1.0</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> y0 <span class="op">=</span> <span class="fl">1.95</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># SVector are immutables</span></span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>u0 <span class="op">=</span> <span class="fu">SVector</span>(x0, y0)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="170">
+<div class="cell-output cell-output-display" data-execution_count="7">
 <pre><code>2-element SVector{2, Float64} with indices SOneTo(2):
  1.0
  1.95</code></pre>
@@ -390,7 +390,7 @@ Note
 <section id="modèle" class="level3">
 <h3 class="anchored" data-anchor-id="modèle">Modèle</h3>
 <p>On définit les équations du modèle en exploitant les fonctions définies plus haut et la structure des paramètres, en renvoyant les dérivées sous forme de <code>SVector</code> :</p>
-<div class="cell" data-execution_count="7">
+<div class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">mod_rma</span>(u<span class="op">::</span><span class="dt">SVector{2}</span>, p<span class="op">::</span><span class="dt">ParRma</span>, t)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    (; c, b, m) <span class="op">=</span> p     <span class="co"># get c, b, m from p</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> u[<span class="fl">1</span>]            <span class="co"># use x, y notations</span></span>
@@ -406,21 +406,21 @@ Note
 <section id="simulation-simple" class="level3">
 <h3 class="anchored" data-anchor-id="simulation-simple">Simulation simple</h3>
 <p>On définit les paramètres du temps dans un <code>struct</code> :</p>
-<div class="cell" data-execution_count="8">
+<div class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@kwdef</span> <span class="kw">struct</span> ParTime</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    tspan<span class="op">::</span><span class="dt">Tuple{Number, Number} </span><span class="op">=</span> (<span class="fl">0.0</span>, <span class="fl">60.0</span>)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    tstep<span class="op">::</span><span class="dt">Number </span><span class="op">=</span> <span class="fl">0.1</span></span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>p_time <span class="op">=</span> <span class="fu">Time</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co"># construc a time parameter</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>p_time <span class="op">=</span> <span class="fu">ParTime</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Et on définit une fonction qui définit le problème de simulation, l’intègre et produit un graphique de la simulation contre le temps :</p>
-<div class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">plot_rma</span>(mod, u0<span class="op">::</span><span class="dt">SVector{2}</span>, p<span class="op">::</span><span class="dt">ParRma</span>, pt<span class="op">::</span><span class="dt">ParTime</span>)</span>
+<p>Et on définit une fonction qui définit le problème de simulation, l’intègre et produit un graphique de la simulation contre le temps, avec pour arguments la condition initiale, les paramètres et les paramètres de temps :</p>
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">plot_rma</span>(u0<span class="op">::</span><span class="dt">SVector{2}</span>, p<span class="op">::</span><span class="dt">ParRma</span>, pt<span class="op">::</span><span class="dt">ParTime</span>)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    (; tspan, tstep) <span class="op">=</span> pt</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># define and solve simulation problem</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    prob_rma <span class="op">=</span> <span class="fu">ODEProblem</span>(mod, u0, tspan, p; saveat <span class="op">=</span> tstep)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    prob_rma <span class="op">=</span> <span class="fu">ODEProblem</span>(mod_rma, u0, tspan, p; saveat <span class="op">=</span> tstep)</span>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    sol_rma <span class="op">=</span> <span class="fu">solve</span>(prob_rma, reltol <span class="op">=</span> <span class="fl">1e-6</span>)</span>
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># initialize figure</span></span>
@@ -440,12 +440,12 @@ Note
 <span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Finalement on exécute cette fonction pour tracer la simulation :</p>
-<div class="cell" data-execution_count="10">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@time</span> <span class="fu">plot_rma</span>(mod_rma, u0, p_rma, time)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@time</span> <span class="fu">plot_rma</span>(u0, p_rma, p_time)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  1.319648 seconds (858.22 k allocations: 51.377 MiB, 98.59% compilation time: 100% of which was recompilation)</code></pre>
+<pre><code>  7.544557 seconds (13.87 M allocations: 933.550 MiB, 3.68% gc time, 92.49% compilation time: &lt;1% of which was recompilation)</code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="174">
+<div class="cell-output cell-output-display" data-execution_count="11">
 <div id="fig-rma-time" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="annexe_swft_rma_files/figure-html/fig-rma-time-output-2.svg" class="img-fluid figure-img"></p>
@@ -467,14 +467,14 @@ Note
 <p>La macro <code>@time</code> permet de calculer le temps mis pour calculer la commande qui la suit.</p>
 </div>
 </div>
-<p>Au premier appel de la fonction <code>plot_rma()</code>, il y a un temps de précompilation de la fonction qui amène à un plot en 1.33s sur ma machine.</p>
-<p>Des appels après précompilation (en changeant les paramètres !) sont de l’ordre de deux ordres de grandeurs plus rapides :</p>
-<div class="cell" data-execution_count="11">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@time</span> <span class="fu">plot_rma</span>(mod_rma, u0, p_rma2, time)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Au premier appel de la fonction <code>plot_rma()</code>, il y a un temps de précompilation de la fonction qui amène à un plot en de l’ordre de 7.5s sur ma machine.</p>
+<p>Des appels après précompilation (en changeant les paramètres !) sont de l’ordre de 2 à 3 ordres de grandeurs plus rapides :</p>
+<div class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@time</span> <span class="fu">plot_rma</span>(u0, p_rma2, p_time)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  0.015439 seconds (228.75 k allocations: 10.170 MiB)</code></pre>
+<pre><code>  0.016201 seconds (228.75 k allocations: 10.170 MiB)</code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="175">
+<div class="cell-output cell-output-display" data-execution_count="12">
 <p><img src="annexe_swft_rma_files/figure-html/cell-12-output-2.svg" class="img-fluid"></p>
 </div>
 </div>
@@ -488,7 +488,7 @@ Note
 <p>Pour les modèles de plus grandes dimensions (<span class="math inline">n&gt;8</span>), l’avantage en performance des static arrays n’est plus si net et la documentation de <code>DifferentialEquations.jl</code> recommande d’utiliser la version en place (is in place, IIP dans le jargon du package) de l’interface problem/solver du package.</p>
 <p>Il s’agit ici de définir le modèle non pas comme renvoyant la dérivée en fonction de l’état, des paramètres et du temps, mais comme une fonction d’arguments la dérivée, l’état, les paramètres et le temps qui modifie en place la dérivée (et ne renvoie rien)). Celà permet de muter un même objet dérivée <code>du</code> à chaque fois que le modèle est appelé, plutôt que de créer un nouvel objet dérivée <code>du</code> à chaque appel du modèle (c’est aussi ce qui est fait, différemment, avec les static arrays plus haut).</p>
 <p>Typiquement ce type de modèle IIP (en place) s’écrit:</p>
-<div class="cell" data-execution_count="12">
+<div class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">mod_rma!</span>(du, u, p, t)</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="cn">nothing</span></span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -932,16 +932,16 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb17-149"><a href="#cb17-149" aria-hidden="true" tabindex="-1"></a><span class="ot">    tstep::Number = 0.1</span></span>
 <span id="cb17-150"><a href="#cb17-150" aria-hidden="true" tabindex="-1"></a><span class="ot">end</span></span>
 <span id="cb17-151"><a href="#cb17-151" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-152"><a href="#cb17-152" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
-<span id="cb17-153"><a href="#cb17-153" aria-hidden="true" tabindex="-1"></a><span class="ot">p_time = Time</span><span class="ch">()</span></span>
+<span id="cb17-152"><a href="#cb17-152" aria-hidden="true" tabindex="-1"></a><span class="co"># construc a time parameter</span></span>
+<span id="cb17-153"><a href="#cb17-153" aria-hidden="true" tabindex="-1"></a><span class="ot">p_time = ParTime</span><span class="ch">()</span></span>
 <span id="cb17-154"><a href="#cb17-154" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
 <span id="cb17-155"><a href="#cb17-155" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-156"><a href="#cb17-156" aria-hidden="true" tabindex="-1"></a><span class="ot">Et on définit une fonction qui définit le problème de simulation, l'intègre et produit un graphique de la simulation contre le temps :</span></span>
+<span id="cb17-156"><a href="#cb17-156" aria-hidden="true" tabindex="-1"></a><span class="ot">Et on définit une fonction qui définit le problème de simulation, l'intègre et produit un graphique de la simulation contre le temps, avec pour arguments la condition initiale, les paramètres et les paramètres de temps :</span></span>
 <span id="cb17-159"><a href="#cb17-159" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb17-160"><a href="#cb17-160" aria-hidden="true" tabindex="-1"></a><span class="ot">function plot_rma</span><span class="ch">(</span><span class="ot">mod, u0::SVector</span><span class="ch">{2}</span><span class="ot">, p::ParRma, pt::ParTime</span><span class="ch">)</span></span>
+<span id="cb17-160"><a href="#cb17-160" aria-hidden="true" tabindex="-1"></a><span class="ot">function plot_rma</span><span class="ch">(</span><span class="ot">u0::SVector</span><span class="ch">{2}</span><span class="ot">, p::ParRma, pt::ParTime</span><span class="ch">)</span></span>
 <span id="cb17-161"><a href="#cb17-161" aria-hidden="true" tabindex="-1"></a><span class="ot">    </span><span class="ch">(</span><span class="ot">; tspan, tstep</span><span class="ch">)</span><span class="ot"> = pt</span></span>
 <span id="cb17-162"><a href="#cb17-162" aria-hidden="true" tabindex="-1"></a><span class="co">    # define and solve simulation problem</span></span>
-<span id="cb17-163"><a href="#cb17-163" aria-hidden="true" tabindex="-1"></a><span class="ot">    prob_rma = ODEProblem</span><span class="ch">(</span><span class="ot">mod, u0, tspan, p; saveat = tstep</span><span class="ch">)</span></span>
+<span id="cb17-163"><a href="#cb17-163" aria-hidden="true" tabindex="-1"></a><span class="ot">    prob_rma = ODEProblem</span><span class="ch">(</span><span class="ot">mod_rma, u0, tspan, p; saveat = tstep</span><span class="ch">)</span></span>
 <span id="cb17-164"><a href="#cb17-164" aria-hidden="true" tabindex="-1"></a><span class="ot">    sol_rma = solve</span><span class="ch">(</span><span class="ot">prob_rma, reltol = 1e-6</span><span class="ch">)</span></span>
 <span id="cb17-165"><a href="#cb17-165" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-166"><a href="#cb17-166" aria-hidden="true" tabindex="-1"></a><span class="co">    # initialize figure</span></span>
@@ -966,19 +966,19 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb17-187"><a href="#cb17-187" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
 <span id="cb17-188"><a href="#cb17-188" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-rma-time</span></span>
 <span id="cb17-189"><a href="#cb17-189" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Simulation des trajectoires du modèle de Rosenzweig MacArthur</span></span>
-<span id="cb17-190"><a href="#cb17-190" aria-hidden="true" tabindex="-1"></a><span class="dt">@time</span><span class="ot"> plot_rma</span><span class="ch">(</span><span class="ot">mod_rma, u0, p_rma, time</span><span class="ch">)</span></span>
+<span id="cb17-190"><a href="#cb17-190" aria-hidden="true" tabindex="-1"></a><span class="dt">@time</span><span class="ot"> plot_rma</span><span class="ch">(</span><span class="ot">u0, p_rma, p_time</span><span class="ch">)</span></span>
 <span id="cb17-191"><a href="#cb17-191" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
 <span id="cb17-192"><a href="#cb17-192" aria-hidden="true" tabindex="-1"></a><span class="ot">::: {.callout-note}</span></span>
 <span id="cb17-193"><a href="#cb17-193" aria-hidden="true" tabindex="-1"></a><span class="ot">La macro `</span><span class="dt">@time</span><span class="ot">` permet de calculer le temps mis pour calculer la commande qui la suit.</span></span>
 <span id="cb17-194"><a href="#cb17-194" aria-hidden="true" tabindex="-1"></a><span class="ot">:::</span></span>
 <span id="cb17-195"><a href="#cb17-195" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-196"><a href="#cb17-196" aria-hidden="true" tabindex="-1"></a><span class="ot">Au premier appel de la fonction `plot_rma</span><span class="ch">()</span><span class="ot">`, il y a un temps de précompilation de la fonction qui amène à un plot en 1.33s sur ma machine.</span></span>
+<span id="cb17-196"><a href="#cb17-196" aria-hidden="true" tabindex="-1"></a><span class="ot">Au premier appel de la fonction `plot_rma</span><span class="ch">()</span><span class="ot">`, il y a un temps de précompilation de la fonction qui amène à un plot en de l'ordre de 7.5s sur ma machine.</span></span>
 <span id="cb17-197"><a href="#cb17-197" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-198"><a href="#cb17-198" aria-hidden="true" tabindex="-1"></a><span class="ot">Des appels après précompilation </span><span class="ch">(</span><span class="ot">en changeant les paramètres !</span><span class="ch">)</span><span class="ot"> sont de l'ordre de deux ordres de grandeurs plus rapides :</span></span>
+<span id="cb17-198"><a href="#cb17-198" aria-hidden="true" tabindex="-1"></a><span class="ot">Des appels après précompilation </span><span class="ch">(</span><span class="ot">en changeant les paramètres !</span><span class="ch">)</span><span class="ot"> sont de l'ordre de 2 à 3 ordres de grandeurs plus rapides :</span></span>
 <span id="cb17-199"><a href="#cb17-199" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-202"><a href="#cb17-202" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
 <span id="cb17-203"><a href="#cb17-203" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
-<span id="cb17-204"><a href="#cb17-204" aria-hidden="true" tabindex="-1"></a><span class="dt">@time</span><span class="ot"> plot_rma</span><span class="ch">(</span><span class="ot">mod_rma, u0, p_rma2, time</span><span class="ch">)</span></span>
+<span id="cb17-204"><a href="#cb17-204" aria-hidden="true" tabindex="-1"></a><span class="dt">@time</span><span class="ot"> plot_rma</span><span class="ch">(</span><span class="ot">u0, p_rma2, p_time</span><span class="ch">)</span></span>
 <span id="cb17-205"><a href="#cb17-205" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
 <span id="cb17-206"><a href="#cb17-206" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-207"><a href="#cb17-207" aria-hidden="true" tabindex="-1"></a><span class="co">### Diagramme de bifurcations</span></span>
