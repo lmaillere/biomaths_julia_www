@@ -175,7 +175,7 @@ La macro `@time` permet de calculer le temps mis pour calculer la commande qui l
 
 Au premier appel de la fonction `plot_rma()`, il y a un temps de précompilation de la fonction qui amène à un plot en de l'ordre de 7.5s sur ma machine.
 
-Des appels après précompilation (en changeant les paramètres !) sont de l'ordre de 2 à 3 ordres de grandeurs plus rapides :
+Des appels ultérieurs après précompilation (en changeant les paramètres !) sont de l'ordre de 2 à 3 ordres de grandeurs plus rapides :
 
 ```{julia}
 #| output: true
