@@ -133,7 +133,7 @@ On définit les paramètres du temps dans un `struct` :
     tstep::Number = 0.1
 end
 
-# construc a time parameter
+# construct a time parameter
 p_time = ParTime()
 ```
 
