@@ -1,0 +1,170 @@
+---
+title: "Simulation optimisée"
+---
+
+## Modèle de Rosenzweig MacArthur
+
+Nous considérons le modèle de dynamique de populations de Rosenzweig et MacArthur que nous avons déjà vu (@Rosenzweig1963, @Turchin2003, @Smith2008).
+
+$$
+\left\{\begin{array}{l}
+\dot x = \displaystyle rx\left(1-\frac{x}{K}\right) - c \frac{x}{h+x} y\\[.3cm]
+\dot y = b\displaystyle \frac{x}{h+x} y - m y
+\end{array}\right.
+$$ {#eq-rma}
+
+L'objectif est de réaliser des simulations performantes, et le tracé du diagramme de bifurcation avec l'estimation par simulation du cycle limite. Ce type de simulations lourdes se prête bien à se genre de benchmark.
+
+### Stratégie pour le code
+
+Pour un tel problème de dimension réduite, nous allons utiliser des static arrays (tableaux à adresse fixe dans la mémoire^[depuis le package `StaticArrays.jl`]), ce qui permettra de ne pas crééer une multitude d'objets pour la simulation mais de toujours modifier le même objet en mémoire.
+
+Par ailleurs nous allons essayer de nous conformer au maximum aux préconisations :
+
+- ne pas utiliser de variables globales
+- définir des fonctions
+- mettre les paramètres dans un nombre limité de variables et les passer en arguments des fonctions
+
+Pour ce dernier point, nous allons définir des types (`struct`) spécifiques.
+
+Nous commençons par importer les packages que nous allons utiliser:
+```{julia}
+using StaticArrays
+using DifferentialEquations
+using CairoMakie
+```
+
+### Type spécifique pour les paramètres
+
+Nous définissons un `struct` pour les paramètres du modèle de Rosenzweig MacArthur.
+
+Type pour les paramètres :
+```{julia}
+@kwdef struct ParRma
+    r::Number = 1.0
+    K::Number = 10.0
+    c::Number = 1.0
+    h::Number = 2.0
+    b::Number = 2.0
+    m::Number = 1.0
+end
+```
+
+::: {.callout-note}
+La macro `@kwdef` permet de renseigner des valeurs par défaut des champs du `struct`.
+:::
+
+On peut créer des objets de type `ParRma` via les `constructor` ; on accède à un champ particulier via `objet.champ` :
+```{julia}
+#| output: true
+p_rma = ParRma() # constructor with default values
+p_rma2 = ParRma(K=20.0) # default values except K = 20.0
+
+@show p_rma
+@show p_rma.K
+@show p_rma2.K; # semi colon do not show output of par_rma2.K
+```
+
+::: {.callout-note}
+La macro `@show` est assez explicite.
+:::
+
+### Fonctions
+
+Nous définissons les différentes fonctions impliquées dans le modèle de Rosenzweig MacArthur, la logistique et la réponse fonctionnelle de Holling II.
+
+Pour la logistique :
+```{julia}
+function logistic(x::Number, p::ParRma)
+    (; r, K) = p    # deconstruct/get r and K from p
+    return r*x*(1-x/K)
+end
+```
+
+::: {.callout-note}
+- les notations `var::Type` permettent de spécifier le type de l'argument
+- la notation `(; r, K) = p` permet d'extraire (*deconstruct*) les champs `r` et `K` du paramètre `p`
+:::
+
+Pour la réponse fonctionnelle (sans le paramètre $c$) :
+```{julia}
+function holling2(x::Number, p::ParRma)
+    (; h) = p   # deconstruct h from p
+    return x/(x+h)
+end
+```
+
+### Conditions initiales
+
+Pour utiliser les static arrays avec `DifferentialEquations.jl` il faut que la condition initiale (donc l'état) et les dérivées soient des static arrays (ici un `SVector`)
+
+```{julia}
+#| output: true
+const x0 = 1.0
+const y0 = 1.95
+
+# SVector are immutables
+u0 = SVector(x0, y0)
+```
+
+### Modèle
+
+On définit les équations du modèle en exploitant les fonctions définies plus haut et la structure des paramètres, en renvoyant les dérivées sous forme de `SVector` :
+
+```{julia}
+function mod_rma(u::SVector{2}, p::ParRma, t)
+    (; c, b, m) = p     # get c, b, m from p
+    x = u[1]            # use x, y notations
+    y = u[2]
+
+    dx = logistic(x, p) - c * holling2(x,p) * y
+    dy = b * holling2(x, p) * y - m * y
+
+    return SVector(dx, dy) # return derivatives as SVector
+end
+```
+
+### Simulation
+
+On définit les paramètres du temps :
+```{julia}
+# tuples are immutable
+tspan = (0.0, 30.0)
+
+# global constant
+const tstep = 0.1
+```
+
+Ainsi que le problème de simulation et on effectue la simulation :
+```{julia}
+prob_rma = ODEProblem(mod_rma, u0, tspan, p_rma; saveat = tstep)
+
+sol_rma = solve(prob_rma, reltol = 1e-6)
+```
+
+La simulation a bien été effectuée :
+```{julia}
+#| output: true
+fig1 = Figure()
+ax1 = Axis(fig1[1,1])
+lines!(ax1, sol_rma.t, sol_rma[1,:]; lw = 2)
+lines!(ax1, sol_rma.t, sol_rma[2,:]; lw = 2)
+
+fig1
+```
+
+## Cas des modèles de plus grandes dimensions
+
+Pour les modèles de plus grandes dimensions ($n>8$), l'avantage en performance des static arrays n'est plus si net et la documentation de `DifferentialEquations.jl` recommande d'utiliser la version en place (is in place, IIP dans le jargon du package) de l'interface problem/solver du package.
+
+Il s'agit ici de définir le modèle non pas comme renvoyant la dérivée en fonction de l'état, des paramètres et du temps, mais comme une fonction d'arguments la dérivée, l'état, les paramètres et le temps qui modifie en place la dérivée (et ne renvoie rien)). Celà permet de muter un même objet dérivée `du` à chaque fois que le modèle est appelé, plutôt que de créer un nouvel objet dérivée `du` à chaque appel du modèle (c'est aussi ce qui est fait, différemment, avec les static arrays plus haut).
+
+Typiquement ce type de modèle IIP (en place) s'écrit:
+
+```{julia}
+function mod_rma!(du, u, p, t)
+    return nothing
+end
+```
+
+La définition du problème d'intégration et l'appel de solve est similaire aux autres méthodes, à ceci près que la condition initiale et la dérivée doit être mutable, ce qui ne permet pas (ou très difficilement) d'utiliser la méthode en dimension 1. En effet une déclaration `u0 = 1.0` ou `du = 3.0` n'est pas mutable^[alors que `u0 = [1.0, 2.0]` ou `du =[2.0, 3.0]` le sont. Plus sur la mutabilité dans les [Julia notes](https://m3g.github.io/JuliaNotes.jl/stable/immutable/).].
