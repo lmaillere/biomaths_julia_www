@@ -140,7 +140,9 @@ p_time = ParTime()
 Et on définit une fonction qui définit le problème de simulation, l'intègre et produit un graphique de la simulation contre le temps, avec pour arguments la condition initiale, les paramètres et les paramètres de temps :
 ```{julia}
 function plot_rma(u0::SVector{2}, p::ParRma, pt::ParTime)
+    # deconstruct time parameter
     (; tspan, tstep) = pt
+    
     # define and solve simulation problem
     prob_rma = ODEProblem(mod_rma, u0, tspan, p; saveat = tstep)
     sol_rma = solve(prob_rma, reltol = 1e-6)
