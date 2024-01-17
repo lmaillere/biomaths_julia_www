@@ -58,7 +58,7 @@ On peut créer des objets de type `ParRma` via les `constructor` ; on accède à
 ```{julia}
 #| output: true
 p_rma = ParRma() # constructor with default values
-p_rma2 = ParRma(K=20.0) # default values except K = 20.0
+p_rma2 = ParRma(K = 8.0) # default values except K = 20.0
 
 @show p_rma
 @show p_rma.K
@@ -124,34 +124,67 @@ function mod_rma(u::SVector{2}, p::ParRma, t)
 end
 ```
 
-### Simulation
+### Simulation simple
 
-On définit les paramètres du temps :
+On définit les paramètres du temps dans un `struct` :
 ```{julia}
-# tuples are immutable
-tspan = (0.0, 30.0)
+@kwdef struct ParTime
+    tspan::Tuple{Number, Number} = (0.0, 60.0)
+    tstep::Number = 0.1
+end
 
-# global constant
-const tstep = 0.1
+#
+p_time = Time()
 ```
 
-Ainsi que le problème de simulation et on effectue la simulation :
+Et on définit une fonction qui définit le problème de simulation, l'intègre et produit un graphique de la simulation contre le temps :
 ```{julia}
-prob_rma = ODEProblem(mod_rma, u0, tspan, p_rma; saveat = tstep)
+function plot_rma(mod, u0::SVector{2}, p::ParRma, pt::ParTime)
+    (; tspan, tstep) = pt
+    # define and solve simulation problem
+    prob_rma = ODEProblem(mod, u0, tspan, p; saveat = tstep)
+    sol_rma = solve(prob_rma, reltol = 1e-6)
 
-sol_rma = solve(prob_rma, reltol = 1e-6)
+    # initialize figure
+    fig = Figure(; fontsize = 20)
+    ax = Axis(fig[1,1];
+        title = "Modèle de Rosenzweig MacArthur\n ",
+        xlabel = "temps",
+        ylabel = "densités",
+    )
+
+    # plot solution
+    lines!(ax, sol_rma.t, sol_rma[1,:]; lw = 2, label = "proies")
+    lines!(ax, sol_rma.t, sol_rma[2,:]; lw = 2, label = "prédateurs")
+    axislegend(; position = :lt)
+
+    return fig
+end
 ```
 
-La simulation a bien été effectuée :
+Finalement on exécute cette fonction pour tracer la simulation :
 ```{julia}
 #| output: true
-fig1 = Figure()
-ax1 = Axis(fig1[1,1])
-lines!(ax1, sol_rma.t, sol_rma[1,:]; lw = 2)
-lines!(ax1, sol_rma.t, sol_rma[2,:]; lw = 2)
-
-fig1
+#| label: fig-rma-time
+#| fig-cap: Simulation des trajectoires du modèle de Rosenzweig MacArthur
+@time plot_rma(mod_rma, u0, p_rma, time)
 ```
+::: {.callout-note}
+La macro `@time` permet de calculer le temps mis pour calculer la commande qui la suit.
+:::
+
+Au premier appel de la fonction `plot_rma()`, il y a un temps de précompilation de la fonction qui amène à un plot en 1.33s sur ma machine.
+
+Des appels après précompilation (en changeant les paramètres !) sont de l'ordre de deux ordres de grandeurs plus rapides :
+
+```{julia}
+#| output: true
+@time plot_rma(mod_rma, u0, p_rma2, time)
+```
+
+### Diagramme de bifurcations
+
+
 
 ## Cas des modèles de plus grandes dimensions
 
