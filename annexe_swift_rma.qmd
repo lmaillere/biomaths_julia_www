@@ -137,15 +137,38 @@ end
 p_time = ParTime()
 ```
 
-Et on définit une fonction qui définit le problème de simulation, l'intègre et produit un graphique de la simulation contre le temps, avec pour arguments la condition initiale, les paramètres et les paramètres de temps :
+On définit une fonction qui définit le problème de simulation, l'intègre et retourne la solution, avec pour arguments positionnels la condition initiale, les paramètres et les paramètres de temps, et comme keyword argument le paramètre booléen `final`.
+
+Lorsque `final=false` (par défaut), la fonction renvoie toute la solution. Lorsque `final=true` la fonction renvoie la valeur finale de la simulation, ce sont nous nous servirons plus bas dans l'estimation des extremas du cycle limite.
 ```{julia}
-function plot_rma(u0::SVector{2}, p::ParRma, pt::ParTime)
+function sim_rma(u0::SVector{2}, p::ParRma, pt::ParTime; final::Bool = false)
     # deconstruct time parameter
     (; tspan, tstep) = pt
-    
+
     # define and solve simulation problem
-    prob_rma = ODEProblem(mod_rma, u0, tspan, p; saveat = tstep)
-    sol_rma = solve(prob_rma, reltol = 1e-6)
+    prob_rma = ODEProblem(mod_rma, u0, tspan, p)
+    if !final   # if final is false get whole solution
+        sol_rma = solve(prob_rma; reltol = 1e-6, saveat = tstep)
+    else        # if final is true get only final solution
+        sol_rma = solve(
+            prob_rma;
+            reltol = 1e-6,
+            save_everystep = false,
+            save_start = false,
+        )
+    end
+
+    return sol_rma
+end
+
+sim_rma(u0, p_rma, p_time)
+```
+
+Et on définit une fonction qui simule et produit un graphique de la simulation contre le temps, avec pour arguments la condition initiale, les paramètres et les paramètres de temps :
+```{julia}
+function plot_rma(u0::SVector{2}, p::ParRma, pt::ParTime)
+    # compute the Simulation
+    sol_rma = sim_rma(u0, p, pt)
 
     # initialize figure
     fig = Figure(; fontsize = 20)
@@ -172,17 +195,8 @@ Finalement on exécute cette fonction pour tracer la simulation :
 @time plot_rma(u0, p_rma, p_time)
 ```
 ::: {.callout-note}
-La macro `@time` permet de calculer le temps mis pour calculer la commande qui la suit.
+La macro `@time` permet de calculer le temps mis pour calculer la commande qui la suit, ici la simulation et la création du graphique.
 :::
-
-Au premier appel de la fonction `plot_rma()`, il y a un temps de précompilation de la fonction qui amène à un plot en de l'ordre de 7.5s sur ma machine.
-
-Des appels ultérieurs après précompilation (en changeant les paramètres !) sont de l'ordre de 2 à 3 ordres de grandeurs plus rapides :
-
-```{julia}
-#| output: true
-@time plot_rma(u0, p_rma2, p_time)
-```
 
 ### Diagramme de bifurcations
 
