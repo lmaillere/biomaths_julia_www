@@ -162,7 +162,7 @@ colsize!(fig2.layout, 2, Auto(1.5))
 supertitle = Label(
     fig2[0, :],      # position ligne "0" toutes les colonnes
     "Modèle de Rosenzweig MacArthur";
-    fontsize = 30,
+    textsize = 26,
 )
 
 # ajout d'un label d'axes commun à la première colonne
@@ -479,11 +479,12 @@ y_cmax = zero(K_plot3)
 
 
 ```{julia}
+#| output: true
 # define generic simulation problem
 rma_pbe = ODEProblem(rma, etat0, t_trans, par_rma)
 
 # estimate limit cycle through loop on K
-for (i, Kc) in enumerate(K_plot3)     # loop on (index, K) values of K_plot3
+@time for (i, Kc) in enumerate(K_plot3)     # loop on (index, K) values of K_plot3
     par_rmac = [r, Kc, c, h, b, m]    # set parameters
 
     # transient initial value problem; remake problem with par = par_rmac
