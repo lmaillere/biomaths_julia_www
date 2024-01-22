@@ -40,6 +40,7 @@ Nous définissons un `struct` pour les paramètres du modèle de Rosenzweig MacA
 
 Type pour les paramètres :
 ```{julia}
+# parameters struct
 @kwdef struct ParRma
     r::Float64 = 1.0
     K::Float64 = 10.0
@@ -66,12 +67,12 @@ On peut créer des objets de type `ParRma` via les `constructor` ; on accède à
 ```{julia}
 #| output: true
 # ParRma type objects are immutable
-p_rma = ParRma() # constructor with default values
-p_rma2 = ParRma(K = 8.0) # default values except K = 20.0
+prma = ParRma() # constructor with default values
+prma2 = ParRma(K = 8.0) # default values except K = 20.0
 
-@show p_rma
-@show p_rma.K
-@show p_rma2.K; # semi colon do not show output of par_rma2.K
+@show prma
+@show prma.K
+@show prma2.K; # semi colon do not show output of par_rma2.K
 ```
 
 ::: {.callout-note}
@@ -108,26 +109,20 @@ end
 Pour utiliser les static arrays avec `DifferentialEquations.jl` il faut que la condition initiale (donc l'état) et les dérivées soient des static arrays (ici un `SVector`)
 
 ```{julia}
-#| output: true
-#| eval: false
-const x0 = 1.0
-const y0 = 1.95
-
-# SVector are immutables
-u0 = SVector(x0, y0)
-```
-
-```{julia}
+# initial value struct
 @kwdef struct IniV
     x0::Float64 = 1.0
     y0::Float64 = 1.95
     u0::SVector{2, Float64} = SVector(x0, y0)
 end
+# construct some initial condition
+iniv = IniV()
 ```
 
 ```{julia}
-#| output: true
-iniv = IniV()
+# add a new constructor method to IniV
+# takes a length 2 SVector to construct the object (self definition)
+IniV(u0::SVector{2, Float64}) = IniV(x0 = u0[1], y0 = u0[2])
 ```
 
 ### Modèle
@@ -151,13 +146,14 @@ end
 
 On définit les paramètres du temps dans un `struct` :
 ```{julia}
+# time parameters struct
 @kwdef struct ParTime
     tspan::Tuple{Float64, Float64} = (0.0, 60.0)
     tstep::Float64 = 0.1
 end
 
 # construct a time parameter
-p_time = ParTime()
+ptime = ParTime()
 ```
 
 On définit une fonction qui définit le problème de simulation, l'intègre et retourne la solution, avec pour arguments positionnels la condition initiale, les paramètres et les paramètres de temps, et comme keyword argument le paramètre booléen `final`.
@@ -186,12 +182,12 @@ function sim_rma(iniv::IniV, p::ParRma, pt::ParTime; final::Bool = false)
     return sol_rma
 end
 
-@time sim_rma(iniv, p_rma, p_time);
+@time sim_rma(iniv, prma, ptime);
 ```
 
 ```{julia}
 #| output: true
-@time sim_rma(iniv, p_rma2, p_time);
+@time sim_rma(iniv, prma2, ptime);
 ```
 
 Et on définit une fonction qui simule et produit un graphique de la simulation contre le temps, avec pour arguments la condition initiale, les paramètres et les paramètres de temps :
@@ -223,7 +219,7 @@ Finalement on exécute cette fonction pour tracer la simulation :
 #| output: true
 #| label: fig-rma-time
 #| fig-cap: Simulation des trajectoires du modèle de Rosenzweig MacArthur
-plot_rma(iniv, p_rma, p_time)
+plot_rma(iniv, prma, ptime)
 ```
 ::: {.callout-note}
 La macro `@time` permet de calculer le temps mis pour calculer la commande qui la suit, ici la simulation et la création du graphique.
@@ -292,19 +288,18 @@ function cy_rma(iniv::IniV, p::ParRma, pt::ParTime; Kmax::Real = 8.0, Kstep::Rea
     y_cmax = zero(K_p3)
 
     # transient integration time
-    p_ttrans = ParTime(tspan = (0.0, 8000.0))
-    # initial condition
-    u0 = SVector(1.0, 1.0)
+    ptrans = ParTime(tspan = (0.0, 8000.0))
 
     for (i, Kb) in enumerate(K_p3)
         # new parameters accounting for K loop
-        p_rmabif = ParRma(K = Kb)
+        prmabif = ParRma(K = Kb)
 
         # simulate transient, get final state
-        uf = sim_rma(iniv, p_rmabif, p_ttrans; final = true)[:,1]
+        utr = sim_rma(iniv, prmabif, ptrans; final = true)[:,1]
+        inivtr = IniV(utr) # construct new init value
 
-        # start from end of transient, simulate cycle
-        sol_cyc = sim_rma(iniv, p_rmabif, pt)
+        # start from end of transient, simulate limit cycle
+        sol_cyc = sim_rma(inivtr, prmabif, pt)
 
         # get min and max y along the cycle
         y_cmin[i] = minimum(sol_cyc[2,:])
@@ -315,13 +310,13 @@ function cy_rma(iniv::IniV, p::ParRma, pt::ParTime; Kmax::Real = 8.0, Kstep::Rea
     return cycle
 end
 
-@time cy_rma(iniv, p_rma, p_time);
+@time cy_rma(iniv, prma, ptime);
 ```
 
 ```{julia}
 #| output: true
 #| eval: true
-@time cy_rma(iniv, p_rma2, p_time);
+@time cy_rma(iniv, prma2, ptime);
 ```
 
 
