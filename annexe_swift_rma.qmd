@@ -56,23 +56,23 @@ La macro `@kwdef` permet de renseigner des valeurs par défaut des champs du `st
 :::
 
 ::: {.callout-important}
-Lors de la création d'un type `struct`, on peut être tenté d'utiliser des types de champs les plus larges possibles, comme par exemple `r::Real = 1.0` ou `r::Number = 1.0`.
+Lors de la création d'un `struct`, on peut être tenté d'utiliser des types de champs les plus larges possibles, comme par exemple `r::Real = 1.0` ou `r::Number = 1.0`.
 
 *C'est une très mauvaise idée* : `Real` et `Number` sont des types abstraits qui englobent de nombreux types concrets (e.g. `Int64` et `Float64`). Par construction ils ne permettent pas de spécifier un espace mémoire de taille fixe comme le font les types concrets, et ne permettent donc pas d'optimiser le code à la précompilation.
 
-A titre d'exemple, la fonction `cy_rma()` définie plus bas est 70 fois plus lente avec un `ParRma` qui définit ses champs en `Real` plutôt qu'en `Float64`, passant de ~0.5s après pré-compilation à ~35s de temps d'exécution.
+A titre d'exemple, la fonction `cy_rma()` définie plus bas (la plus coûteuse en temps de calcul) est 70 fois plus lente avec un `ParRma` qui définit ses champs en `Real` plutôt qu'en `Float64`, passant de ~0.5s à ~35s de temps d'exécution (après pré-compilation).
 :::
 
-On peut créer des objets de type `ParRma` via les `constructor` ; on accède à un champ particulier via `objet.champ` :
+On peut créer des objets de type `ParRma` via les `constructor` par défaut; on accède à un champ particulier via `objet.champ` :
 ```{julia}
 #| output: true
-# ParRma type objects are immutable
+# ParRma objects are immutable (due to the struct definition)
 prma = ParRma() # constructor with default values
 prma2 = ParRma(K = 8.0) # default values except K = 20.0
 
 @show prma
 @show prma.K
-@show prma2.K; # semi colon do not show output of par_rma2.K
+@show prma2.K;
 ```
 
 ::: {.callout-note}
@@ -93,7 +93,7 @@ end
 
 ::: {.callout-note}
 - les notations `var::Type` permettent de spécifier le type de l'argument
-- la notation `(; r, K) = p` permet d'extraire (*deconstruct*) les champs `r` et `K` du paramètre `p`
+- la notation `(; r, K) = p` permet d'extraire (*deconstruct*) les champs `r` et `K` du paramètre `p` qui est un objet de type `ParRma`
 :::
 
 Pour la réponse fonctionnelle (sans le paramètre $c$) :
@@ -106,7 +106,9 @@ end
 
 ### Conditions initiales
 
-Pour utiliser les static arrays avec `DifferentialEquations.jl` il faut que la condition initiale (donc l'état) et les dérivées soient des static arrays (ici un `SVector`)
+Pour utiliser les static arrays avec `DifferentialEquations.jl` il faut que l'état (donc la condition initiale) et les dérivées rendues par le modèle soient des static arrays (ici un `SVector`).
+
+Nous définissons un `struct` de condition initiales, avec pour champs `x0`, `y0` et un `Svector` composé de ces deux valeurs :
 
 ```{julia}
 # initial value struct
@@ -118,6 +120,8 @@ end
 # construct some initial condition
 iniv = IniV()
 ```
+
+Nous définissons un constructeur additionnel pour le type `IniV` qui à partir d'un `SVector` de longueur 2, construit l'objet `IniV` correspondant (nous nous en servirons plus bas dans la fonction `cy_rma()`)
 
 ```{julia}
 # add a new constructor method to IniV
