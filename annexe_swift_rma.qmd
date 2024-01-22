@@ -76,7 +76,9 @@ prma2 = ParRma(K = 8.0) # default values except K = 20.0
 ```
 
 ::: {.callout-note}
-La macro `@show` est assez explicite.
+La macro `@show` est assez explicite
+
+Le `;` permet de ne pas renvoyer l'évaluation de la commande `prma2.K` (qui vaut 8.0) étant donné que nous avons déjà forcé la sortie via `@show`
 :::
 
 ### Fonctions
@@ -111,6 +113,7 @@ Pour utiliser les static arrays avec `DifferentialEquations.jl` il faut que l'é
 Nous définissons un `struct` de condition initiales, avec pour champs `x0`, `y0` et un `Svector` composé de ces deux valeurs :
 
 ```{julia}
+#| output: true
 # initial value struct
 @kwdef struct IniV
     x0::Float64 = 1.0
@@ -118,15 +121,18 @@ Nous définissons un `struct` de condition initiales, avec pour champs `x0`, `y0
     u0::SVector{2, Float64} = SVector(x0, y0)
 end
 # construct some initial condition
-iniv = IniV()
+@show iniv = IniV();
 ```
 
 Nous définissons un constructeur additionnel pour le type `IniV` qui à partir d'un `SVector` de longueur 2, construit l'objet `IniV` correspondant (nous nous en servirons plus bas dans la fonction `cy_rma()`)
 
 ```{julia}
-# add a new constructor method to IniV
+#| output: true
+# new constructor method for struct IniV
 # takes a length 2 SVector to construct the object (self definition)
 IniV(u0::SVector{2, Float64}) = IniV(x0 = u0[1], y0 = u0[2])
+
+@show IniV(SVector(3.0, 3.0));
 ```
 
 ### Modèle
@@ -134,7 +140,7 @@ IniV(u0::SVector{2, Float64}) = IniV(x0 = u0[1], y0 = u0[2])
 On définit les équations du modèle en exploitant les fonctions définies plus haut et la structure des paramètres, en renvoyant les dérivées sous forme de `SVector` :
 
 ```{julia}
-function mod_rma(u::SVector{2}, p::ParRma, t)
+function mod_rma(u::SVector{2, Float64}, p::ParRma, t)
     (; c, b, m) = p     # get c, b, m from p
     x = u[1]            # use x, y notations
     y = u[2]
