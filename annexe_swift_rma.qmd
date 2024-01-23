@@ -1,5 +1,5 @@
 ---
-title: "Simulation optimisée"
+title: "Simulation améliorée"
 ---
 
 ## Modèle de Rosenzweig MacArthur
@@ -13,7 +13,7 @@ $$
 \end{array}\right.
 $$ {#eq-rma}
 
-L'objectif est de réaliser des simulations performantes, et le tracé du diagramme de bifurcation avec l'estimation par simulation du cycle limite. Ce type de simulations lourdes se prête bien à se genre de benchmark.
+L'objectif est de réaliser des simulations performantes sur le tracé du diagramme de bifurcations, avec l'estimation par simulation du cycle limite. Ce type de simulations lourdes se prête bien à se genre de benchmark.
 
 ### Stratégie pour le code
 
@@ -58,9 +58,7 @@ La macro `@kwdef` permet de renseigner des valeurs par défaut des champs du `st
 ::: {.callout-important}
 Lors de la création d'un `struct`, on peut être tenté d'utiliser des types de champs les plus larges possibles, comme par exemple `r::Real = 1.0` ou `r::Number = 1.0`.
 
-*C'est une très mauvaise idée* : `Real` et `Number` sont des types abstraits qui englobent de nombreux types concrets (e.g. `Int64` et `Float64`). Par construction ils ne permettent pas de spécifier un espace mémoire de taille fixe comme le font les types concrets, et ne permettent donc pas d'optimiser le code à la précompilation.
-
-A titre d'exemple, la fonction `cy_rma()` définie plus bas (la plus coûteuse en temps de calcul) est 70 fois plus lente avec un `ParRma` qui définit ses champs en `Real` plutôt qu'en `Float64`, passant de ~0.5s à ~35s de temps d'exécution (après pré-compilation).
+*C'est une très mauvaise idée* : `Real` et `Number` sont des types abstraits qui englobent de nombreux types concrets (e.g. `Int64` et `Float64`). Par construction ils ne permettent pas de spécifier un espace mémoire de taille fixe comme le font les types concrets, et ne permettent donc pas d'optimiser le code à la précompilation^[Par exemple, la fonction `cy_rma()` définie plus bas (la plus coûteuse en temps de calcul) est 70 fois plus lente avec un `ParRma` qui définit ses champs en `Real` plutôt qu'en `Float64`, (exécution de ~0.5s à ~35s après précompilation)].
 :::
 
 On peut créer des objets de type `ParRma` via les `constructor` par défaut; on accède à un champ particulier via `objet.champ` :
@@ -94,7 +92,7 @@ end
 ```
 
 ::: {.callout-note}
-- les notations `var::Type` permettent de spécifier le type de l'argument
+- les notations `var::Type` permettent de spécifier le type de l'argument de la fonction^[C'est une des manières de faire du [multiple dispatch](https://docs.julialang.org/en/v1/manual/methods/), en définissant différentes méthodes pour les fonctions selon le type de l'argument]
 - la notation `(; r, K) = p` permet d'extraire (*deconstruct*) les champs `r` et `K` du paramètre `p` qui est un objet de type `ParRma`
 :::
 
@@ -132,6 +130,7 @@ Nous définissons un constructeur additionnel pour le type `IniV` qui à partir 
 # takes a length 2 SVector to construct the object (self definition)
 IniV(u0::SVector{2, Float64}) = IniV(x0 = u0[1], y0 = u0[2])
 
+# construct an initial condition with this constructor
 @show IniV(SVector(3.0, 3.0));
 ```
 
@@ -195,16 +194,24 @@ end
 @time sim_rma(iniv, prma, ptime);
 ```
 
+::: {.callout-note}
+La macro `@time` renvoit le temps (et qqes éléments sur la computation) mis pour calculer la commande qui la suit, ici la simulation.
+:::
+
+Une fois la fonction précompilée à la première exécution, la performance est incomparable (4 ordres de grandeur plus rapide sur la fonction `sim_rma()`) :
+
 ```{julia}
 #| output: true
 @time sim_rma(iniv, prma2, ptime);
 ```
 
-Et on définit une fonction qui simule et produit un graphique de la simulation contre le temps, avec pour arguments la condition initiale, les paramètres et les paramètres de temps :
+### Solution contre le temps
+
+Finalement, on définit une fonction qui simule et produit un graphique de la solution contre le temps, avec pour arguments la condition initiale, les paramètres et les paramètres de temps :
 ```{julia}
 #| eval: true
-function plot_rma(initv::IniV, p::ParRma, pt::ParTime)
-    # compute the Simulation
+function plot_rma(iniv::IniV, p::ParRma, pt::ParTime)
+    # compute the simulation
     sol_rma = sim_rma(iniv, p, pt)
 
     # initialize figure
@@ -231,19 +238,16 @@ Finalement on exécute cette fonction pour tracer la simulation :
 #| fig-cap: Simulation des trajectoires du modèle de Rosenzweig MacArthur
 plot_rma(iniv, prma, ptime)
 ```
-::: {.callout-note}
-La macro `@time` permet de calculer le temps mis pour calculer la commande qui la suit, ici la simulation et la création du graphique.
-:::
 
 ### Diagramme de bifurcations
 
-Nous calculons ici le diagramme de bifurcations en fonction de $K\in[0, 8]$.
+Nous calculons ici le diagramme de bifurcations : les asymptotiques des prédateurs $y^*$ en fonction de $K$.
 
 #### Équilibres
 
 Il n'y a pas besoin de simulation ici puisque les lieux des équilibres sont facilement calculables analytiquement (cf. cette [page](pop_interactions2.qmd)).
 
-Nous définissons une fonction qui prend les paramètres du modèle et renvoit des tuples définissant les différentes branches d'équilibres $(K, y^*$ (avec en `kwarg` un `Kmax` et un `Kstep`).
+Nous définissons une fonction qui prend les paramètres du modèle et renvoit des tuples définissant les différentes branches d'équilibres $(K, y^*)$ (avec en `kwarg` un `Kmax` et un `Kstep` avec des valeurs par défaut).
 
 ```{julia}
 #| output: false
@@ -261,21 +265,21 @@ function eqy_rma(p::ParRma; Kmax::Real = 8.0, Kstep::Real = 0.1)
 
     # y equilibria
     # below transcritical : only y=0
-    K_p1 = 0:Kstep:Ktrans
-    y_01 = ones(length(K_p1)).*0
-    eqs1 = (K_p1, y_01)
+    Krg1 = 0:Kstep:Ktrans
+    y01 = ones(length(Krg1)).*0
+    eqs1 = (Krg1, y01)
 
     # between transcritical and Hopf : y=0 and y>0
-    K_p2 = Ktrans:Kstep:Khopf
-    y_02 = ones(length(K_p2)).*0
-    y_co2 = [r/c*(h+m*h/(b-m))*(1-m*h/(b-m)/K) for K in K_p2]
-    eqs2 = (Kp2, y_02, y_co2)
+    Krg2 = Ktrans:Kstep:Khopf
+    y02 = ones(length(Krg2)).*0
+    yco2 = [r/c*(h+m*h/(b-m))*(1-m*h/(b-m)/K) for K in Krg2]
+    eqs2 = (Krg2, y02, yco2)
 
     # above Hopf : y=0 and y>0
-    K_p3 = Khopf:Kstep:Kmax
-    y_03 = ones(length(K_p3)).*0
-    y_co3 = [r/c*(h+m*h/(b-m))*(1-m*h/(b-m)/K) for K in K_p3]
-    eqs3 = (K_p3, y_03, y_co3)
+    Krg3 = Khopf:Kstep:Kmax
+    y03 = ones(length(Krg3)).*0
+    yco3 = [r/c*(h+m*h/(b-m))*(1-m*h/(b-m)/K) for K in Krg3]
+    eqs3 = (Krg3, y03, yco3)
 
     return eqs1, eqs2, eqs3
 end
@@ -284,6 +288,11 @@ end
 
 #### Cycle limite
 
+On définit une fonction qui renvoit un tuple contenant les valeurs de $K$ et les extremas du cycle limite apparaissant pour $K > K_{hopf} = h+\frac{2mh}{b-m}$.
+
+La fonction prend pour argument les objets condition initiale, paramètre et paramètre de temps, et fait appel à la fonction `sim_rma()` avec les méthodes `final = true` (pour les transitoires) et `final = false` (pour les extremas du cycle limite).
+
+
 ```{julia}
 #| output: true
 #| eval: true
@@ -291,18 +300,18 @@ function cy_rma(iniv::IniV, p::ParRma, pt::ParTime; Kmax::Real = 8.0, Kstep::Rea
     # parameters and K range
     (; r, K, c, h, b, m) = p # deconstruct p
     Khopf = h+2*m*h/(b-m)
-    K_p3 = Khopf:Kstep:Kmax
+    Krgh = Khopf:Kstep:Kmax
 
     # for storage
-    y_cmin = zero(K_p3)
-    y_cmax = zero(K_p3)
+    ycmin = zero(Krgh)
+    ycmax = zero(Krgh)
 
     # transient integration time
     ptrans = ParTime(tspan = (0.0, 8000.0))
 
-    for (i, Kb) in enumerate(K_p3)
+    for (i, Kh) in enumerate(Krgh)
         # new parameters accounting for K loop
-        prmabif = ParRma(K = Kb)
+        prmabif = ParRma(K = Kh)
 
         # simulate transient, get final state
         utr = sim_rma(iniv, prmabif, ptrans; final = true)[:,1]
@@ -312,11 +321,11 @@ function cy_rma(iniv::IniV, p::ParRma, pt::ParTime; Kmax::Real = 8.0, Kstep::Rea
         sol_cyc = sim_rma(inivtr, prmabif, pt)
 
         # get min and max y along the cycle
-        y_cmin[i] = minimum(sol_cyc[2,:])
-        y_cmax[i] = maximum(sol_cyc[2,:])
+        ycmin[i] = minimum(sol_cyc[2,:])
+        ycmax[i] = maximum(sol_cyc[2,:])
     end
 
-    cycle = (K_p3, y_cmin, y_cmax)
+    cycle = (Krgh, ycmin, ycmax)
     return cycle
 end
 
