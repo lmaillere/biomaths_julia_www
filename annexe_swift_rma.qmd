@@ -64,7 +64,7 @@ Lors de la création d'un `struct`, on peut être tenté d'utiliser des types de
 On peut créer des objets de type `ParRma` via les `constructor` par défaut; on accède à un champ particulier via `objet.champ` :
 ```{julia}
 #| output: true
-# ParRma objects are immutable (due to the struct definition)
+# with the struct definition, ParRma objects are immutable
 prma = ParRma() # constructor with default values
 prma2 = ParRma(K = 8.0) # default values except K = 20.0
 
@@ -122,7 +122,7 @@ end
 @show iniv = IniV();
 ```
 
-Nous définissons un constructeur additionnel pour le type `IniV` qui à partir d'un `SVector` de longueur 2, construit l'objet `IniV` correspondant (nous nous en servirons plus bas dans la fonction `cy_rma()`)
+Nous définissons un constructeur additionnel pour le type `IniV` qui à partir d'un `SVector` de longueur 2, construit l'objet `IniV` correspondant^[il s'agit d'une forme de multiple dispatch sur le constructeur, avec plusieurs méthodes différents selon le type d'arguments utilisés] (nous nous en servirons plus bas dans la fonction `cy_rma()`)
 
 ```{julia}
 #| output: true
@@ -266,20 +266,20 @@ function eqy_rma(p::ParRma; Kmax::Real = 8.0, Kstep::Real = 0.1)
     # y equilibria
     # below transcritical : only y=0
     Krg1 = 0:Kstep:Ktrans
-    y01 = ones(length(Krg1)).*0
-    eqs1 = (Krg1, y01)
+    y01 = ones(length(Krg1)).*0     # broadcasting
+    eqs1 = (Krg = Krg1, y0 = y01)
 
     # between transcritical and Hopf : y=0 and y>0
     Krg2 = Ktrans:Kstep:Khopf
     y02 = ones(length(Krg2)).*0
     yco2 = [r/c*(h+m*h/(b-m))*(1-m*h/(b-m)/K) for K in Krg2]
-    eqs2 = (Krg2, y02, yco2)
+    eqs2 = (Krg = Krg2, y0 = y02, yco = yco2)
 
     # above Hopf : y=0 and y>0
     Krg3 = Khopf:Kstep:Kmax
     y03 = ones(length(Krg3)).*0
     yco3 = [r/c*(h+m*h/(b-m))*(1-m*h/(b-m)/K) for K in Krg3]
-    eqs3 = (Krg3, y03, yco3)
+    eqs3 = (Krg = Krg3, y0 = y03, yco = yco3)
 
     return eqs1, eqs2, eqs3
 end
@@ -290,64 +290,115 @@ end
 
 On définit une fonction qui renvoit un tuple contenant les valeurs de $K$ et les extremas du cycle limite apparaissant pour $K > K_{hopf} = h+\frac{2mh}{b-m}$.
 
-La fonction prend pour argument les objets condition initiale, paramètre et paramètre de temps, et fait appel à la fonction `sim_rma()` avec les méthodes `final = true` (pour les transitoires) et `final = false` (pour les extremas du cycle limite).
+La fonction prend pour argument les paramètres, et fait appel à la fonction `sim_rma()` avec les méthodes `final = true` (pour les transitoires) et `final = false` (pour les extremas du cycle limite). Elle utilise aussi le constructeur supplémentaire pour les objets `IniV`.
 
 
 ```{julia}
 #| output: true
 #| eval: true
-function cy_rma(iniv::IniV, p::ParRma, pt::ParTime; Kmax::Real = 8.0, Kstep::Real = 0.01)
+function cy_rma(p::ParRma; Kmax::Float64 = 8.0, Kstep::Float64 = 0.01)
     # parameters and K range
     (; r, K, c, h, b, m) = p # deconstruct p
     Khopf = h+2*m*h/(b-m)
-    Krgh = Khopf:Kstep:Kmax
+    Krgh = Khopf-Kstep:Kstep:Kmax
 
     # for storage
     ycmin = zero(Krgh)
     ycmax = zero(Krgh)
 
+    # initial value and time parameters
+    iniv = IniV()
+    ptime = ParTime()
+
     # transient integration time
     ptrans = ParTime(tspan = (0.0, 8000.0))
 
     for (i, Kh) in enumerate(Krgh)
-        # new parameters accounting for K loop
-        prmabif = ParRma(K = Kh)
+        # construct parameter from p, with K = Kh of the loop
+        prmabif = ParRma(r, Kh, c, h, b, m)
 
         # simulate transient, get final state
         utr = sim_rma(iniv, prmabif, ptrans; final = true)[:,1]
         inivtr = IniV(utr) # construct new init value
 
         # start from end of transient, simulate limit cycle
-        sol_cyc = sim_rma(inivtr, prmabif, pt)
+        sol_cyc = sim_rma(inivtr, prmabif, ptime)
 
         # get min and max y along the cycle
         ycmin[i] = minimum(sol_cyc[2,:])
         ycmax[i] = maximum(sol_cyc[2,:])
     end
 
-    cycle = (Krgh, ycmin, ycmax)
+    cycle = (Krg = Krgh, ycmin = ycmin, ycmax = ycmax)
     return cycle
 end
 
-@time cy_rma(iniv, prma, ptime);
+@time cy_rma(prma);
 ```
 
+Après précompilation, ce calcul est encore plus rapide :
 ```{julia}
 #| output: true
 #| eval: true
-@time cy_rma(iniv, prma2, ptime);
+@time cy_rma(prma2);
 ```
 
+A titre d'exemple, la simulation sur cette [page](pop_interactions2.qmd) prenait de l'ordre de 20 fois plus longtemps pour un calcul similaire.
 
 #### Représentation graphique
 
+Finalement, nous définissons une fonction permettant de représenter le diagramme de bifurcations, qui fait appel aux fonctions `eqy_rma()` et `cy_rma()` définies ci-dessus :
 
-### Organisation en fichiers / modules
+```{julia}
+function plot_bif_rma(p::ParRma)
+    # initialize figure
+    fig = Figure(; fontsize = 20)
+    ax = Axis(fig[1,1];
+        title = "Bifurcations du modèle de Rosenzweig MacArthur\n ",
+        xlabel = "capacité de charge 𝐾",
+        ylabel = "densités",
+    )
+
+    # plot equilibria
+    eqs1, eqs2, eqs3 = eqy_rma(p)
+    lines!(eqs1.Krg, eqs1.y0; color = Cycled(1), lw = 2, label = "branche stable")
+    lines!(eqs2.Krg, eqs2.y0; color = Cycled(2), lw = 2, label = "branche instable")
+    lines!(eqs2.Krg, eqs2.yco; color = Cycled(1), lw = 2)
+    lines!(eqs3.Krg, eqs3.y0; color = Cycled(2), lw = 2)
+    lines!(eqs3.Krg, eqs3.yco; color = Cycled(2), lw = 2)
+
+    # plot limit Cycle
+    cycle = cy_rma(p)
+    lines!(cycle.Krg, cycle.ycmin; color = Cycled(3), lw=2, label = "cycle limite")
+    lines!(cycle.Krg, cycle.ycmax; color = Cycled(3), lw=2)
+
+    axislegend(ax, position = :lt, labelsize = 14)
+
+    return fig
+end
+```
+
+Ce qui donne :
+
+```{julia}
+#| output: true
+#| label: fig-rma-bif
+#| fig-cap: Diagramme de bifurcations du modèle de Rosenzweig MacArthur
+plot_bif_rma(prma)
+```
 
 
-## Cas des modèles de plus grandes dimensions
 
-Pour les modèles de plus grandes dimensions ($n>8$), l'avantage en performance des static arrays n'est plus si net et la documentation de `DifferentialEquations.jl` recommande d'utiliser la version en place (is in place, IIP dans le jargon du package) de l'interface problem/solver du package.
+
+### Organisation en modules
+
+
+### Conclusion
+
+
+## Cas des modèles de plus grande dimension
+
+Pour les modèles de plus grande dimension ($n>8$), l'avantage en performance des static arrays n'est plus si net et la documentation de `DifferentialEquations.jl` recommande d'utiliser la version en place (is in place, IIP dans le jargon du package) de l'interface problem/solver du package.
 
 Il s'agit ici de définir le modèle non pas comme renvoyant la dérivée en fonction de l'état, des paramètres et du temps, mais comme une fonction d'arguments la dérivée, l'état, les paramètres et le temps qui modifie en place la dérivée (et ne renvoie rien)). Celà permet de muter un même objet dérivée `du` à chaque fois que le modèle est appelé, plutôt que de créer un nouvel objet dérivée `du` à chaque appel du modèle (c'est aussi ce qui est fait, différemment, avec les static arrays plus haut).
 
