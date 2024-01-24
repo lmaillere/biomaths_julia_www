@@ -53,7 +53,7 @@ Pour utiliser le module contenu dans le fichier `RmaMod.jl`, nous incluons ce fi
 ```{julia}
 #| output: true
 include("./src/RmaMod.jl")
-using .RmaMod: IniV
+using .RmaMod: IniV # I shouldn't need to explicitly give it
 
 iniv = IniV()
 ```
