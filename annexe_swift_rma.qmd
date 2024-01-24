@@ -59,6 +59,8 @@ La macro `@kwdef` permet de renseigner des valeurs par défaut des champs du `st
 Lors de la création d'un `struct`, on peut être tenté d'utiliser des types de champs les plus larges possibles, comme par exemple `r::Real = 1.0` ou `r::Number = 1.0`.
 
 *C'est une très mauvaise idée* : `Real` et `Number` sont des types abstraits qui englobent de nombreux types concrets (e.g. `Int64` et `Float64`). Par construction ils ne permettent pas de spécifier un espace mémoire de taille fixe comme le font les types concrets, et ne permettent donc pas d'optimiser le code à la précompilation^[Par exemple, la fonction `cy_rma()` définie plus bas (la plus coûteuse en temps de calcul) est 70 fois plus lente avec un `ParRma` qui définit ses champs en `Real` plutôt qu'en `Float64`, (exécution de ~0.5s à ~35s après précompilation)].
+
+A l'inverse, pour les fonctions XXXXXXXXXXXXXXXX
 :::
 
 On peut créer des objets de type `ParRma` via les `constructor` par défaut; on accède à un champ particulier via `objet.champ` :
@@ -85,7 +87,7 @@ Nous définissons les différentes fonctions impliquées dans le modèle de Rose
 
 Pour la logistique :
 ```{julia}
-function logistic(x, p::ParRma)
+function logistic(x::Real, p::ParRma)
     (; r, K) = p    # deconstruct/get r and K from p
     return r*x*(1-x/K)
 end
@@ -98,7 +100,7 @@ end
 
 Pour la réponse fonctionnelle (sans le paramètre $c$) :
 ```{julia}
-function holling2(x, p::ParRma)
+function holling2(x::Real, p::ParRma)
     (; h) = p   # deconstruct h from p
     return x/(x+h)
 end
@@ -139,7 +141,7 @@ IniV(u0::SVector{2, Float64}) = IniV(x0 = u0[1], y0 = u0[2])
 On définit les équations du modèle en exploitant les fonctions définies plus haut et la structure des paramètres, en renvoyant les dérivées sous forme de `SVector` :
 
 ```{julia}
-function mod_rma(u::SVector{2, Float64}, p::ParRma, t)
+function mod_rma(u::SVector{2}, p::ParRma, t)
     (; c, b, m) = p     # get c, b, m from p
     x = u[1]            # use x, y notations
     y = u[2]
@@ -252,7 +254,7 @@ Nous définissons une fonction qui prend les paramètres du modèle et renvoit d
 ```{julia}
 #| output: false
 function eqy_rma(p::ParRma; Kmax::Real = 8.0, Kstep::Real = 0.1)
-    (; r, K, c, h, b, m) = p # deconstruct p
+    (; r, c, h, b, m) = p # deconstruct p (K is useless since it is varied)
 
     # define bifurcation K values
     Ktrans = m*h/(b-m)
@@ -267,7 +269,7 @@ function eqy_rma(p::ParRma; Kmax::Real = 8.0, Kstep::Real = 0.1)
     # below transcritical : only y=0
     Krg1 = 0:Kstep:Ktrans
     y01 = ones(length(Krg1)).*0     # broadcasting
-    eqs1 = (Krg = Krg1, y0 = y01)
+    eqs1 = (Krg = Krg1, y0 = y01, yco = nothing)
 
     # between transcritical and Hopf : y=0 and y>0
     Krg2 = Ktrans:Kstep:Khopf
@@ -298,9 +300,14 @@ La fonction prend pour argument les paramètres, et fait appel à la fonction `s
 #| eval: true
 function cy_rma(p::ParRma; Kmax::Float64 = 8.0, Kstep::Float64 = 0.01)
     # parameters and K range
-    (; r, K, c, h, b, m) = p # deconstruct p
+    (; r, c, h, b, m) = p # deconstruct p (K is useless since it is varied)
     Khopf = h+2*m*h/(b-m)
     Krgh = Khopf-Kstep:Kstep:Kmax
+
+    # drops an error if Kmax is too small
+    if Kmax < Khopf
+        error("For a computation of the limit cycle, Kmax must be greater than $Khopf")
+    end
 
     # for storage
     ycmin = zero(Krgh)
@@ -350,7 +357,7 @@ A titre d'exemple, la simulation sur cette [page](pop_interactions2.qmd) prenait
 Finalement, nous définissons une fonction permettant de représenter le diagramme de bifurcations, qui fait appel aux fonctions `eqy_rma()` et `cy_rma()` définies ci-dessus :
 
 ```{julia}
-function plot_bif_rma(p::ParRma)
+function plot_bif_rma(p::ParRma; Kmax = 8.0, Kstep = 0.1)
     # initialize figure
     fig = Figure(; fontsize = 20)
     ax = Axis(fig[1,1];
@@ -360,7 +367,7 @@ function plot_bif_rma(p::ParRma)
     )
 
     # plot equilibria
-    eqs1, eqs2, eqs3 = eqy_rma(p)
+    eqs1, eqs2, eqs3 = eqy_rma(p; Kmax = Kmax, Kstep = Kstep)
     lines!(eqs1.Krg, eqs1.y0; color = Cycled(1), lw = 2, label = "branche stable")
     lines!(eqs2.Krg, eqs2.y0; color = Cycled(2), lw = 2, label = "branche instable")
     lines!(eqs2.Krg, eqs2.yco; color = Cycled(1), lw = 2)
@@ -368,7 +375,7 @@ function plot_bif_rma(p::ParRma)
     lines!(eqs3.Krg, eqs3.yco; color = Cycled(2), lw = 2)
 
     # plot limit Cycle
-    cycle = cy_rma(p)
+    cycle = cy_rma(p; Kmax = Kmax) # we keep the default Kstep = 0.01 for accuracy
     lines!(cycle.Krg, cycle.ycmin; color = Cycled(3), lw=2, label = "cycle limite")
     lines!(cycle.Krg, cycle.ycmax; color = Cycled(3), lw=2)
 
