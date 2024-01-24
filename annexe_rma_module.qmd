@@ -48,15 +48,42 @@ Le *vrai* fichier `RmaMod.jl` définissant le module `RmaMod` est disponible [ic
 
 ## Utilisation du module
 
-Pour utiliser le module contenu dans le fichier `RmaMod.jl`, nous incluons ce fichier (il est dans le répertoire `src` ici) et l'importons avec `using` :
+Pour utiliser le module contenu dans le fichier `RmaMod.jl`, nous incluons ce fichier (il est dans le répertoire `./src/` ici) et l'importons avec `using` :
 
 ```{julia}
-include("src/RmaMod.jl")
-using .RmaMod
+#| output: true
+include("./src/RmaMod.jl")
+using .RmaMod: IniV
+
+iniv = IniV()
 ```
 
+Le module exporte:
+
+- les `structs` : `IniV` (conditions initiales), `ParRma` (paramètres du modèle), `ParTime` (paramètres de temps),
+- les fonctions : `plot_rma()` et `plot_bif_rma()`,
+
+comme nous le confirme l'aide du module.
 ```{julia}
 #| output: true
 ?RmaMod
 ```
+\
 
+On peut obtenir de l'aide sur ces fonctions (si le module a bien rempli ses docstrings):
+
+```{julia}
+#| output: true
+?RmaMod.plot_rma    # normalement seul ?plot_rma fonctionne
+```
+
+## Simulation des dynamiques
+
+```{julia}
+#| output: true
+using .RmaMod
+
+iniv = RmaMod.IniV()
+```
+
+## Diagramme de bifurcations

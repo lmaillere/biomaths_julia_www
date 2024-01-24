@@ -1,10 +1,15 @@
 """
-This module provides `structs` and `functions` to simulate and plot the dynamics
+The module `RmaMod` provides `structs` and `functions` to simulate and plot the dynamics
 and bifurcation diagram of the Rosenzweig MacArthur model.
 
-Defined structs are :
+Exported structs are:
+- `Iniv` initial condition objects
+- `ParRma` model parameters objects
+- `ParTime` time parameters objects
 
-Defined functions are :
+Exported functions are:
+- `plot_rma()` to simulate and plot the RMA dynamics against time
+- `plot_bif_rma()` to simulate and plot the RMA bifurcation diagram against K
 """
 module RmaMod
 
