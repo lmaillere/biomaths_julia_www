@@ -353,9 +353,10 @@ end
 ### export structs and functions
 
 # export structs definition (and constructors)
-export ParRma, IniV, ParTime
-
-# export simulating and plotting functions
-export plot_rma, plot_bif_rma
+export ParRma, IniV, ParTime, plot_rma, plot_bif_rma
+# export IniV
+# export ParTime
+# export plot_rma
+# export plot_bif_rma
 
 end

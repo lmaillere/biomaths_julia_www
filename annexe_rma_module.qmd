@@ -53,9 +53,7 @@ Pour utiliser le module contenu dans le fichier `RmaMod.jl`, nous incluons ce fi
 ```{julia}
 #| output: true
 include("./src/RmaMod.jl")
-using .RmaMod: IniV # I shouldn't need to explicitly give it
-
-iniv = IniV()
+using .RmaMod # I shouldn't need to explicitly give it
 ```
 
 Le module exporte:
@@ -68,13 +66,13 @@ comme nous le confirme l'aide du module.
 #| output: true
 ?RmaMod
 ```
-\
+
 
 On peut obtenir de l'aide sur ces fonctions (si le module a bien rempli ses docstrings):
 
 ```{julia}
 #| output: true
-?RmaMod.plot_rma    # normalement seul ?plot_rma fonctionne
+?plot_rma    # normalement seul ?plot_rma fonctionne
 ```
 
 ## Simulation des dynamiques
@@ -83,7 +81,10 @@ On peut obtenir de l'aide sur ces fonctions (si le module a bien rempli ses docs
 #| output: true
 using .RmaMod
 
-iniv = RmaMod.IniV()
+plot_rma(IniV(), ParRma(), ParTime())
+```
+```{julia}
+#| output: true
 ```
 
 ## Diagramme de bifurcations
