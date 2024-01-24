@@ -341,5 +341,26 @@
     "title": "Simulation améliorée",
     "section": "Cas des modèles de plus grande dimension",
     "text": "Cas des modèles de plus grande dimension\nPour les modèles de plus grande dimension (n&gt;8), l’avantage en performance des static arrays n’est plus si net et la documentation de DifferentialEquations.jl recommande d’utiliser la version en place (is in place, IIP dans le jargon du package) de l’interface problem/solver du package.\nIl s’agit ici de définir le modèle non pas comme renvoyant la dérivée en fonction de l’état, des paramètres et du temps, mais comme une fonction d’arguments la dérivée, l’état, les paramètres et le temps qui modifie en place la dérivée (et ne renvoie rien)). Celà permet de muter un même objet dérivée du à chaque fois que le modèle est appelé, plutôt que de créer un nouvel objet dérivée du à chaque appel du modèle (c’est aussi ce qui est fait, différemment, avec les static arrays plus haut).\nTypiquement ce type de modèle IIP (en place) s’écrit:\n\nfunction mod_rma!(du, u, p, t)\n    return nothing\nend\n\nLa définition du problème d’intégration et l’appel de solve est similaire aux autres méthodes, à ceci près que la condition initiale et la dérivée doit être mutable, ce qui ne permet pas (ou très difficilement) d’utiliser la méthode en dimension 1. En effet une déclaration u0 = 1.0 ou du = 3.0 n’est pas mutable5.5 alors que u0 = [1.0, 2.0] ou du =[2.0, 3.0] le sont. Plus sur la mutabilité dans les Julia notes."
+  },
+  {
+    "objectID": "annexe_rma_module.html",
+    "href": "annexe_rma_module.html",
+    "title": "Mon premier module",
+    "section": "",
+    "text": "Nous exploitons le code produit pour simuler de façon efficace le modèle de Rosenzweig MacArthur (cf. cette page) pour générer un module (essentiellement un ensemble d’objets et de fonctions qui peuvent être utilisés par d’autres programmes).\nUne fois le code entièrement sous forme de struct et de function, la création du module est très simple. On place le module dans un fichier RmaMod.jl avec l’architecture suivante :\n\n# ce code n'est pas exécuté dans cette cellule pour ne pas interférer\n# avec le module que nous importons après\n\"\"\"\nsome help regarding the module...\n\"\"\"\nmodule RmaMod\n\n# import required packages, e.g.\nusing StaticArrays\n\n# put structs help and definition, e.g.:\n\"\"\"\nsome help for IniV struct\n\"\"\"\n@kwdef struct IniV\n    x0::Float64 = 1.0\n    y0::Float64 = 1.95\n    u0::SVector{2, Float64} = SVector(x0, y0)\nend\n\n# put functions help and definition, e.g.:\n\"\"\"\nsome help for logistic function\n\"\"\"\nfunction logistic(x::Real, p::ParRma)\n    (; r, K) = p    # deconstruct/get r and K from p\n    return r*x*(1-x/K)\nend\n\n# export what you want other programs to know when importing through `using`\nexport IniV, logistic\n\nend\n\nLe vrai fichier RmaMod.jl définissant le module RmaMod est disponible ici."
+  },
+  {
+    "objectID": "annexe_rma_module.html#module-rmamod.jl",
+    "href": "annexe_rma_module.html#module-rmamod.jl",
+    "title": "Mon premier module",
+    "section": "",
+    "text": "Nous exploitons le code produit pour simuler de façon efficace le modèle de Rosenzweig MacArthur (cf. cette page) pour générer un module (essentiellement un ensemble d’objets et de fonctions qui peuvent être utilisés par d’autres programmes).\nUne fois le code entièrement sous forme de struct et de function, la création du module est très simple. On place le module dans un fichier RmaMod.jl avec l’architecture suivante :\n\n# ce code n'est pas exécuté dans cette cellule pour ne pas interférer\n# avec le module que nous importons après\n\"\"\"\nsome help regarding the module...\n\"\"\"\nmodule RmaMod\n\n# import required packages, e.g.\nusing StaticArrays\n\n# put structs help and definition, e.g.:\n\"\"\"\nsome help for IniV struct\n\"\"\"\n@kwdef struct IniV\n    x0::Float64 = 1.0\n    y0::Float64 = 1.95\n    u0::SVector{2, Float64} = SVector(x0, y0)\nend\n\n# put functions help and definition, e.g.:\n\"\"\"\nsome help for logistic function\n\"\"\"\nfunction logistic(x::Real, p::ParRma)\n    (; r, K) = p    # deconstruct/get r and K from p\n    return r*x*(1-x/K)\nend\n\n# export what you want other programs to know when importing through `using`\nexport IniV, logistic\n\nend\n\nLe vrai fichier RmaMod.jl définissant le module RmaMod est disponible ici."
+  },
+  {
+    "objectID": "annexe_rma_module.html#utilisation-du-module",
+    "href": "annexe_rma_module.html#utilisation-du-module",
+    "title": "Mon premier module",
+    "section": "Utilisation du module",
+    "text": "Utilisation du module\nPour utiliser le module contenu dans le fichier RmaMod.jl, nous incluons ce fichier (il est dans le répertoire src ici) et l’importons avec using :\n\ninclude(\"src/RmaMod.jl\")\nusing .RmaMod\n\n\n?RmaMod\n\nsearch: RmaMod\n\n\n\nThis module provides structs and functions to simulate and plot the dynamics and bifurcation diagram of the Rosenzweig MacArthur model.\nDefined structs are :\nDefined functions are :"
   }
 ]
