@@ -392,6 +392,7 @@ plot_bif_rma(prma)
 
 ### Organisation en modules
 
+Avec cette architecture de programme exploitant au maximum des structs et des fonctions, il est facile de placer l'ensemble des définitions dans un module dans fichier séparé, et de créer un script principal qui appelle ce module et ne demande que quelques lignes pour effectuer les simulations présentées plus haut sur cette page.
 
 ### Conclusion
 
