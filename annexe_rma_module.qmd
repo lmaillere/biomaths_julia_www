@@ -19,6 +19,9 @@ module RmaMod
 # import required packages, e.g.
 using StaticArrays
 
+# export what you want other programs to know when importing through `using`
+export IniV, logistic
+
 # put structs help and definition, e.g.:
 """
 some help for IniV struct
@@ -38,9 +41,6 @@ function logistic(x::Real, p::ParRma)
     return r*x*(1-x/K)
 end
 
-# export what you want other programs to know when importing through `using`
-export IniV, logistic
-
 end
 ```
 
@@ -53,7 +53,7 @@ Pour utiliser le module contenu dans le fichier `RmaMod.jl`, nous incluons ce fi
 ```{julia}
 #| output: true
 include("./src/RmaMod.jl")
-using .RmaMod # I shouldn't need to explicitly give it
+using .RmaMod
 ```
 
 Le module exporte:
@@ -79,12 +79,12 @@ On peut obtenir de l'aide sur ces fonctions (si le module a bien rempli ses docs
 
 ```{julia}
 #| output: true
-using .RmaMod
-
 plot_rma(IniV(), ParRma(), ParTime())
-```
-```{julia}
-#| output: true
 ```
 
 ## Diagramme de bifurcations
+
+```{julia}
+#| output: true
+plot_bif_rma(ParRma())
+```

@@ -18,17 +18,23 @@ using StaticArrays
 using DifferentialEquations
 using CairoMakie
 
+# export structs
+export ParRma, IniV, ParTime
+
+# export functions
+export plot_rma, plot_bif_rma
+
 ### structs
 
 # model parameters
 """
 `ParRma` objects define model parameters, with default values:
-r = 1.0
-K = 10.0
-c = 1.0
-h = 2.0
-b = 2.0
-m = 1.0
+- r = 1.0
+- K = 10.0
+- c = 1.0
+- h = 2.0
+- b = 2.0
+- m = 1.0
 """
 @kwdef struct ParRma
     r::Float64 = 1.0
@@ -348,15 +354,5 @@ function plot_bif_rma(p::ParRma; Kmax = 8.0, Kstep = 0.1)
 
     return fig
 end
-
-
-### export structs and functions
-
-# export structs definition (and constructors)
-export ParRma, IniV, ParTime, plot_rma, plot_bif_rma
-# export IniV
-# export ParTime
-# export plot_rma
-# export plot_bif_rma
 
 end
