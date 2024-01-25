@@ -5,6 +5,8 @@ title: "Matériel supplémentaire"
 
 Les pages listées ici contiennent du matétiel supplémentaire pour compléments plus avancés :
 
+- [améliorer](annexe_swift_rma.qmd) la rapidité d'exécution des simulations en utilisant au maximum la définition de `struct` et de `function`
+
 - [tracer](annexe_LV_makieplot.qmd) une jolie figure pour Lotka Volterra avec `Makie.jl`
 
 - [utiliser](annexe_integrator.qmd) l'interface `integrator` de `DifferentialEquations.jl` ou la redéfinition de problèmes d'intégration via `remake`
