@@ -476,7 +476,7 @@ Note
 <span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a><span class="pp">@time</span> <span class="fu">sim_rma</span>(iniv, prma, ptime);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  3.483681 seconds (4.51 M allocations: 303.184 MiB, 3.30% gc time, 99.94% compilation time)</code></pre>
+<pre><code>  3.456966 seconds (4.51 M allocations: 303.180 MiB, 3.52% gc time, 99.94% compilation time)</code></pre>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -496,7 +496,7 @@ Note
 <div class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@time</span> <span class="fu">sim_rma</span>(iniv, prma2, ptime);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  0.000246 seconds (331 allocations: 47.359 KiB)</code></pre>
+<pre><code>  0.000247 seconds (331 allocations: 47.359 KiB)</code></pre>
 </div>
 </div>
 </section>
@@ -628,14 +628,14 @@ Note
 <span id="cb20-42"><a href="#cb20-42" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-43"><a href="#cb20-43" aria-hidden="true" tabindex="-1"></a><span class="pp">@time</span> <span class="fu">cy_rma</span>(prma);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  2.524466 seconds (5.64 M allocations: 150.000 MiB, 1.28% gc time, 79.46% compilation time)</code></pre>
+<pre><code>  2.508843 seconds (5.64 M allocations: 150.000 MiB, 1.35% gc time, 79.01% compilation time)</code></pre>
 </div>
 </div>
 <p>Après précompilation, ce calcul est encore plus rapide :</p>
 <div class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@time</span> <span class="fu">cy_rma</span>(prma2);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  0.521654 seconds (4.62 M allocations: 82.331 MiB, 1.84% gc time)</code></pre>
+<pre><code>  0.524697 seconds (4.62 M allocations: 82.331 MiB, 1.62% gc time)</code></pre>
 </div>
 </div>
 <p>A titre d’exemple, la simulation sur cette <a href="./pop_interactions2.html">page</a> prenait de l’ordre de 20 fois plus longtemps pour un calcul similaire.</p>
@@ -694,12 +694,19 @@ Note
 <section id="cas-des-modèles-de-plus-grande-dimension" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="cas-des-modèles-de-plus-grande-dimension">Cas des modèles de plus grande dimension</h2>
 <p>Pour les modèles de plus grande dimension (<span class="math inline">n&gt;8</span>), l’avantage en performance des static arrays n’est plus si net et la documentation de <code>DifferentialEquations.jl</code> recommande d’utiliser la version en place (is in place, IIP dans le jargon du package) de l’interface problem/solver du package.</p>
-<p>Il s’agit ici de définir le modèle non pas comme renvoyant la dérivée en fonction de l’état, des paramètres et du temps, mais comme une fonction d’arguments la dérivée, l’état, les paramètres et le temps qui modifie en place la dérivée (et ne renvoie rien)). Celà permet de muter un même objet dérivée <code>du</code> à chaque fois que le modèle est appelé, plutôt que de créer un nouvel objet dérivée <code>du</code> à chaque appel du modèle (c’est aussi ce qui est fait, différemment, avec les static arrays plus haut).</p>
+<p>Il s’agit ici de définir le modèle non pas comme renvoyant la dérivée en fonction de l’état, des paramètres et du temps, mais comme une fonction d’arguments la dérivée, l’état, les paramètres et le temps qui modifie en place la dérivée (et ne renvoie rien). Cela permet de muter un même objet dérivée <code>du</code> à chaque fois que le modèle est appelé, plutôt que de créer un nouvel objet dérivée <code>du</code> à chaque appel du modèle (c’est aussi dans le même esprit de ce qui est fait, différemment, avec les static arrays plus haut).</p>
 <p>Typiquement ce type de modèle IIP (en place) s’écrit:</p>
 <div class="cell" data-execution_count="20">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">mod_rma!</span>(du, u, p, t)</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="cn">nothing</span></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">mod_rma!</span>(du, u, p<span class="op">::</span><span class="dt">ParRma</span>, t)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    (; c, b, m) <span class="op">=</span> p     <span class="co"># get c, b, m from p</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> u[<span class="fl">1</span>]            <span class="co"># use x, y notations</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> u[<span class="fl">2</span>]</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># in-place computation of du</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    du[<span class="fl">1</span>] <span class="op">=</span> <span class="fu">logistic</span>(x, p) <span class="op">-</span> c <span class="op">*</span> <span class="fu">holling2</span>(x,p) <span class="op">*</span> y</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>    du[<span class="fl">2</span>] <span class="op">=</span> b <span class="op">*</span> <span class="fu">holling2</span>(x, p) <span class="op">*</span> y <span class="op">-</span> m <span class="op">*</span> y</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="cn">nothing</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="page-columns page-full"><p>La définition du problème d’intégration et l’appel de solve est similaire aux autres méthodes, à ceci près que la condition initiale et la dérivée doit être mutable, ce qui ne permet pas (ou très difficilement) d’utiliser la méthode en dimension 1. En effet une déclaration <code>u0 = 1.0</code> ou <code>du = 3.0</code> n’est pas mutable<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>.</p><div class="no-row-height column-margin column-container"><li id="fn5"><p><sup>5</sup>&nbsp;alors que <code>u0 = [1.0, 2.0]</code> ou <code>du =[2.0, 3.0]</code> le sont. Plus sur la mutabilité dans les <a href="https://m3g.github.io/JuliaNotes.jl/stable/immutable/">Julia notes</a>.</p></li></div></div>
 
@@ -1414,17 +1421,24 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb27-443"><a href="#cb27-443" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb27-444"><a href="#cb27-444" aria-hidden="true" tabindex="-1"></a><span class="ss">Pour les modèles de plus grande dimension ($n&gt;8$), l</span><span class="ot">'</span>avantage en performance des static arrays n<span class="ot">'</span><span class="ss">est plus si net et la documentation de `DifferentialEquations.jl` recommande d</span><span class="ot">'</span>utiliser la version en place (is in place, IIP dans <span class="ot">le</span> jargon du <span class="kw">package</span>) de l<span class="ot">'</span><span class="ss">interface problem/solver du package.</span></span>
 <span id="cb27-445"><a href="#cb27-445" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-446"><a href="#cb27-446" aria-hidden="true" tabindex="-1"></a><span class="ss">Il s</span><span class="ot">'</span>agit ici de définir <span class="ot">le</span> modèle non pas comme renvoyant la dérivée en fonction de l<span class="ot">'</span><span class="ss">état, des paramètres et du temps, mais comme une fonction d</span><span class="ot">'</span>arguments la dérivée, l<span class="ot">'</span><span class="ss">état, les paramètres et le temps qui modifie en place la dérivée (et ne renvoie rien)). Celà permet de muter un même objet dérivée `du` à chaque fois que le modèle est appelé, plutôt que de créer un nouvel objet dérivée `du` à chaque appel du modèle (c</span><span class="ot">'</span>est aussi ce qui est fait, différemment, avec les static arrays plus haut).</span>
+<span id="cb27-446"><a href="#cb27-446" aria-hidden="true" tabindex="-1"></a><span class="ss">Il s</span><span class="ot">'</span>agit ici de définir <span class="ot">le</span> modèle non pas comme renvoyant la dérivée en fonction de l<span class="ot">'</span><span class="ss">état, des paramètres et du temps, mais comme une fonction d</span><span class="ot">'</span>arguments la dérivée, l<span class="ot">'</span><span class="ss">état, les paramètres et le temps qui modifie en place la dérivée (et ne renvoie rien). Cela permet de muter un même objet dérivée `du` à chaque fois que le modèle est appelé, plutôt que de créer un nouvel objet dérivée `du` à chaque appel du modèle (c</span><span class="ot">'</span>est aussi dans <span class="ot">le</span> même esprit de ce qui est fait, différemment, avec les static arrays plus haut).</span>
 <span id="cb27-447"><a href="#cb27-447" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb27-448"><a href="#cb27-448" aria-hidden="true" tabindex="-1"></a>Typiquement ce type de modèle IIP (en place) <span class="ot">s'écrit:</span></span>
 <span id="cb27-449"><a href="#cb27-449" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb27-452"><a href="#cb27-452" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb27-453"><a href="#cb27-453" aria-hidden="true" tabindex="-1"></a><span class="ot">function mod_rma!</span><span class="ch">(</span><span class="ot">du, u, p, t</span><span class="ch">)</span></span>
-<span id="cb27-454"><a href="#cb27-454" aria-hidden="true" tabindex="-1"></a><span class="ot">    return nothing</span></span>
-<span id="cb27-455"><a href="#cb27-455" aria-hidden="true" tabindex="-1"></a><span class="ot">end</span></span>
-<span id="cb27-456"><a href="#cb27-456" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
+<span id="cb27-453"><a href="#cb27-453" aria-hidden="true" tabindex="-1"></a><span class="ot">function mod_rma!</span><span class="ch">(</span><span class="ot">du, u, p::ParRma, t</span><span class="ch">)</span></span>
+<span id="cb27-454"><a href="#cb27-454" aria-hidden="true" tabindex="-1"></a><span class="ot">    </span><span class="ch">(</span><span class="ot">; c, b, m</span><span class="ch">)</span><span class="ot"> = p     </span><span class="co"># get c, b, m from p</span></span>
+<span id="cb27-455"><a href="#cb27-455" aria-hidden="true" tabindex="-1"></a><span class="ot">    x = u</span><span class="ch">[</span><span class="bn">1</span><span class="ch">]</span><span class="ot">            </span><span class="co"># use x, y notations</span></span>
+<span id="cb27-456"><a href="#cb27-456" aria-hidden="true" tabindex="-1"></a><span class="ot">    y = u</span><span class="ch">[</span><span class="bn">2</span><span class="ch">]</span></span>
 <span id="cb27-457"><a href="#cb27-457" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-458"><a href="#cb27-458" aria-hidden="true" tabindex="-1"></a><span class="ot">La définition du problème d'</span><span class="ss">intégration et l</span><span class="ot">'</span>appel de solve est similaire aux autres méthodes, à ceci près que la condition initiale et la dérivée doit être mutable, ce qui <span class="ot">ne</span> permet pas (ou très difficilement) d<span class="ot">'</span><span class="ss">utiliser la méthode en dimension 1. En effet une déclaration `u0 = 1.0` ou `du = 3.0` n</span><span class="ot">'</span>est pas mutable^[alors que <span class="ot">`</span><span class="st">u0 = [1.0, 2.0]</span><span class="ot">`</span> ou <span class="ot">`</span><span class="st">du =[2.0, 3.0]</span><span class="ot">`</span> <span class="ot">le</span> sont. Plus sur la mutabilité dans les [Julia notes](https://m3g.github.io/JuliaNotes.jl/stable/immutable/).].</span>
+<span id="cb27-458"><a href="#cb27-458" aria-hidden="true" tabindex="-1"></a><span class="ot">    </span><span class="co"># in-place computation of du</span></span>
+<span id="cb27-459"><a href="#cb27-459" aria-hidden="true" tabindex="-1"></a><span class="ot">    du</span><span class="ch">[</span><span class="bn">1</span><span class="ch">]</span><span class="ot"> = logistic</span><span class="ch">(</span><span class="ot">x, p</span><span class="ch">)</span><span class="ot"> - c </span><span class="ch">*</span><span class="ot"> holling2</span><span class="ch">(</span><span class="ot">x,p</span><span class="ch">)</span><span class="ot"> </span><span class="ch">*</span><span class="ot"> y</span></span>
+<span id="cb27-460"><a href="#cb27-460" aria-hidden="true" tabindex="-1"></a><span class="ot">    du</span><span class="ch">[</span><span class="bn">2</span><span class="ch">]</span><span class="ot"> = b </span><span class="ch">*</span><span class="ot"> holling2</span><span class="ch">(</span><span class="ot">x, p</span><span class="ch">)</span><span class="ot"> </span><span class="ch">*</span><span class="ot"> y - m </span><span class="ch">*</span><span class="ot"> y</span></span>
+<span id="cb27-461"><a href="#cb27-461" aria-hidden="true" tabindex="-1"></a><span class="ot">    return nothing</span></span>
+<span id="cb27-462"><a href="#cb27-462" aria-hidden="true" tabindex="-1"></a><span class="ot">end</span></span>
+<span id="cb27-463"><a href="#cb27-463" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
+<span id="cb27-464"><a href="#cb27-464" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-465"><a href="#cb27-465" aria-hidden="true" tabindex="-1"></a><span class="ot">La définition du problème d'</span><span class="ss">intégration et l</span><span class="ot">'</span>appel de solve est similaire aux autres méthodes, à ceci près que la condition initiale et la dérivée doit être mutable, ce qui <span class="ot">ne</span> permet pas (ou très difficilement) d<span class="ot">'</span><span class="ss">utiliser la méthode en dimension 1. En effet une déclaration `u0 = 1.0` ou `du = 3.0` n</span><span class="ot">'</span>est pas mutable^[alors que <span class="ot">`</span><span class="st">u0 = [1.0, 2.0]</span><span class="ot">`</span> ou <span class="ot">`</span><span class="st">du =[2.0, 3.0]</span><span class="ot">`</span> <span class="ot">le</span> sont. Plus sur la mutabilité dans les [Julia notes](https://m3g.github.io/JuliaNotes.jl/stable/immutable/).].</span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

@@ -407,12 +407,19 @@ Une telle architecture fichier/moudle/script principal est présentée sur [cett
 
 Pour les modèles de plus grande dimension ($n>8$), l'avantage en performance des static arrays n'est plus si net et la documentation de `DifferentialEquations.jl` recommande d'utiliser la version en place (is in place, IIP dans le jargon du package) de l'interface problem/solver du package.
 
-Il s'agit ici de définir le modèle non pas comme renvoyant la dérivée en fonction de l'état, des paramètres et du temps, mais comme une fonction d'arguments la dérivée, l'état, les paramètres et le temps qui modifie en place la dérivée (et ne renvoie rien)). Celà permet de muter un même objet dérivée `du` à chaque fois que le modèle est appelé, plutôt que de créer un nouvel objet dérivée `du` à chaque appel du modèle (c'est aussi ce qui est fait, différemment, avec les static arrays plus haut).
+Il s'agit ici de définir le modèle non pas comme renvoyant la dérivée en fonction de l'état, des paramètres et du temps, mais comme une fonction d'arguments la dérivée, l'état, les paramètres et le temps qui modifie en place la dérivée (et ne renvoie rien). Cela permet de muter un même objet dérivée `du` à chaque fois que le modèle est appelé, plutôt que de créer un nouvel objet dérivée `du` à chaque appel du modèle (c'est aussi dans le même esprit de ce qui est fait, différemment, avec les static arrays plus haut).
 
 Typiquement ce type de modèle IIP (en place) s'écrit:
 
 ```{julia}
-function mod_rma!(du, u, p, t)
+function mod_rma!(du, u, p::ParRma, t)
+    (; c, b, m) = p     # get c, b, m from p
+    x = u[1]            # use x, y notations
+    y = u[2]
+
+    # in-place computation of du
+    du[1] = logistic(x, p) - c * holling2(x,p) * y
+    du[2] = b * holling2(x, p) * y - m * y
     return nothing
 end
 ```
