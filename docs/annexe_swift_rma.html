@@ -324,7 +324,7 @@ Important
 <div class="callout-body-container callout-body">
 <p>Lors de la création d’un <code>struct</code>, on peut être tenté d’utiliser des types de champs les plus larges possibles, comme par exemple <code>r::Real = 1.0</code> ou <code>r::Number = 1.0</code>.</p>
 <p><em>C’est une très mauvaise idée</em> : <code>Real</code> et <code>Number</code> sont des types abstraits qui englobent de nombreux types concrets (e.g.&nbsp;<code>Int64</code> et <code>Float64</code>). Par construction ils ne permettent pas de spécifier un espace mémoire de taille fixe comme le font les types concrets, et ne permettent donc pas d’optimiser le code à la précompilation<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>.</p>
-<p>A l’inverse, pour les fonctions XXXXXXXXXXXXXXXX</p>
+<p>A l’inverse, pour les fonctions, il est préférable de choisir le type le plus large possible pour la spécification des arguments.</p>
 </div>
 </div>
 <div class="no-row-height column-margin column-container"><li id="fn2"><p><sup>2</sup>&nbsp;Par exemple, la fonction <code>cy_rma()</code> définie plus bas (la plus coûteuse en temps de calcul) est 70 fois plus lente avec un <code>ParRma</code> qui définit ses champs en <code>Real</code> plutôt qu’en <code>Float64</code>, (exécution de ~0.5s à ~35s après précompilation)</p></li></div><p>On peut créer des objets de type <code>ParRma</code> via les <code>constructor</code> par défaut; on accède à un champ particulier via <code>objet.champ</code> :</p>
@@ -1067,7 +1067,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb27-64"><a href="#cb27-64" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb27-65"><a href="#cb27-65" aria-hidden="true" tabindex="-1"></a>*C'est une très mauvaise idée* : <span class="in">`Real`</span> et <span class="in">`Number`</span> sont des types abstraits qui englobent de nombreux types concrets (e.g. <span class="in">`Int64`</span> et <span class="in">`Float64`</span>). Par construction ils ne permettent pas de spécifier un espace mémoire de taille fixe comme le font les types concrets, et ne permettent donc pas d'optimiser le code à la précompilation^<span class="co">[</span><span class="ot">Par exemple, la fonction `cy_rma()` définie plus bas (la plus coûteuse en temps de calcul) est 70 fois plus lente avec un `ParRma` qui définit ses champs en `Real` plutôt qu'en `Float64`, (exécution de ~0.5s à ~35s après précompilation)</span><span class="co">]</span>.</span>
 <span id="cb27-66"><a href="#cb27-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-67"><a href="#cb27-67" aria-hidden="true" tabindex="-1"></a>A l'inverse, pour les fonctions XXXXXXXXXXXXXXXX</span>
+<span id="cb27-67"><a href="#cb27-67" aria-hidden="true" tabindex="-1"></a>A l'inverse, pour les fonctions, il est préférable de choisir le type le plus large possible pour la spécification des arguments.</span>
 <span id="cb27-68"><a href="#cb27-68" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb27-69"><a href="#cb27-69" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb27-70"><a href="#cb27-70" aria-hidden="true" tabindex="-1"></a>On peut créer des objets de type <span class="in">`ParRma`</span> via les <span class="in">`constructor`</span> par défaut; on accède à un champ particulier via <span class="in">`objet.champ`</span> :</span>

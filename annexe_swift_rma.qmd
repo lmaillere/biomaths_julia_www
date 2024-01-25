@@ -60,7 +60,7 @@ Lors de la création d'un `struct`, on peut être tenté d'utiliser des types de
 
 *C'est une très mauvaise idée* : `Real` et `Number` sont des types abstraits qui englobent de nombreux types concrets (e.g. `Int64` et `Float64`). Par construction ils ne permettent pas de spécifier un espace mémoire de taille fixe comme le font les types concrets, et ne permettent donc pas d'optimiser le code à la précompilation^[Par exemple, la fonction `cy_rma()` définie plus bas (la plus coûteuse en temps de calcul) est 70 fois plus lente avec un `ParRma` qui définit ses champs en `Real` plutôt qu'en `Float64`, (exécution de ~0.5s à ~35s après précompilation)].
 
-A l'inverse, pour les fonctions XXXXXXXXXXXXXXXX
+A l'inverse, pour les fonctions, il est préférable de choisir le type le plus large possible pour la spécification des arguments.
 :::
 
 On peut créer des objets de type `ParRma` via les `constructor` par défaut; on accède à un champ particulier via `objet.champ` :
