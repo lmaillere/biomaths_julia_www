@@ -61,10 +61,10 @@ Le module exporte:
 - les `structs` : `IniV` (conditions initiales), `ParRma` (paramètres du modèle), `ParTime` (paramètres de temps),
 - les fonctions : `plot_rma()` et `plot_bif_rma()`,
 
-comme nous le confirme l'aide du module.
+comme nous le confirme l'aide du module (dans la mesure ou elle est bien renseignée).
 ```{julia}
 #| output: true
-?RmaMod
+@doc RmaMod
 ```
 
 
@@ -72,7 +72,7 @@ On peut obtenir de l'aide sur ces fonctions (si le module a bien rempli ses docs
 
 ```{julia}
 #| output: true
-?plot_rma    # normalement seul ?plot_rma fonctionne
+@doc plot_rma
 ```
 
 ## Simulation des dynamiques
