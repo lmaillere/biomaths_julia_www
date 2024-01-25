@@ -77,13 +77,22 @@ On peut obtenir de l'aide sur ces fonctions (si le module a bien rempli ses docs
 
 ## Simulation des dynamiques
 
+Nous pouvons simuler les dynamiques du modèle en appelant les constructeurs par défaut des objets à la volée :
+
 ```{julia}
 #| output: true
 plot_rma(IniV(), ParRma(), ParTime())
 ```
 
+Mais aussi en spécifiant certains objets, comme e.g. les paramètres :
+```{julia}
+#| output: true
+plot_rma(IniV(), ParRma(K = 5.0), ParTime())
+```
+
 ## Diagramme de bifurcations
 
+De la même manière, on peut générer un diagramme de bifurcations :
 ```{julia}
 #| output: true
 plot_bif_rma(ParRma())

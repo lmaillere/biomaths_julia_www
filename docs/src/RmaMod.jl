@@ -18,11 +18,8 @@ using StaticArrays
 using DifferentialEquations
 using CairoMakie
 
-# export structs
-export ParRma, IniV, ParTime
-
-# export functions
-export plot_rma, plot_bif_rma
+# export structs and functions
+export ParRma, IniV, ParTime, plot_rma, plot_bif_rma
 
 ### structs
 
