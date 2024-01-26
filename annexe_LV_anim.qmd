@@ -101,7 +101,7 @@ tail = Observable(tail)         # et que l'on transforme en Observable
 L'animation repose sur une simulation de proche en proche pour pouvoir créer l'animation. Pour cela nous utilisons l'interface `integrator` de `DifferentialEquations.jl` et la fonction `step!(integrator)` qui calcule la solution au bout d'un pas de temps (en place). Nous créons une fonction qui effectue ce calcul et met à jour les Observables état (`state_lv`) et queue (`tail`) (en place !).
 
 ```{julia}
-integrator_lv = init(prob_lv)    # interface integrator
+integrator_lv = init(prob_lv, Tsit5())    # interface integrator
 
 function step_lv!(integrator, state_lv, tail)
     # calcule la solution a t+0.01, en place
@@ -200,7 +200,7 @@ On peut commencer par réunir tout le code d'initialisation et de génération d
 function init_anim_lv(etat0, params)
     # Odeproblem, integrator
     prob_lv = ODEProblem(lovo, etat0, tspan, params)
-    integrator_lv = init(prob_lv)
+    integrator_lv = init(prob_lv, Tsit5())
 
     # condition initiale, observables etat et queue
     x, y = etat0
@@ -294,7 +294,7 @@ end
 function init_anim3d_lv(etat0, params)
     # Odeproblem, integrator
     prob_lv = ODEProblem(lovo, etat0, tspan, params)
-    integrator_lv = init(prob_lv)
+    integrator_lv = init(prob_lv, Tsit5())
 
     x, y = etat0
     H0 = int_prem(x, y)

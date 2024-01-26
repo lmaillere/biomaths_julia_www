@@ -208,7 +208,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </p>
 <p>L’objectif ici est de faire une jolie représentation graphique du modèle de Lotka Volterra avec la librairie graphique <code>Makie.jl</code>.</p>
 <p>On reprend une partie du code de la page sur les <a href="./pop_interactions.html">populations en intéractions</a>.</p>
-<div class="cell" data-execution_count="1">
+<div class="cell" data-execution_count="2">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">DifferentialEquations</span></span>
@@ -246,7 +246,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 </div>
 <p>L’objectif est de créer une figure avec trois panels. dans la colonne de gauche, le premier panel représentera la dynamique temporelle, le second le plan de phase, et dans la colonne de droite nous représenterons la figure 3D avec l’intégrale première.</p>
-<div class="cell" data-execution_count="2">
+<div class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CairoMakie</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># on crée la figure avec un fond gris clair</span></span>
@@ -261,7 +261,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>panelc <span class="op">=</span> fig[<span class="op">:</span>, <span class="fl">2</span>] <span class="op">=</span> <span class="fu">GridLayout</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>On commence par remplir le premier panel avec les dynamiques :</p>
-<div class="cell" data-execution_count="3">
+<div class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>ax1 <span class="op">=</span> <span class="fu">Axis</span>(</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>       panela[<span class="fl">1</span>,<span class="fl">1</span>],</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>       ylabel <span class="op">=</span> L<span class="st">"densités de populations</span><span class="sc">$$</span><span class="st">",</span></span>
@@ -280,12 +280,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="fu">axislegend</span>(ax1; position <span class="op">=</span> <span class="op">:</span>lt, labelsize <span class="op">=</span> <span class="fl">12</span>, padding <span class="op">=</span> (<span class="fl">5</span>,<span class="fl">5</span>,<span class="fl">0</span>,<span class="fl">0</span>), rowgap <span class="op">=</span> <span class="op">-</span><span class="fl">5</span>)</span>
 <span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>fig</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="18">
+<div class="cell-output cell-output-display" data-execution_count="4">
 <p><img src="annexe_LV_makieplot_files/figure-html/cell-4-output-1.svg" class="img-fluid"></p>
 </div>
 </div>
 <p>Puis on complète le second panel avec le plan de phase :</p>
-<div class="cell" data-execution_count="4">
+<div class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>ax2 <span class="op">=</span> <span class="fu">Axis</span>(</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>       panelb[<span class="fl">1</span>,<span class="fl">1</span>];</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>       xlabel <span class="op">=</span> L<span class="st">"population </span><span class="sc">$</span>x<span class="sc">$</span><span class="st">",</span></span>
@@ -341,19 +341,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a><span class="fu">axislegend</span>(ax2; position <span class="op">=</span> <span class="op">:</span>rt, labelsize <span class="op">=</span> <span class="fl">12</span>, padding <span class="op">=</span> (<span class="fl">5</span>,<span class="fl">5</span>,<span class="fl">0</span>,<span class="fl">0</span>), rowgap <span class="op">=</span> <span class="op">-</span><span class="fl">5</span>)</span>
 <span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>fig</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="19">
+<div class="cell-output cell-output-display" data-execution_count="5">
 <p><img src="annexe_LV_makieplot_files/figure-html/cell-5-output-1.svg" class="img-fluid"></p>
 </div>
 </div>
 <p>Finalement on complète le troisième panel avec la représentation 3D, en commencant par redéfinir l’intégrale première</p>
-<div class="cell" data-execution_count="5">
+<div class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># l'intégrale première</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">int_prem</span>(x, y, par <span class="op">=</span> par_lovo)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>      r, c, b, m <span class="op">=</span> par</span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> <span class="fu">-r*log</span>(y) <span class="op">+</span> c<span class="op">*</span>y <span class="op">-</span> <span class="fu">m*log</span>(x) <span class="op">+</span> b<span class="op">*</span>x</span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="6">
+<div class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># système d'axe 3D en première colonne de panel c, avec réglage de la caméra</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>ax3 <span class="op">=</span> <span class="fu">Axis3</span>(</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>       panelc[<span class="fl">1</span>, <span class="fl">1</span>];</span>
@@ -400,10 +400,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a><span class="fu">rowgap!</span>(fig.layout, <span class="fl">10</span>)</span>
 <span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a><span class="co"># titre général en ligne 0</span></span>
-<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>supertitle <span class="op">=</span> <span class="fu">Label</span>(fig[<span class="fl">0</span>, <span class="op">:</span>], <span class="st">"Modèle de Lotka Volterra"</span>, fontsize <span class="op">=</span> <span class="fl">30</span>)</span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>supertitle <span class="op">=</span> <span class="fu">Label</span>(fig[<span class="fl">0</span>, <span class="op">:</span>], <span class="st">"Modèle de Lotka Volterra"</span>, textsize <span class="op">=</span> <span class="fl">30</span>)</span>
 <span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>fig</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="21">
+<div class="cell-output cell-output-display" data-execution_count="7">
 <div id="fig-lv-complex" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="annexe_LV_makieplot_files/figure-html/fig-lv-complex-output-1.svg" class="img-fluid figure-img"></p>
@@ -912,7 +912,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb7-219"><a href="#cb7-219" aria-hidden="true" tabindex="-1"></a><span class="st">rowgap!(fig.layout, 10)</span></span>
 <span id="cb7-220"><a href="#cb7-220" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-221"><a href="#cb7-221" aria-hidden="true" tabindex="-1"></a><span class="st"># titre général en ligne 0</span></span>
-<span id="cb7-222"><a href="#cb7-222" aria-hidden="true" tabindex="-1"></a><span class="st">supertitle = Label(fig[0, :], </span><span class="ot">"</span>Modèle de Lotka Volterra<span class="ot">"</span><span class="st">, fontsize = 30)</span></span>
+<span id="cb7-222"><a href="#cb7-222" aria-hidden="true" tabindex="-1"></a><span class="st">supertitle = Label(fig[0, :], </span><span class="ot">"</span>Modèle de Lotka Volterra<span class="ot">"</span><span class="st">, textsize = 30)</span></span>
 <span id="cb7-223"><a href="#cb7-223" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-224"><a href="#cb7-224" aria-hidden="true" tabindex="-1"></a><span class="st">fig</span></span>
 <span id="cb7-225"><a href="#cb7-225" aria-hidden="true" tabindex="-1"></a><span class="st">```</span></span>

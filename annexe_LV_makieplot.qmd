@@ -207,7 +207,7 @@ colgap!(panelc, -10)
 rowgap!(fig.layout, 10)
 
 # titre général en ligne 0
-supertitle = Label(fig[0, :], "Modèle de Lotka Volterra", fontsize = 30)
+supertitle = Label(fig[0, :], "Modèle de Lotka Volterra", textsize = 30)
 
 fig
 ```

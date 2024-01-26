@@ -40,4 +40,4 @@ jupyter: julia-1.10
 execute:
  cache: true
  output: false
- freeze: auto  # re-render only when source changes
+ freeze: false  # re-render only when source changes

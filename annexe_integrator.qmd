@@ -50,7 +50,7 @@ prob_tordeuse = ODEProblem(
     saveat = tstep,
 )   # option de sortie
 
-integrator = init(prob_tordeuse)
+integrator = init(prob_tordeuse, Tsit5())  # integrator requires integ algorithm
 ```
 
 Pour une utilisation dans une boucle pour simuler les trajectoires depuis différentes conditions initiales, nous définissons une fonction qui réinitialise l'intégrateur à la nouvelle condition, effectue la simulation (et transforme la solution en dataframe).
