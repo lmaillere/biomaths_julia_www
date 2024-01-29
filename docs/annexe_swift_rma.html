@@ -257,6 +257,7 @@ div.csl-indent {
 
 </header>
 
+<!-- load local julia environment (freeze package versions) -->
 <section id="modèle-de-rosenzweig-macarthur" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="modèle-de-rosenzweig-macarthur">Modèle de Rosenzweig MacArthur</h2>
 <p>Nous considérons le modèle de dynamique de populations de Rosenzweig et MacArthur que nous avons déjà vu (<span class="citation" data-cites="Rosenzweig1963">Rosenzweig and MacArthur (<a href="#ref-Rosenzweig1963" role="doc-biblioref">1963</a>)</span>, <span class="citation" data-cites="Turchin2003">Turchin (<a href="#ref-Turchin2003" role="doc-biblioref">2003</a>)</span>, <span class="citation" data-cites="Smith2008">Smith (<a href="#ref-Smith2008" role="doc-biblioref">2008</a>)</span>).</p>
@@ -278,7 +279,7 @@ div.csl-indent {
 </ul>
 <p>Pour ce dernier point, nous allons définir des types (<code>struct</code>) spécifiques.</p>
 <p>Nous commençons par importer les packages que nous allons utiliser:</p>
-<div class="cell" data-execution_count="1">
+<div class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">StaticArrays</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">DifferentialEquations</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">CairoMakie</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -288,7 +289,7 @@ div.csl-indent {
 <h3 class="anchored" data-anchor-id="type-spécifique-pour-les-paramètres">Type spécifique pour les paramètres</h3>
 <p>Nous définissons un <code>struct</code> pour les paramètres du modèle de Rosenzweig MacArthur.</p>
 <p>Type pour les paramètres :</p>
-<div class="cell" data-execution_count="2">
+<div class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># parameters struct</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="pp">@kwdef</span> <span class="kw">struct</span> ParRma</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    r<span class="op">::</span><span class="dt">Float64 </span><span class="op">=</span> <span class="fl">1.0</span></span>
@@ -328,7 +329,7 @@ Important
 </div>
 </div>
 <div class="no-row-height column-margin column-container"><li id="fn2"><p><sup>2</sup>&nbsp;Par exemple, la fonction <code>cy_rma()</code> définie plus bas (la plus coûteuse en temps de calcul) est 70 fois plus lente avec un <code>ParRma</code> qui définit ses champs en <code>Real</code> plutôt qu’en <code>Float64</code>, (exécution de ~0.5s à ~35s après précompilation)</p></li></div><p>On peut créer des objets de type <code>ParRma</code> via les <code>constructor</code> par défaut; on accède à un champ particulier via <code>objet.champ</code> :</p>
-<div class="cell" data-execution_count="3">
+<div class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># with the struct definition, ParRma objects are immutable</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>prma <span class="op">=</span> <span class="fu">ParRma</span>() <span class="co"># constructor with default values</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>prma2 <span class="op">=</span> <span class="fu">ParRma</span>(K <span class="op">=</span> <span class="fl">8.0</span>) <span class="co"># default values except K = 20.0</span></span>
@@ -361,7 +362,7 @@ Note
 <h3 class="anchored" data-anchor-id="fonctions">Fonctions</h3>
 <p>Nous définissons les différentes fonctions impliquées dans le modèle de Rosenzweig MacArthur, la logistique et la réponse fonctionnelle de Holling II.</p>
 <p>Pour la logistique :</p>
-<div class="cell" data-execution_count="4">
+<div class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">logistic</span>(x<span class="op">::</span><span class="dt">Real</span>, p<span class="op">::</span><span class="dt">ParRma</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    (; r, K) <span class="op">=</span> p    <span class="co"># deconstruct/get r and K from p</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="fu">r*x*</span>(<span class="fl">1</span><span class="op">-</span>x<span class="op">/</span>K)</span>
@@ -384,7 +385,7 @@ Note
 <div class="no-row-height column-margin column-container"><li id="fn3"><p><sup>3</sup>&nbsp;C’est une des manières de faire du <a href="https://docs.julialang.org/en/v1/manual/methods/">multiple dispatch</a>, en définissant différentes méthodes pour les fonctions selon le type de l’argument</p></li></div></div>
 </div>
 <p>Pour la réponse fonctionnelle (sans le paramètre <span class="math inline">c</span>) :</p>
-<div class="cell" data-execution_count="5">
+<div class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">holling2</span>(x<span class="op">::</span><span class="dt">Real</span>, p<span class="op">::</span><span class="dt">ParRma</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    (; h) <span class="op">=</span> p   <span class="co"># deconstruct h from p</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> x<span class="op">/</span>(x<span class="op">+</span>h)</span>
@@ -395,7 +396,7 @@ Note
 <h3 class="anchored" data-anchor-id="conditions-initiales">Conditions initiales</h3>
 <p>Pour utiliser les static arrays avec <code>DifferentialEquations.jl</code> il faut que l’état (donc la condition initiale) et les dérivées rendues par le modèle soient des static arrays (ici un <code>SVector</code>).</p>
 <p>Nous définissons un <code>struct</code> de condition initiales, avec pour champs <code>x0</code>, <code>y0</code> et un <code>Svector</code> composé de ces deux valeurs :</p>
-<div class="cell" data-execution_count="6">
+<div class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># initial value struct</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="pp">@kwdef</span> <span class="kw">struct</span> IniV</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    x0<span class="op">::</span><span class="dt">Float64 </span><span class="op">=</span> <span class="fl">1.0</span></span>
@@ -409,7 +410,7 @@ Note
 </div>
 </div>
 <div class="page-columns page-full"><p>Nous définissons un constructeur additionnel pour le type <code>IniV</code> qui à partir d’un <code>SVector</code> de longueur 2, construit l’objet <code>IniV</code> correspondant<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> (nous nous en servirons plus bas dans la fonction <code>cy_rma()</code>)</p><div class="no-row-height column-margin column-container"><li id="fn4"><p><sup>4</sup>&nbsp;il s’agit d’une forme de multiple dispatch sur le constructeur, avec plusieurs méthodes différents selon le type d’arguments utilisés</p></li></div></div>
-<div class="cell" data-execution_count="7">
+<div class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># new constructor method for struct IniV</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># takes a length 2 SVector to construct the object (self definition)</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">IniV</span>(u0<span class="op">::</span><span class="dt">SVector{2, Float64}</span>) <span class="op">=</span> <span class="fu">IniV</span>(x0 <span class="op">=</span> u0[<span class="fl">1</span>], y0 <span class="op">=</span> u0[<span class="fl">2</span>])</span>
@@ -424,7 +425,7 @@ Note
 <section id="modèle" class="level3">
 <h3 class="anchored" data-anchor-id="modèle">Modèle</h3>
 <p>On définit les équations du modèle en exploitant les fonctions définies plus haut et la structure des paramètres, en renvoyant les dérivées sous forme de <code>SVector</code> :</p>
-<div class="cell" data-execution_count="8">
+<div class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">mod_rma</span>(u<span class="op">::</span><span class="dt">SVector{2}</span>, p<span class="op">::</span><span class="dt">ParRma</span>, t)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    (; c, b, m) <span class="op">=</span> p     <span class="co"># get c, b, m from p</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> u[<span class="fl">1</span>]            <span class="co"># use x, y notations</span></span>
@@ -440,7 +441,7 @@ Note
 <section id="simulation-simple" class="level3">
 <h3 class="anchored" data-anchor-id="simulation-simple">Simulation simple</h3>
 <p>On définit les paramètres du temps dans un <code>struct</code> :</p>
-<div class="cell" data-execution_count="9">
+<div class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># time parameters struct</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="pp">@kwdef</span> <span class="kw">struct</span> ParTime</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    tspan<span class="op">::</span><span class="dt">Tuple{Float64, Float64} </span><span class="op">=</span> (<span class="fl">0.0</span>, <span class="fl">60.0</span>)</span>
@@ -452,7 +453,7 @@ Note
 </div>
 <p>On définit une fonction qui définit le problème de simulation, l’intègre et retourne la solution, avec pour arguments positionnels la condition initiale, les paramètres et les paramètres de temps, et comme keyword argument le paramètre booléen <code>final</code>.</p>
 <p>Lorsque <code>final = false</code> (par défaut), la fonction renvoie toute la solution. Lorsque <code>final  =true</code> la fonction renvoie la valeur finale de la simulation, ce dont nous nous servirons plus bas dans l’estimation des extremas du cycle limite.</p>
-<div class="cell" data-execution_count="10">
+<div class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">sim_rma</span>(iniv<span class="op">::</span><span class="dt">IniV</span>, p<span class="op">::</span><span class="dt">ParRma</span>, pt<span class="op">::</span><span class="dt">ParTime</span>; final<span class="op">::</span><span class="dt">Bool </span><span class="op">=</span> <span class="cn">false</span>)</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># deconstruct time parameter</span></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    (; tspan, tstep) <span class="op">=</span> pt</span>
@@ -476,7 +477,7 @@ Note
 <span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a><span class="pp">@time</span> <span class="fu">sim_rma</span>(iniv, prma, ptime);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  2.934393 seconds (4.51 M allocations: 303.180 MiB, 3.17% gc time, 99.93% compilation time)</code></pre>
+<pre><code>  1.839824 seconds (5.05 M allocations: 339.069 MiB, 4.31% gc time, 99.97% compilation time: &lt;1% of which was recompilation)</code></pre>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -493,17 +494,17 @@ Note
 </div>
 </div>
 <p>Une fois la fonction précompilée à la première exécution, la performance est incomparable (4 ordres de grandeur plus rapide sur la fonction <code>sim_rma()</code>) :</p>
-<div class="cell" data-execution_count="11">
+<div class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@time</span> <span class="fu">sim_rma</span>(iniv, prma2, ptime);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  0.000208 seconds (331 allocations: 47.359 KiB)</code></pre>
+<pre><code>  0.000178 seconds (129 allocations: 42.547 KiB)</code></pre>
 </div>
 </div>
 </section>
 <section id="solution-contre-le-temps" class="level3">
 <h3 class="anchored" data-anchor-id="solution-contre-le-temps">Solution contre le temps</h3>
 <p>Finalement, on définit une fonction qui simule et produit un graphique de la solution contre le temps, avec pour arguments la condition initiale, les paramètres et les paramètres de temps :</p>
-<div class="cell" data-execution_count="12">
+<div class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">plot_rma</span>(iniv<span class="op">::</span><span class="dt">IniV</span>, p<span class="op">::</span><span class="dt">ParRma</span>, pt<span class="op">::</span><span class="dt">ParTime</span>)</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># compute the simulation</span></span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    sol_rma <span class="op">=</span> <span class="fu">sim_rma</span>(iniv, p, pt)</span>
@@ -525,9 +526,9 @@ Note
 <span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Finalement on exécute cette fonction pour tracer la simulation :</p>
-<div class="cell" data-execution_count="13">
+<div class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_rma</span>(iniv, prma, ptime)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="14">
+<div class="cell-output cell-output-display" data-execution_count="15">
 <div id="fig-rma-time" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="annexe_swift_rma_files/figure-html/fig-rma-time-output-1.svg" class="img-fluid figure-img"></p>
@@ -544,7 +545,7 @@ Note
 <h4 class="anchored" data-anchor-id="équilibres">Équilibres</h4>
 <p>Il n’y a pas besoin de simulation ici puisque les lieux des équilibres sont facilement calculables analytiquement (cf.&nbsp;cette <a href="./pop_interactions2.html">page</a>).</p>
 <p>Nous définissons une fonction qui prend les paramètres du modèle et renvoit des tuples définissant les différentes branches d’équilibres <span class="math inline">(K, y^*)</span> (avec en <code>kwarg</code> un <code>Kmax</code> et un <code>Kstep</code> avec des valeurs par défaut).</p>
-<div class="cell" data-execution_count="14">
+<div class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">eqy_rma</span>(p<span class="op">::</span><span class="dt">ParRma</span>; Kmax<span class="op">::</span><span class="dt">Real </span><span class="op">=</span> <span class="fl">8.0</span>, Kstep<span class="op">::</span><span class="dt">Real </span><span class="op">=</span> <span class="fl">0.1</span>)</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    (; r, c, h, b, m) <span class="op">=</span> p <span class="co"># deconstruct p (K is useless since it is varied)</span></span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -583,7 +584,7 @@ Note
 <h4 class="anchored" data-anchor-id="cycle-limite">Cycle limite</h4>
 <p>On définit une fonction qui renvoit un tuple contenant les valeurs de <span class="math inline">K</span> et les extremas du cycle limite apparaissant pour <span class="math inline">K &gt; K_{hopf} = h+\frac{2mh}{b-m}</span>.</p>
 <p>La fonction prend pour argument les paramètres, et fait appel à la fonction <code>sim_rma()</code> avec les méthodes <code>final = true</code> (pour les transitoires) et <code>final = false</code> (pour les extremas du cycle limite). Elle utilise aussi le constructeur supplémentaire pour les objets <code>IniV</code>.</p>
-<div class="cell" data-execution_count="15">
+<div class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">cy_rma</span>(p<span class="op">::</span><span class="dt">ParRma</span>; Kmax<span class="op">::</span><span class="dt">Float64 </span><span class="op">=</span> <span class="fl">8.0</span>, Kstep<span class="op">::</span><span class="dt">Float64 </span><span class="op">=</span> <span class="fl">0.01</span>)</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># parameters and K range</span></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    (; r, c, h, b, m) <span class="op">=</span> p <span class="co"># deconstruct p (K is useless since it is varied)</span></span>
@@ -628,14 +629,14 @@ Note
 <span id="cb20-42"><a href="#cb20-42" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-43"><a href="#cb20-43" aria-hidden="true" tabindex="-1"></a><span class="pp">@time</span> <span class="fu">cy_rma</span>(prma);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  2.304256 seconds (5.64 M allocations: 150.001 MiB, 2.17% gc time, 80.27% compilation time)</code></pre>
+<pre><code>  1.096500 seconds (1.16 M allocations: 91.170 MiB, 2.15% gc time, 64.68% compilation time)</code></pre>
 </div>
 </div>
 <p>Après précompilation, ce calcul est encore plus rapide :</p>
-<div class="cell" data-execution_count="16">
+<div class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="pp">@time</span> <span class="fu">cy_rma</span>(prma2);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  0.463348 seconds (4.62 M allocations: 82.331 MiB, 1.53% gc time)</code></pre>
+<pre><code>  0.396381 seconds (51.71 k allocations: 17.591 MiB)</code></pre>
 </div>
 </div>
 <p>A titre d’exemple, la simulation sur cette <a href="./pop_interactions2.html">page</a> prenait de l’ordre de 20 fois plus longtemps pour un calcul similaire.</p>
@@ -643,7 +644,7 @@ Note
 <section id="représentation-graphique" class="level4">
 <h4 class="anchored" data-anchor-id="représentation-graphique">Représentation graphique</h4>
 <p>Finalement, nous définissons une fonction permettant de représenter le diagramme de bifurcations, qui fait appel aux fonctions <code>eqy_rma()</code> et <code>cy_rma()</code> définies ci-dessus :</p>
-<div class="cell" data-execution_count="17">
+<div class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">plot_bif_rma</span>(p<span class="op">::</span><span class="dt">ParRma</span>; Kmax <span class="op">=</span> <span class="fl">8.0</span>, Kstep <span class="op">=</span> <span class="fl">0.1</span>)</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># initialize figure</span></span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    fig <span class="op">=</span> <span class="fu">Figure</span>(; fontsize <span class="op">=</span> <span class="fl">20</span>)</span>
@@ -672,9 +673,9 @@ Note
 <span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Ce qui donne :</p>
-<div class="cell" data-execution_count="18">
+<div class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_bif_rma</span>(prma)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="19">
+<div class="cell-output cell-output-display" data-execution_count="20">
 <div id="fig-rma-bif" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="annexe_swift_rma_files/figure-html/fig-rma-bif-output-1.svg" class="img-fluid figure-img"></p>
@@ -696,7 +697,7 @@ Note
 <p>Pour les modèles de plus grande dimension (<span class="math inline">n&gt;8</span>), l’avantage en performance des static arrays n’est plus si net et la documentation de <code>DifferentialEquations.jl</code> recommande d’utiliser la version en place (is in place, IIP dans le jargon du package) de l’interface problem/solver du package.</p>
 <p>Il s’agit ici de définir le modèle non pas comme renvoyant la dérivée en fonction de l’état, des paramètres et du temps, mais comme une fonction d’arguments la dérivée, l’état, les paramètres et le temps qui modifie en place la dérivée (et ne renvoie rien). Cela permet de muter un même objet dérivée <code>du</code> à chaque fois que le modèle est appelé, plutôt que de créer un nouvel objet dérivée <code>du</code> à chaque appel du modèle (c’est aussi dans le même esprit de ce qui est fait, différemment, avec les static arrays plus haut).</p>
 <p>Typiquement ce type de modèle IIP (en place) s’écrit:</p>
-<div class="cell" data-execution_count="19">
+<div class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">mod_rma!</span>(du, u, p<span class="op">::</span><span class="dt">ParRma</span>, t)</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    (; c, b, m) <span class="op">=</span> p     <span class="co"># get c, b, m from p</span></span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> u[<span class="fl">1</span>]            <span class="co"># use x, y notations</span></span>
@@ -1015,430 +1016,458 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <div class="sourceCode" id="cb27" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Simulation améliorée"</span></span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="fu">## Modèle de Rosenzweig MacArthur</span></span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>Nous considérons le modèle de dynamique de populations de Rosenzweig et MacArthur que nous avons déjà vu (@Rosenzweig1963, @Turchin2003, @Smith2008).</span>
-<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>\left<span class="sc">\{</span>\begin{array}{l}</span>
-<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>\dot x = \displaystyle rx\left(1-\frac{x}{K}\right) - c \frac{x}{h+x} y<span class="sc">\\</span><span class="co">[</span><span class="ot">.3cm</span><span class="co">]</span></span>
-<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>\dot y = b\displaystyle \frac{x}{h+x} y - m y</span>
-<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>\end{array}\right.</span>
-<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>$$ {#eq-rma}</span>
-<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>L'objectif est de réaliser des simulations performantes sur le tracé du diagramme de bifurcations, avec l'estimation par simulation du cycle limite. Ce type de simulations lourdes se prête bien à se genre de benchmark.</span>
-<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a><span class="fu">### Stratégie pour le code</span></span>
-<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>Pour un tel problème de dimension réduite, nous allons utiliser des static arrays (tableaux à adresse fixe dans la mémoire^<span class="co">[</span><span class="ot">depuis le package `StaticArrays.jl`</span><span class="co">]</span>), ce qui permettra de ne pas crééer une multitude d'objets pour la simulation mais de toujours modifier le même objet en mémoire.</span>
-<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a>Par ailleurs nous allons essayer de nous conformer au maximum aux préconisations :</span>
-<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>ne pas utiliser de variables globales</span>
-<span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>définir des fonctions</span>
-<span id="cb27-26"><a href="#cb27-26" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>mettre les paramètres dans un nombre limité de variables et les passer en arguments des fonctions</span>
-<span id="cb27-27"><a href="#cb27-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-28"><a href="#cb27-28" aria-hidden="true" tabindex="-1"></a>Pour ce dernier point, nous allons définir des types (<span class="in">`struct`</span>) spécifiques.</span>
-<span id="cb27-29"><a href="#cb27-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-30"><a href="#cb27-30" aria-hidden="true" tabindex="-1"></a>Nous commençons par importer les packages que nous allons utiliser:</span>
-<span id="cb27-33"><a href="#cb27-33" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb27-34"><a href="#cb27-34" aria-hidden="true" tabindex="-1"></a>using StaticArrays</span>
-<span id="cb27-35"><a href="#cb27-35" aria-hidden="true" tabindex="-1"></a>using DifferentialEquations</span>
-<span id="cb27-36"><a href="#cb27-36" aria-hidden="true" tabindex="-1"></a>using CairoMakie</span>
-<span id="cb27-37"><a href="#cb27-37" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!-- load local julia environment (freeze package versions) --&gt;</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: true</span></span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a><span class="co"># this cell does not appear in the rendering, but is executed</span></span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a><span class="co"># for reproducibility purposes, we load the local julia environment/project, containing</span></span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a><span class="co">#  [13f3f980] CairoMakie v0.11.6</span></span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a><span class="co">#  [a93c6f00] DataFrames v1.6.1</span></span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a><span class="co">#  [864edb3b] DataStructures v0.18.16</span></span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a><span class="co">#  [0c46a032] DifferentialEquations v7.12.0</span></span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a><span class="co">#  [e9467ef8] GLMakie v0.9.6</span></span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a><span class="co">#  [91a5bcdd] Plots v1.40.0</span></span>
+<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a><span class="co">#  [f27b6e38] Polynomials v4.0.6</span></span>
+<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a><span class="co">#  [90137ffa] StaticArrays v1.9.1</span></span>
+<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a><span class="co">#  [0c5d862f] Symbolics v5.16.1</span></span>
+<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a><span class="co"># to share the environment, copy Project.toml and Manifest.toml files in some directory</span></span>
+<span id="cb27-26"><a href="#cb27-26" aria-hidden="true" tabindex="-1"></a><span class="co"># `activate` the local environment</span></span>
+<span id="cb27-27"><a href="#cb27-27" aria-hidden="true" tabindex="-1"></a><span class="co"># if necessary `instantiate` to get the correct package versions</span></span>
+<span id="cb27-28"><a href="#cb27-28" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb27-29"><a href="#cb27-29" aria-hidden="true" tabindex="-1"></a><span class="co"># to check if some PackageName.jl is used from the local environment</span></span>
+<span id="cb27-30"><a href="#cb27-30" aria-hidden="true" tabindex="-1"></a><span class="co">## Pkg.status("PackageName")</span></span>
+<span id="cb27-31"><a href="#cb27-31" aria-hidden="true" tabindex="-1"></a>using Pkg</span>
+<span id="cb27-32"><a href="#cb27-32" aria-hidden="true" tabindex="-1"></a>Pkg.activate(<span class="ot">"</span><span class="st">.</span><span class="ot">"</span>)</span>
+<span id="cb27-33"><a href="#cb27-33" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-34"><a href="#cb27-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-35"><a href="#cb27-35" aria-hidden="true" tabindex="-1"></a><span class="fu">## Modèle de Rosenzweig MacArthur</span></span>
+<span id="cb27-36"><a href="#cb27-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-37"><a href="#cb27-37" aria-hidden="true" tabindex="-1"></a>Nous considérons le modèle de dynamique de populations de Rosenzweig et MacArthur que nous avons déjà vu (@Rosenzweig1963, @Turchin2003, @Smith2008).</span>
 <span id="cb27-38"><a href="#cb27-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-39"><a href="#cb27-39" aria-hidden="true" tabindex="-1"></a><span class="fu">### Type spécifique pour les paramètres</span></span>
-<span id="cb27-40"><a href="#cb27-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-41"><a href="#cb27-41" aria-hidden="true" tabindex="-1"></a>Nous définissons un <span class="in">`struct`</span> pour les paramètres du modèle de Rosenzweig MacArthur.</span>
-<span id="cb27-42"><a href="#cb27-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-43"><a href="#cb27-43" aria-hidden="true" tabindex="-1"></a>Type pour les paramètres :</span>
-<span id="cb27-46"><a href="#cb27-46" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb27-47"><a href="#cb27-47" aria-hidden="true" tabindex="-1"></a><span class="co"># parameters struct</span></span>
-<span id="cb27-48"><a href="#cb27-48" aria-hidden="true" tabindex="-1"></a><span class="dt">@kwdef</span> struct ParRma</span>
-<span id="cb27-49"><a href="#cb27-49" aria-hidden="true" tabindex="-1"></a>    <span class="fu">r::Float64</span> = <span class="fl">1.0</span></span>
-<span id="cb27-50"><a href="#cb27-50" aria-hidden="true" tabindex="-1"></a>    <span class="fu">K::Float64</span> = <span class="fl">10.0</span></span>
-<span id="cb27-51"><a href="#cb27-51" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c::Float64</span> = <span class="fl">1.0</span></span>
-<span id="cb27-52"><a href="#cb27-52" aria-hidden="true" tabindex="-1"></a>    <span class="fu">h::Float64</span> = <span class="fl">2.0</span></span>
-<span id="cb27-53"><a href="#cb27-53" aria-hidden="true" tabindex="-1"></a>    <span class="fu">b::Float64</span> = <span class="fl">2.0</span></span>
-<span id="cb27-54"><a href="#cb27-54" aria-hidden="true" tabindex="-1"></a>    <span class="fu">m::Float64</span> = <span class="fl">1.0</span></span>
-<span id="cb27-55"><a href="#cb27-55" aria-hidden="true" tabindex="-1"></a>end</span>
-<span id="cb27-56"><a href="#cb27-56" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-39"><a href="#cb27-39" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb27-40"><a href="#cb27-40" aria-hidden="true" tabindex="-1"></a>\left<span class="sc">\{</span>\begin{array}{l}</span>
+<span id="cb27-41"><a href="#cb27-41" aria-hidden="true" tabindex="-1"></a>\dot x = \displaystyle rx\left(1-\frac{x}{K}\right) - c \frac{x}{h+x} y<span class="sc">\\</span><span class="co">[</span><span class="ot">.3cm</span><span class="co">]</span></span>
+<span id="cb27-42"><a href="#cb27-42" aria-hidden="true" tabindex="-1"></a>\dot y = b\displaystyle \frac{x}{h+x} y - m y</span>
+<span id="cb27-43"><a href="#cb27-43" aria-hidden="true" tabindex="-1"></a>\end{array}\right.</span>
+<span id="cb27-44"><a href="#cb27-44" aria-hidden="true" tabindex="-1"></a>$$ {#eq-rma}</span>
+<span id="cb27-45"><a href="#cb27-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-46"><a href="#cb27-46" aria-hidden="true" tabindex="-1"></a>L'objectif est de réaliser des simulations performantes sur le tracé du diagramme de bifurcations, avec l'estimation par simulation du cycle limite. Ce type de simulations lourdes se prête bien à se genre de benchmark.</span>
+<span id="cb27-47"><a href="#cb27-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-48"><a href="#cb27-48" aria-hidden="true" tabindex="-1"></a><span class="fu">### Stratégie pour le code</span></span>
+<span id="cb27-49"><a href="#cb27-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-50"><a href="#cb27-50" aria-hidden="true" tabindex="-1"></a>Pour un tel problème de dimension réduite, nous allons utiliser des static arrays (tableaux à adresse fixe dans la mémoire^<span class="co">[</span><span class="ot">depuis le package `StaticArrays.jl`</span><span class="co">]</span>), ce qui permettra de ne pas crééer une multitude d'objets pour la simulation mais de toujours modifier le même objet en mémoire.</span>
+<span id="cb27-51"><a href="#cb27-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-52"><a href="#cb27-52" aria-hidden="true" tabindex="-1"></a>Par ailleurs nous allons essayer de nous conformer au maximum aux préconisations :</span>
+<span id="cb27-53"><a href="#cb27-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-54"><a href="#cb27-54" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>ne pas utiliser de variables globales</span>
+<span id="cb27-55"><a href="#cb27-55" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>définir des fonctions</span>
+<span id="cb27-56"><a href="#cb27-56" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>mettre les paramètres dans un nombre limité de variables et les passer en arguments des fonctions</span>
 <span id="cb27-57"><a href="#cb27-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-58"><a href="#cb27-58" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
-<span id="cb27-59"><a href="#cb27-59" aria-hidden="true" tabindex="-1"></a>La macro <span class="in">`@kwdef`</span> permet de renseigner des valeurs par défaut des champs du <span class="in">`struct`</span>.</span>
-<span id="cb27-60"><a href="#cb27-60" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb27-61"><a href="#cb27-61" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-62"><a href="#cb27-62" aria-hidden="true" tabindex="-1"></a>::: {.callout-important}</span>
-<span id="cb27-63"><a href="#cb27-63" aria-hidden="true" tabindex="-1"></a>Lors de la création d'un <span class="in">`struct`</span>, on peut être tenté d'utiliser des types de champs les plus larges possibles, comme par exemple <span class="in">`r::Real = 1.0`</span> ou <span class="in">`r::Number = 1.0`</span>.</span>
-<span id="cb27-64"><a href="#cb27-64" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-65"><a href="#cb27-65" aria-hidden="true" tabindex="-1"></a>*C'est une très mauvaise idée* : <span class="in">`Real`</span> et <span class="in">`Number`</span> sont des types abstraits qui englobent de nombreux types concrets (e.g. <span class="in">`Int64`</span> et <span class="in">`Float64`</span>). Par construction ils ne permettent pas de spécifier un espace mémoire de taille fixe comme le font les types concrets, et ne permettent donc pas d'optimiser le code à la précompilation^<span class="co">[</span><span class="ot">Par exemple, la fonction `cy_rma()` définie plus bas (la plus coûteuse en temps de calcul) est 70 fois plus lente avec un `ParRma` qui définit ses champs en `Real` plutôt qu'en `Float64`, (exécution de ~0.5s à ~35s après précompilation)</span><span class="co">]</span>.</span>
-<span id="cb27-66"><a href="#cb27-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-67"><a href="#cb27-67" aria-hidden="true" tabindex="-1"></a>A l'inverse, pour les fonctions, il est préférable de choisir le type le plus large possible pour la spécification des arguments.</span>
-<span id="cb27-68"><a href="#cb27-68" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb27-69"><a href="#cb27-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-70"><a href="#cb27-70" aria-hidden="true" tabindex="-1"></a>On peut créer des objets de type <span class="in">`ParRma`</span> via les <span class="in">`constructor`</span> par défaut; on accède à un champ particulier via <span class="in">`objet.champ`</span> :</span>
-<span id="cb27-73"><a href="#cb27-73" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb27-74"><a href="#cb27-74" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
-<span id="cb27-75"><a href="#cb27-75" aria-hidden="true" tabindex="-1"></a><span class="co"># with the struct definition, ParRma objects are immutable</span></span>
-<span id="cb27-76"><a href="#cb27-76" aria-hidden="true" tabindex="-1"></a>prma = ParRma() <span class="co"># constructor with default values</span></span>
-<span id="cb27-77"><a href="#cb27-77" aria-hidden="true" tabindex="-1"></a>prma2 = ParRma(K = <span class="fl">8.0</span>) <span class="co"># default values except K = 20.0</span></span>
-<span id="cb27-78"><a href="#cb27-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-79"><a href="#cb27-79" aria-hidden="true" tabindex="-1"></a><span class="dt">@show</span> prma</span>
-<span id="cb27-80"><a href="#cb27-80" aria-hidden="true" tabindex="-1"></a><span class="dt">@show</span> prma.K</span>
-<span id="cb27-81"><a href="#cb27-81" aria-hidden="true" tabindex="-1"></a><span class="dt">@show</span> prma2.K;</span>
-<span id="cb27-82"><a href="#cb27-82" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb27-83"><a href="#cb27-83" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-84"><a href="#cb27-84" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
-<span id="cb27-85"><a href="#cb27-85" aria-hidden="true" tabindex="-1"></a>La macro <span class="in">`@show`</span> est assez explicite</span>
-<span id="cb27-86"><a href="#cb27-86" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-87"><a href="#cb27-87" aria-hidden="true" tabindex="-1"></a>Le <span class="in">`;`</span> permet de ne pas renvoyer l'évaluation de la commande <span class="in">`prma2.K`</span> (qui vaut 8.0) étant donné que nous avons déjà forcé la sortie via <span class="in">`@show`</span></span>
-<span id="cb27-88"><a href="#cb27-88" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb27-89"><a href="#cb27-89" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-90"><a href="#cb27-90" aria-hidden="true" tabindex="-1"></a><span class="fu">### Fonctions</span></span>
+<span id="cb27-58"><a href="#cb27-58" aria-hidden="true" tabindex="-1"></a>Pour ce dernier point, nous allons définir des types (<span class="in">`struct`</span>) spécifiques.</span>
+<span id="cb27-59"><a href="#cb27-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-60"><a href="#cb27-60" aria-hidden="true" tabindex="-1"></a>Nous commençons par importer les packages que nous allons utiliser:</span>
+<span id="cb27-63"><a href="#cb27-63" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb27-64"><a href="#cb27-64" aria-hidden="true" tabindex="-1"></a>using StaticArrays</span>
+<span id="cb27-65"><a href="#cb27-65" aria-hidden="true" tabindex="-1"></a>using DifferentialEquations</span>
+<span id="cb27-66"><a href="#cb27-66" aria-hidden="true" tabindex="-1"></a>using CairoMakie</span>
+<span id="cb27-67"><a href="#cb27-67" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-68"><a href="#cb27-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-69"><a href="#cb27-69" aria-hidden="true" tabindex="-1"></a><span class="fu">### Type spécifique pour les paramètres</span></span>
+<span id="cb27-70"><a href="#cb27-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-71"><a href="#cb27-71" aria-hidden="true" tabindex="-1"></a>Nous définissons un <span class="in">`struct`</span> pour les paramètres du modèle de Rosenzweig MacArthur.</span>
+<span id="cb27-72"><a href="#cb27-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-73"><a href="#cb27-73" aria-hidden="true" tabindex="-1"></a>Type pour les paramètres :</span>
+<span id="cb27-76"><a href="#cb27-76" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb27-77"><a href="#cb27-77" aria-hidden="true" tabindex="-1"></a><span class="co"># parameters struct</span></span>
+<span id="cb27-78"><a href="#cb27-78" aria-hidden="true" tabindex="-1"></a><span class="dt">@kwdef</span> struct ParRma</span>
+<span id="cb27-79"><a href="#cb27-79" aria-hidden="true" tabindex="-1"></a>    <span class="fu">r::Float64</span> = <span class="fl">1.0</span></span>
+<span id="cb27-80"><a href="#cb27-80" aria-hidden="true" tabindex="-1"></a>    <span class="fu">K::Float64</span> = <span class="fl">10.0</span></span>
+<span id="cb27-81"><a href="#cb27-81" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c::Float64</span> = <span class="fl">1.0</span></span>
+<span id="cb27-82"><a href="#cb27-82" aria-hidden="true" tabindex="-1"></a>    <span class="fu">h::Float64</span> = <span class="fl">2.0</span></span>
+<span id="cb27-83"><a href="#cb27-83" aria-hidden="true" tabindex="-1"></a>    <span class="fu">b::Float64</span> = <span class="fl">2.0</span></span>
+<span id="cb27-84"><a href="#cb27-84" aria-hidden="true" tabindex="-1"></a>    <span class="fu">m::Float64</span> = <span class="fl">1.0</span></span>
+<span id="cb27-85"><a href="#cb27-85" aria-hidden="true" tabindex="-1"></a>end</span>
+<span id="cb27-86"><a href="#cb27-86" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-87"><a href="#cb27-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-88"><a href="#cb27-88" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
+<span id="cb27-89"><a href="#cb27-89" aria-hidden="true" tabindex="-1"></a>La macro <span class="in">`@kwdef`</span> permet de renseigner des valeurs par défaut des champs du <span class="in">`struct`</span>.</span>
+<span id="cb27-90"><a href="#cb27-90" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb27-91"><a href="#cb27-91" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-92"><a href="#cb27-92" aria-hidden="true" tabindex="-1"></a>Nous définissons les différentes fonctions impliquées dans le modèle de Rosenzweig MacArthur, la logistique et la réponse fonctionnelle de Holling II.</span>
-<span id="cb27-93"><a href="#cb27-93" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-94"><a href="#cb27-94" aria-hidden="true" tabindex="-1"></a>Pour la logistique :</span>
-<span id="cb27-97"><a href="#cb27-97" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb27-98"><a href="#cb27-98" aria-hidden="true" tabindex="-1"></a>function logistic(<span class="fu">x::Real</span>, <span class="fu">p::ParRma</span>)</span>
-<span id="cb27-99"><a href="#cb27-99" aria-hidden="true" tabindex="-1"></a>    (; r, K) = p    <span class="co"># deconstruct/get r and K from p</span></span>
-<span id="cb27-100"><a href="#cb27-100" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> r<span class="dt">*x</span>*(<span class="dv">1</span><span class="ot">-x/K</span><span class="ch">)</span></span>
-<span id="cb27-101"><a href="#cb27-101" aria-hidden="true" tabindex="-1"></a><span class="ot">end</span></span>
-<span id="cb27-102"><a href="#cb27-102" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
-<span id="cb27-103"><a href="#cb27-103" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-104"><a href="#cb27-104" aria-hidden="true" tabindex="-1"></a><span class="ot">::: {.callout-note}</span></span>
-<span id="cb27-105"><a href="#cb27-105" aria-hidden="true" tabindex="-1"></a><span class="ot">- les notations `var::Type` permettent de spécifier le type de l'argument de la fonction</span><span class="ch">^[</span><span class="bn">C'est une des manières de faire du [multiple dispatch</span><span class="ch">](</span><span class="ot">https://docs.julialang.org/</span>en/v1/manual/methods/), en définissant différentes méthodes pour les fonctions selon <span class="ot">le</span> type de l<span class="ot">'</span><span class="ss">argument]</span></span>
-<span id="cb27-106"><a href="#cb27-106" aria-hidden="true" tabindex="-1"></a><span class="ss">- la notation `(; r, K) = p` permet d</span><span class="ot">'</span>extraire (<span class="dt">*deconstruct</span><span class="ot">*</span>) les champs <span class="ot">`</span><span class="st">r</span><span class="ot">`</span> et <span class="ot">`</span><span class="st">K</span><span class="ot">`</span> du paramètre <span class="ot">`</span><span class="st">p</span><span class="ot">`</span> qui est un objet de type <span class="ot">`</span><span class="st">ParRma</span><span class="ot">`</span></span>
-<span id="cb27-107"><a href="#cb27-107" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb27-92"><a href="#cb27-92" aria-hidden="true" tabindex="-1"></a>::: {.callout-important}</span>
+<span id="cb27-93"><a href="#cb27-93" aria-hidden="true" tabindex="-1"></a>Lors de la création d'un <span class="in">`struct`</span>, on peut être tenté d'utiliser des types de champs les plus larges possibles, comme par exemple <span class="in">`r::Real = 1.0`</span> ou <span class="in">`r::Number = 1.0`</span>.</span>
+<span id="cb27-94"><a href="#cb27-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-95"><a href="#cb27-95" aria-hidden="true" tabindex="-1"></a>*C'est une très mauvaise idée* : <span class="in">`Real`</span> et <span class="in">`Number`</span> sont des types abstraits qui englobent de nombreux types concrets (e.g. <span class="in">`Int64`</span> et <span class="in">`Float64`</span>). Par construction ils ne permettent pas de spécifier un espace mémoire de taille fixe comme le font les types concrets, et ne permettent donc pas d'optimiser le code à la précompilation^<span class="co">[</span><span class="ot">Par exemple, la fonction `cy_rma()` définie plus bas (la plus coûteuse en temps de calcul) est 70 fois plus lente avec un `ParRma` qui définit ses champs en `Real` plutôt qu'en `Float64`, (exécution de ~0.5s à ~35s après précompilation)</span><span class="co">]</span>.</span>
+<span id="cb27-96"><a href="#cb27-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-97"><a href="#cb27-97" aria-hidden="true" tabindex="-1"></a>A l'inverse, pour les fonctions, il est préférable de choisir le type le plus large possible pour la spécification des arguments.</span>
+<span id="cb27-98"><a href="#cb27-98" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb27-99"><a href="#cb27-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-100"><a href="#cb27-100" aria-hidden="true" tabindex="-1"></a>On peut créer des objets de type <span class="in">`ParRma`</span> via les <span class="in">`constructor`</span> par défaut; on accède à un champ particulier via <span class="in">`objet.champ`</span> :</span>
+<span id="cb27-103"><a href="#cb27-103" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb27-104"><a href="#cb27-104" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: true</span></span>
+<span id="cb27-105"><a href="#cb27-105" aria-hidden="true" tabindex="-1"></a><span class="co"># with the struct definition, ParRma objects are immutable</span></span>
+<span id="cb27-106"><a href="#cb27-106" aria-hidden="true" tabindex="-1"></a>prma = ParRma() <span class="co"># constructor with default values</span></span>
+<span id="cb27-107"><a href="#cb27-107" aria-hidden="true" tabindex="-1"></a>prma2 = ParRma(K = <span class="fl">8.0</span>) <span class="co"># default values except K = 20.0</span></span>
 <span id="cb27-108"><a href="#cb27-108" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-109"><a href="#cb27-109" aria-hidden="true" tabindex="-1"></a>Pour la réponse fonctionnelle (sans <span class="ot">le</span> paramètre <span class="dt">$c</span><span class="wa">$)</span> :</span>
-<span id="cb27-112"><a href="#cb27-112" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb27-113"><a href="#cb27-113" aria-hidden="true" tabindex="-1"></a><span class="st">function holling2(x::Real, p::ParRma)</span></span>
-<span id="cb27-114"><a href="#cb27-114" aria-hidden="true" tabindex="-1"></a><span class="st">    (; h) = p   # deconstruct h from p</span></span>
-<span id="cb27-115"><a href="#cb27-115" aria-hidden="true" tabindex="-1"></a><span class="st">    return x/(x+h)</span></span>
-<span id="cb27-116"><a href="#cb27-116" aria-hidden="true" tabindex="-1"></a><span class="st">end</span></span>
-<span id="cb27-117"><a href="#cb27-117" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
-<span id="cb27-118"><a href="#cb27-118" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-119"><a href="#cb27-119" aria-hidden="true" tabindex="-1"></a><span class="co">### Conditions initiales</span></span>
-<span id="cb27-120"><a href="#cb27-120" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-121"><a href="#cb27-121" aria-hidden="true" tabindex="-1"></a>Pour utiliser les static arrays avec <span class="ot">`</span><span class="st">DifferentialEquations.jl</span><span class="ot">`</span> il faut que l<span class="ot">'</span><span class="ss">état (donc la condition initiale) et les dérivées rendues par le modèle soient des static arrays (ici un `SVector`).</span></span>
-<span id="cb27-122"><a href="#cb27-122" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-123"><a href="#cb27-123" aria-hidden="true" tabindex="-1"></a><span class="ss">Nous définissons un `struct` de condition initiales, avec pour champs `x0`, `y0` et un `Svector` composé de ces deux valeurs :</span></span>
-<span id="cb27-124"><a href="#cb27-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-109"><a href="#cb27-109" aria-hidden="true" tabindex="-1"></a><span class="dt">@show</span> prma</span>
+<span id="cb27-110"><a href="#cb27-110" aria-hidden="true" tabindex="-1"></a><span class="dt">@show</span> prma.K</span>
+<span id="cb27-111"><a href="#cb27-111" aria-hidden="true" tabindex="-1"></a><span class="dt">@show</span> prma2.K;</span>
+<span id="cb27-112"><a href="#cb27-112" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb27-113"><a href="#cb27-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-114"><a href="#cb27-114" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
+<span id="cb27-115"><a href="#cb27-115" aria-hidden="true" tabindex="-1"></a>La macro <span class="in">`@show`</span> est assez explicite</span>
+<span id="cb27-116"><a href="#cb27-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-117"><a href="#cb27-117" aria-hidden="true" tabindex="-1"></a>Le <span class="in">`;`</span> permet de ne pas renvoyer l'évaluation de la commande <span class="in">`prma2.K`</span> (qui vaut 8.0) étant donné que nous avons déjà forcé la sortie via <span class="in">`@show`</span></span>
+<span id="cb27-118"><a href="#cb27-118" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb27-119"><a href="#cb27-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-120"><a href="#cb27-120" aria-hidden="true" tabindex="-1"></a><span class="fu">### Fonctions</span></span>
+<span id="cb27-121"><a href="#cb27-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-122"><a href="#cb27-122" aria-hidden="true" tabindex="-1"></a>Nous définissons les différentes fonctions impliquées dans le modèle de Rosenzweig MacArthur, la logistique et la réponse fonctionnelle de Holling II.</span>
+<span id="cb27-123"><a href="#cb27-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-124"><a href="#cb27-124" aria-hidden="true" tabindex="-1"></a>Pour la logistique :</span>
 <span id="cb27-127"><a href="#cb27-127" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb27-128"><a href="#cb27-128" aria-hidden="true" tabindex="-1"></a><span class="ss">#| output: true</span></span>
-<span id="cb27-129"><a href="#cb27-129" aria-hidden="true" tabindex="-1"></a><span class="ss"># initial value struct</span></span>
-<span id="cb27-130"><a href="#cb27-130" aria-hidden="true" tabindex="-1"></a><span class="ss">@kwdef struct IniV</span></span>
-<span id="cb27-131"><a href="#cb27-131" aria-hidden="true" tabindex="-1"></a><span class="ss">    x0::Float64 = 1.0</span></span>
-<span id="cb27-132"><a href="#cb27-132" aria-hidden="true" tabindex="-1"></a><span class="ss">    y0::Float64 = 1.95</span></span>
-<span id="cb27-133"><a href="#cb27-133" aria-hidden="true" tabindex="-1"></a><span class="ss">    u0::SVector{2, Float64} = SVector(x0, y0)</span></span>
-<span id="cb27-134"><a href="#cb27-134" aria-hidden="true" tabindex="-1"></a><span class="ss">end</span></span>
-<span id="cb27-135"><a href="#cb27-135" aria-hidden="true" tabindex="-1"></a><span class="ss"># construct some initial condition</span></span>
-<span id="cb27-136"><a href="#cb27-136" aria-hidden="true" tabindex="-1"></a><span class="ss">@show iniv = IniV();</span></span>
-<span id="cb27-137"><a href="#cb27-137" aria-hidden="true" tabindex="-1"></a><span class="ss">```</span></span>
+<span id="cb27-128"><a href="#cb27-128" aria-hidden="true" tabindex="-1"></a>function logistic(<span class="fu">x::Real</span>, <span class="fu">p::ParRma</span>)</span>
+<span id="cb27-129"><a href="#cb27-129" aria-hidden="true" tabindex="-1"></a>    (; r, K) = p    <span class="co"># deconstruct/get r and K from p</span></span>
+<span id="cb27-130"><a href="#cb27-130" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> r<span class="dt">*x</span>*(<span class="dv">1</span><span class="ot">-x/K</span><span class="ch">)</span></span>
+<span id="cb27-131"><a href="#cb27-131" aria-hidden="true" tabindex="-1"></a><span class="ot">end</span></span>
+<span id="cb27-132"><a href="#cb27-132" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
+<span id="cb27-133"><a href="#cb27-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-134"><a href="#cb27-134" aria-hidden="true" tabindex="-1"></a><span class="ot">::: {.callout-note}</span></span>
+<span id="cb27-135"><a href="#cb27-135" aria-hidden="true" tabindex="-1"></a><span class="ot">- les notations `var::Type` permettent de spécifier le type de l'argument de la fonction</span><span class="ch">^[</span><span class="bn">C'est une des manières de faire du [multiple dispatch</span><span class="ch">](</span><span class="ot">https://docs.julialang.org/</span>en/v1/manual/methods/), en définissant différentes méthodes pour les fonctions selon <span class="ot">le</span> type de l<span class="ot">'</span><span class="ss">argument]</span></span>
+<span id="cb27-136"><a href="#cb27-136" aria-hidden="true" tabindex="-1"></a><span class="ss">- la notation `(; r, K) = p` permet d</span><span class="ot">'</span>extraire (<span class="dt">*deconstruct</span><span class="ot">*</span>) les champs <span class="ot">`</span><span class="st">r</span><span class="ot">`</span> et <span class="ot">`</span><span class="st">K</span><span class="ot">`</span> du paramètre <span class="ot">`</span><span class="st">p</span><span class="ot">`</span> qui est un objet de type <span class="ot">`</span><span class="st">ParRma</span><span class="ot">`</span></span>
+<span id="cb27-137"><a href="#cb27-137" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb27-138"><a href="#cb27-138" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-139"><a href="#cb27-139" aria-hidden="true" tabindex="-1"></a><span class="ss">Nous définissons un constructeur additionnel pour le type `IniV` qui à partir d</span><span class="ot">'</span>un <span class="ot">`</span><span class="st">SVector</span><span class="ot">`</span> de longueur <span class="dv">2</span>, construit l<span class="ot">'</span><span class="ss">objet `IniV` correspondant^[il s</span><span class="ot">'</span>agit d<span class="ot">'</span><span class="ss">une forme de multiple dispatch sur le constructeur, avec plusieurs méthodes différents selon le type d</span><span class="ot">'</span>arguments utilisés] (nous nous en servirons plus bas dans la fonction <span class="ot">`</span><span class="st">cy_rma()</span><span class="ot">`</span>)</span>
-<span id="cb27-140"><a href="#cb27-140" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-143"><a href="#cb27-143" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb27-144"><a href="#cb27-144" aria-hidden="true" tabindex="-1"></a><span class="st">#| output: true</span></span>
-<span id="cb27-145"><a href="#cb27-145" aria-hidden="true" tabindex="-1"></a><span class="st"># new constructor method for struct IniV</span></span>
-<span id="cb27-146"><a href="#cb27-146" aria-hidden="true" tabindex="-1"></a><span class="st"># takes a length 2 SVector to construct the object (self definition)</span></span>
-<span id="cb27-147"><a href="#cb27-147" aria-hidden="true" tabindex="-1"></a><span class="st">IniV(u0::SVector{2, Float64}) = IniV(x0 = u0[1], y0 = u0[2])</span></span>
+<span id="cb27-139"><a href="#cb27-139" aria-hidden="true" tabindex="-1"></a>Pour la réponse fonctionnelle (sans <span class="ot">le</span> paramètre <span class="dt">$c</span><span class="wa">$)</span> :</span>
+<span id="cb27-142"><a href="#cb27-142" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb27-143"><a href="#cb27-143" aria-hidden="true" tabindex="-1"></a><span class="st">function holling2(x::Real, p::ParRma)</span></span>
+<span id="cb27-144"><a href="#cb27-144" aria-hidden="true" tabindex="-1"></a><span class="st">    (; h) = p   # deconstruct h from p</span></span>
+<span id="cb27-145"><a href="#cb27-145" aria-hidden="true" tabindex="-1"></a><span class="st">    return x/(x+h)</span></span>
+<span id="cb27-146"><a href="#cb27-146" aria-hidden="true" tabindex="-1"></a><span class="st">end</span></span>
+<span id="cb27-147"><a href="#cb27-147" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
 <span id="cb27-148"><a href="#cb27-148" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-149"><a href="#cb27-149" aria-hidden="true" tabindex="-1"></a><span class="st"># construct an initial condition with this constructor</span></span>
-<span id="cb27-150"><a href="#cb27-150" aria-hidden="true" tabindex="-1"></a><span class="dt">@show</span><span class="st"> IniV(SVector(3.0, 3.0));</span></span>
-<span id="cb27-151"><a href="#cb27-151" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
+<span id="cb27-149"><a href="#cb27-149" aria-hidden="true" tabindex="-1"></a><span class="co">### Conditions initiales</span></span>
+<span id="cb27-150"><a href="#cb27-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-151"><a href="#cb27-151" aria-hidden="true" tabindex="-1"></a>Pour utiliser les static arrays avec <span class="ot">`</span><span class="st">DifferentialEquations.jl</span><span class="ot">`</span> il faut que l<span class="ot">'</span><span class="ss">état (donc la condition initiale) et les dérivées rendues par le modèle soient des static arrays (ici un `SVector`).</span></span>
 <span id="cb27-152"><a href="#cb27-152" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-153"><a href="#cb27-153" aria-hidden="true" tabindex="-1"></a><span class="co">### Modèle</span></span>
+<span id="cb27-153"><a href="#cb27-153" aria-hidden="true" tabindex="-1"></a><span class="ss">Nous définissons un `struct` de condition initiales, avec pour champs `x0`, `y0` et un `Svector` composé de ces deux valeurs :</span></span>
 <span id="cb27-154"><a href="#cb27-154" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-155"><a href="#cb27-155" aria-hidden="true" tabindex="-1"></a>On définit les équations du modèle en exploitant les fonctions définies plus haut et la structure des paramètres, en renvoyant les dérivées sous forme de <span class="ot">`</span><span class="st">SVector</span><span class="ot">`</span> :</span>
-<span id="cb27-156"><a href="#cb27-156" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-159"><a href="#cb27-159" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb27-160"><a href="#cb27-160" aria-hidden="true" tabindex="-1"></a><span class="st">function mod_rma(u::SVector{2}, p::ParRma, t)</span></span>
-<span id="cb27-161"><a href="#cb27-161" aria-hidden="true" tabindex="-1"></a><span class="st">    (; c, b, m) = p     # get c, b, m from p</span></span>
-<span id="cb27-162"><a href="#cb27-162" aria-hidden="true" tabindex="-1"></a><span class="st">    x = u[1]            # use x, y notations</span></span>
-<span id="cb27-163"><a href="#cb27-163" aria-hidden="true" tabindex="-1"></a><span class="st">    y = u[2]</span></span>
-<span id="cb27-164"><a href="#cb27-164" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-165"><a href="#cb27-165" aria-hidden="true" tabindex="-1"></a><span class="st">    dx = logistic(x, p) - c * holling2(x,p) * y</span></span>
-<span id="cb27-166"><a href="#cb27-166" aria-hidden="true" tabindex="-1"></a><span class="st">    dy = b * holling2(x, p) * y - m * y</span></span>
-<span id="cb27-167"><a href="#cb27-167" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-168"><a href="#cb27-168" aria-hidden="true" tabindex="-1"></a><span class="st">    return SVector(dx, dy) # return derivatives as SVector</span></span>
-<span id="cb27-169"><a href="#cb27-169" aria-hidden="true" tabindex="-1"></a><span class="st">end</span></span>
-<span id="cb27-170"><a href="#cb27-170" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
-<span id="cb27-171"><a href="#cb27-171" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-172"><a href="#cb27-172" aria-hidden="true" tabindex="-1"></a><span class="co">### Simulation simple</span></span>
-<span id="cb27-173"><a href="#cb27-173" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-174"><a href="#cb27-174" aria-hidden="true" tabindex="-1"></a>On définit les paramètres du temps dans un <span class="ot">`</span><span class="st">struct</span><span class="ot">`</span> :</span>
-<span id="cb27-177"><a href="#cb27-177" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb27-178"><a href="#cb27-178" aria-hidden="true" tabindex="-1"></a><span class="st"># time parameters struct</span></span>
-<span id="cb27-179"><a href="#cb27-179" aria-hidden="true" tabindex="-1"></a><span class="dt">@kwdef</span><span class="st"> struct ParTime</span></span>
-<span id="cb27-180"><a href="#cb27-180" aria-hidden="true" tabindex="-1"></a><span class="st">    tspan::Tuple{Float64, Float64} = (0.0, 60.0)</span></span>
-<span id="cb27-181"><a href="#cb27-181" aria-hidden="true" tabindex="-1"></a><span class="st">    tstep::Float64 = 0.1</span></span>
-<span id="cb27-182"><a href="#cb27-182" aria-hidden="true" tabindex="-1"></a><span class="st">end</span></span>
-<span id="cb27-183"><a href="#cb27-183" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-184"><a href="#cb27-184" aria-hidden="true" tabindex="-1"></a><span class="st"># construct a time parameter</span></span>
-<span id="cb27-185"><a href="#cb27-185" aria-hidden="true" tabindex="-1"></a><span class="st">ptime = ParTime()</span></span>
-<span id="cb27-186"><a href="#cb27-186" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
-<span id="cb27-187"><a href="#cb27-187" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-188"><a href="#cb27-188" aria-hidden="true" tabindex="-1"></a>On définit une fonction qui définit <span class="ot">le</span> problème de simulation, l<span class="ot">'</span><span class="ss">intègre et retourne la solution, avec pour arguments positionnels la condition initiale, les paramètres et les paramètres de temps, et comme keyword argument le paramètre booléen `final`.</span></span>
-<span id="cb27-189"><a href="#cb27-189" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-190"><a href="#cb27-190" aria-hidden="true" tabindex="-1"></a><span class="ss">Lorsque `final = false` (par défaut), la fonction renvoie toute la solution. Lorsque `final  =true` la fonction renvoie la valeur finale de la simulation, ce dont nous nous servirons plus bas dans l</span><span class="ot">'</span>estimation des extremas du cycle limite.</span>
-<span id="cb27-193"><a href="#cb27-193" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb27-194"><a href="#cb27-194" aria-hidden="true" tabindex="-1"></a><span class="st">#| output: true</span></span>
-<span id="cb27-195"><a href="#cb27-195" aria-hidden="true" tabindex="-1"></a><span class="st">function sim_rma(iniv::IniV, p::ParRma, pt::ParTime; final::Bool = false)</span></span>
-<span id="cb27-196"><a href="#cb27-196" aria-hidden="true" tabindex="-1"></a><span class="st">    # deconstruct time parameter</span></span>
-<span id="cb27-197"><a href="#cb27-197" aria-hidden="true" tabindex="-1"></a><span class="st">    (; tspan, tstep) = pt</span></span>
-<span id="cb27-198"><a href="#cb27-198" aria-hidden="true" tabindex="-1"></a><span class="st">    (; u0) = iniv</span></span>
-<span id="cb27-199"><a href="#cb27-199" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-200"><a href="#cb27-200" aria-hidden="true" tabindex="-1"></a><span class="st">    # define and solve simulation problem</span></span>
-<span id="cb27-201"><a href="#cb27-201" aria-hidden="true" tabindex="-1"></a><span class="st">    prob_rma = ODEProblem(mod_rma, u0, tspan, p)</span></span>
-<span id="cb27-202"><a href="#cb27-202" aria-hidden="true" tabindex="-1"></a><span class="st">    if !final   # if final == false compute whole solution</span></span>
-<span id="cb27-203"><a href="#cb27-203" aria-hidden="true" tabindex="-1"></a><span class="st">        sol_rma = solve(prob_rma; reltol = 1e-6, saveat = tstep)</span></span>
-<span id="cb27-204"><a href="#cb27-204" aria-hidden="true" tabindex="-1"></a><span class="st">    else        # if final == true compute only final state</span></span>
-<span id="cb27-205"><a href="#cb27-205" aria-hidden="true" tabindex="-1"></a><span class="st">        sol_rma = solve(</span></span>
-<span id="cb27-206"><a href="#cb27-206" aria-hidden="true" tabindex="-1"></a><span class="st">            prob_rma;</span></span>
-<span id="cb27-207"><a href="#cb27-207" aria-hidden="true" tabindex="-1"></a><span class="st">            reltol = 1e-6,</span></span>
-<span id="cb27-208"><a href="#cb27-208" aria-hidden="true" tabindex="-1"></a><span class="st">            save_everystep = false,</span></span>
-<span id="cb27-209"><a href="#cb27-209" aria-hidden="true" tabindex="-1"></a><span class="st">            save_start = false,</span></span>
-<span id="cb27-210"><a href="#cb27-210" aria-hidden="true" tabindex="-1"></a><span class="st">        )</span></span>
-<span id="cb27-211"><a href="#cb27-211" aria-hidden="true" tabindex="-1"></a><span class="st">    end</span></span>
-<span id="cb27-212"><a href="#cb27-212" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-213"><a href="#cb27-213" aria-hidden="true" tabindex="-1"></a><span class="st">    return sol_rma</span></span>
-<span id="cb27-214"><a href="#cb27-214" aria-hidden="true" tabindex="-1"></a><span class="st">end</span></span>
-<span id="cb27-215"><a href="#cb27-215" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-216"><a href="#cb27-216" aria-hidden="true" tabindex="-1"></a><span class="dt">@time</span><span class="st"> sim_rma(iniv, prma, ptime);</span></span>
-<span id="cb27-217"><a href="#cb27-217" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
-<span id="cb27-218"><a href="#cb27-218" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-219"><a href="#cb27-219" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
-<span id="cb27-220"><a href="#cb27-220" aria-hidden="true" tabindex="-1"></a>La macro <span class="ot">`</span><span class="dt">@time</span><span class="ot">`</span> renvoit <span class="ot">le</span> temps (et qqes éléments sur la computation) mis pour calculer la commande qui la suit, ici la simulation.</span>
-<span id="cb27-221"><a href="#cb27-221" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb27-222"><a href="#cb27-222" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-223"><a href="#cb27-223" aria-hidden="true" tabindex="-1"></a>Une fois la fonction précompilée à la première exécution, la performance est incomparable (<span class="dv">4</span> ordres de grandeur plus rapide sur la fonction <span class="ot">`</span><span class="st">sim_rma()</span><span class="ot">`</span>) :</span>
-<span id="cb27-224"><a href="#cb27-224" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-227"><a href="#cb27-227" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb27-228"><a href="#cb27-228" aria-hidden="true" tabindex="-1"></a><span class="st">#| output: true</span></span>
-<span id="cb27-229"><a href="#cb27-229" aria-hidden="true" tabindex="-1"></a><span class="dt">@time</span><span class="st"> sim_rma(iniv, prma2, ptime);</span></span>
-<span id="cb27-230"><a href="#cb27-230" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
-<span id="cb27-231"><a href="#cb27-231" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-232"><a href="#cb27-232" aria-hidden="true" tabindex="-1"></a><span class="co">### Solution contre le temps</span></span>
-<span id="cb27-233"><a href="#cb27-233" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-234"><a href="#cb27-234" aria-hidden="true" tabindex="-1"></a>Finalement, on définit une fonction qui simule et produit un graphique de la solution contre <span class="ot">le</span> temps, avec pour arguments la condition initiale, les paramètres et les paramètres de temps :</span>
-<span id="cb27-237"><a href="#cb27-237" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb27-238"><a href="#cb27-238" aria-hidden="true" tabindex="-1"></a><span class="st">#| eval: true</span></span>
-<span id="cb27-239"><a href="#cb27-239" aria-hidden="true" tabindex="-1"></a><span class="st">function plot_rma(iniv::IniV, p::ParRma, pt::ParTime)</span></span>
-<span id="cb27-240"><a href="#cb27-240" aria-hidden="true" tabindex="-1"></a><span class="st">    # compute the simulation</span></span>
-<span id="cb27-241"><a href="#cb27-241" aria-hidden="true" tabindex="-1"></a><span class="st">    sol_rma = sim_rma(iniv, p, pt)</span></span>
+<span id="cb27-157"><a href="#cb27-157" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb27-158"><a href="#cb27-158" aria-hidden="true" tabindex="-1"></a><span class="ss">#| output: true</span></span>
+<span id="cb27-159"><a href="#cb27-159" aria-hidden="true" tabindex="-1"></a><span class="ss"># initial value struct</span></span>
+<span id="cb27-160"><a href="#cb27-160" aria-hidden="true" tabindex="-1"></a><span class="ss">@kwdef struct IniV</span></span>
+<span id="cb27-161"><a href="#cb27-161" aria-hidden="true" tabindex="-1"></a><span class="ss">    x0::Float64 = 1.0</span></span>
+<span id="cb27-162"><a href="#cb27-162" aria-hidden="true" tabindex="-1"></a><span class="ss">    y0::Float64 = 1.95</span></span>
+<span id="cb27-163"><a href="#cb27-163" aria-hidden="true" tabindex="-1"></a><span class="ss">    u0::SVector{2, Float64} = SVector(x0, y0)</span></span>
+<span id="cb27-164"><a href="#cb27-164" aria-hidden="true" tabindex="-1"></a><span class="ss">end</span></span>
+<span id="cb27-165"><a href="#cb27-165" aria-hidden="true" tabindex="-1"></a><span class="ss"># construct some initial condition</span></span>
+<span id="cb27-166"><a href="#cb27-166" aria-hidden="true" tabindex="-1"></a><span class="ss">@show iniv = IniV();</span></span>
+<span id="cb27-167"><a href="#cb27-167" aria-hidden="true" tabindex="-1"></a><span class="ss">```</span></span>
+<span id="cb27-168"><a href="#cb27-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-169"><a href="#cb27-169" aria-hidden="true" tabindex="-1"></a><span class="ss">Nous définissons un constructeur additionnel pour le type `IniV` qui à partir d</span><span class="ot">'</span>un <span class="ot">`</span><span class="st">SVector</span><span class="ot">`</span> de longueur <span class="dv">2</span>, construit l<span class="ot">'</span><span class="ss">objet `IniV` correspondant^[il s</span><span class="ot">'</span>agit d<span class="ot">'</span><span class="ss">une forme de multiple dispatch sur le constructeur, avec plusieurs méthodes différents selon le type d</span><span class="ot">'</span>arguments utilisés] (nous nous en servirons plus bas dans la fonction <span class="ot">`</span><span class="st">cy_rma()</span><span class="ot">`</span>)</span>
+<span id="cb27-170"><a href="#cb27-170" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-173"><a href="#cb27-173" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb27-174"><a href="#cb27-174" aria-hidden="true" tabindex="-1"></a><span class="st">#| output: true</span></span>
+<span id="cb27-175"><a href="#cb27-175" aria-hidden="true" tabindex="-1"></a><span class="st"># new constructor method for struct IniV</span></span>
+<span id="cb27-176"><a href="#cb27-176" aria-hidden="true" tabindex="-1"></a><span class="st"># takes a length 2 SVector to construct the object (self definition)</span></span>
+<span id="cb27-177"><a href="#cb27-177" aria-hidden="true" tabindex="-1"></a><span class="st">IniV(u0::SVector{2, Float64}) = IniV(x0 = u0[1], y0 = u0[2])</span></span>
+<span id="cb27-178"><a href="#cb27-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-179"><a href="#cb27-179" aria-hidden="true" tabindex="-1"></a><span class="st"># construct an initial condition with this constructor</span></span>
+<span id="cb27-180"><a href="#cb27-180" aria-hidden="true" tabindex="-1"></a><span class="dt">@show</span><span class="st"> IniV(SVector(3.0, 3.0));</span></span>
+<span id="cb27-181"><a href="#cb27-181" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
+<span id="cb27-182"><a href="#cb27-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-183"><a href="#cb27-183" aria-hidden="true" tabindex="-1"></a><span class="co">### Modèle</span></span>
+<span id="cb27-184"><a href="#cb27-184" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-185"><a href="#cb27-185" aria-hidden="true" tabindex="-1"></a>On définit les équations du modèle en exploitant les fonctions définies plus haut et la structure des paramètres, en renvoyant les dérivées sous forme de <span class="ot">`</span><span class="st">SVector</span><span class="ot">`</span> :</span>
+<span id="cb27-186"><a href="#cb27-186" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-189"><a href="#cb27-189" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb27-190"><a href="#cb27-190" aria-hidden="true" tabindex="-1"></a><span class="st">function mod_rma(u::SVector{2}, p::ParRma, t)</span></span>
+<span id="cb27-191"><a href="#cb27-191" aria-hidden="true" tabindex="-1"></a><span class="st">    (; c, b, m) = p     # get c, b, m from p</span></span>
+<span id="cb27-192"><a href="#cb27-192" aria-hidden="true" tabindex="-1"></a><span class="st">    x = u[1]            # use x, y notations</span></span>
+<span id="cb27-193"><a href="#cb27-193" aria-hidden="true" tabindex="-1"></a><span class="st">    y = u[2]</span></span>
+<span id="cb27-194"><a href="#cb27-194" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-195"><a href="#cb27-195" aria-hidden="true" tabindex="-1"></a><span class="st">    dx = logistic(x, p) - c * holling2(x,p) * y</span></span>
+<span id="cb27-196"><a href="#cb27-196" aria-hidden="true" tabindex="-1"></a><span class="st">    dy = b * holling2(x, p) * y - m * y</span></span>
+<span id="cb27-197"><a href="#cb27-197" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-198"><a href="#cb27-198" aria-hidden="true" tabindex="-1"></a><span class="st">    return SVector(dx, dy) # return derivatives as SVector</span></span>
+<span id="cb27-199"><a href="#cb27-199" aria-hidden="true" tabindex="-1"></a><span class="st">end</span></span>
+<span id="cb27-200"><a href="#cb27-200" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
+<span id="cb27-201"><a href="#cb27-201" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-202"><a href="#cb27-202" aria-hidden="true" tabindex="-1"></a><span class="co">### Simulation simple</span></span>
+<span id="cb27-203"><a href="#cb27-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-204"><a href="#cb27-204" aria-hidden="true" tabindex="-1"></a>On définit les paramètres du temps dans un <span class="ot">`</span><span class="st">struct</span><span class="ot">`</span> :</span>
+<span id="cb27-207"><a href="#cb27-207" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb27-208"><a href="#cb27-208" aria-hidden="true" tabindex="-1"></a><span class="st"># time parameters struct</span></span>
+<span id="cb27-209"><a href="#cb27-209" aria-hidden="true" tabindex="-1"></a><span class="dt">@kwdef</span><span class="st"> struct ParTime</span></span>
+<span id="cb27-210"><a href="#cb27-210" aria-hidden="true" tabindex="-1"></a><span class="st">    tspan::Tuple{Float64, Float64} = (0.0, 60.0)</span></span>
+<span id="cb27-211"><a href="#cb27-211" aria-hidden="true" tabindex="-1"></a><span class="st">    tstep::Float64 = 0.1</span></span>
+<span id="cb27-212"><a href="#cb27-212" aria-hidden="true" tabindex="-1"></a><span class="st">end</span></span>
+<span id="cb27-213"><a href="#cb27-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-214"><a href="#cb27-214" aria-hidden="true" tabindex="-1"></a><span class="st"># construct a time parameter</span></span>
+<span id="cb27-215"><a href="#cb27-215" aria-hidden="true" tabindex="-1"></a><span class="st">ptime = ParTime()</span></span>
+<span id="cb27-216"><a href="#cb27-216" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
+<span id="cb27-217"><a href="#cb27-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-218"><a href="#cb27-218" aria-hidden="true" tabindex="-1"></a>On définit une fonction qui définit <span class="ot">le</span> problème de simulation, l<span class="ot">'</span><span class="ss">intègre et retourne la solution, avec pour arguments positionnels la condition initiale, les paramètres et les paramètres de temps, et comme keyword argument le paramètre booléen `final`.</span></span>
+<span id="cb27-219"><a href="#cb27-219" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-220"><a href="#cb27-220" aria-hidden="true" tabindex="-1"></a><span class="ss">Lorsque `final = false` (par défaut), la fonction renvoie toute la solution. Lorsque `final  =true` la fonction renvoie la valeur finale de la simulation, ce dont nous nous servirons plus bas dans l</span><span class="ot">'</span>estimation des extremas du cycle limite.</span>
+<span id="cb27-223"><a href="#cb27-223" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb27-224"><a href="#cb27-224" aria-hidden="true" tabindex="-1"></a><span class="st">#| output: true</span></span>
+<span id="cb27-225"><a href="#cb27-225" aria-hidden="true" tabindex="-1"></a><span class="st">function sim_rma(iniv::IniV, p::ParRma, pt::ParTime; final::Bool = false)</span></span>
+<span id="cb27-226"><a href="#cb27-226" aria-hidden="true" tabindex="-1"></a><span class="st">    # deconstruct time parameter</span></span>
+<span id="cb27-227"><a href="#cb27-227" aria-hidden="true" tabindex="-1"></a><span class="st">    (; tspan, tstep) = pt</span></span>
+<span id="cb27-228"><a href="#cb27-228" aria-hidden="true" tabindex="-1"></a><span class="st">    (; u0) = iniv</span></span>
+<span id="cb27-229"><a href="#cb27-229" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-230"><a href="#cb27-230" aria-hidden="true" tabindex="-1"></a><span class="st">    # define and solve simulation problem</span></span>
+<span id="cb27-231"><a href="#cb27-231" aria-hidden="true" tabindex="-1"></a><span class="st">    prob_rma = ODEProblem(mod_rma, u0, tspan, p)</span></span>
+<span id="cb27-232"><a href="#cb27-232" aria-hidden="true" tabindex="-1"></a><span class="st">    if !final   # if final == false compute whole solution</span></span>
+<span id="cb27-233"><a href="#cb27-233" aria-hidden="true" tabindex="-1"></a><span class="st">        sol_rma = solve(prob_rma; reltol = 1e-6, saveat = tstep)</span></span>
+<span id="cb27-234"><a href="#cb27-234" aria-hidden="true" tabindex="-1"></a><span class="st">    else        # if final == true compute only final state</span></span>
+<span id="cb27-235"><a href="#cb27-235" aria-hidden="true" tabindex="-1"></a><span class="st">        sol_rma = solve(</span></span>
+<span id="cb27-236"><a href="#cb27-236" aria-hidden="true" tabindex="-1"></a><span class="st">            prob_rma;</span></span>
+<span id="cb27-237"><a href="#cb27-237" aria-hidden="true" tabindex="-1"></a><span class="st">            reltol = 1e-6,</span></span>
+<span id="cb27-238"><a href="#cb27-238" aria-hidden="true" tabindex="-1"></a><span class="st">            save_everystep = false,</span></span>
+<span id="cb27-239"><a href="#cb27-239" aria-hidden="true" tabindex="-1"></a><span class="st">            save_start = false,</span></span>
+<span id="cb27-240"><a href="#cb27-240" aria-hidden="true" tabindex="-1"></a><span class="st">        )</span></span>
+<span id="cb27-241"><a href="#cb27-241" aria-hidden="true" tabindex="-1"></a><span class="st">    end</span></span>
 <span id="cb27-242"><a href="#cb27-242" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-243"><a href="#cb27-243" aria-hidden="true" tabindex="-1"></a><span class="st">    # initialize figure</span></span>
-<span id="cb27-244"><a href="#cb27-244" aria-hidden="true" tabindex="-1"></a><span class="st">    fig = Figure(; fontsize = 20)</span></span>
-<span id="cb27-245"><a href="#cb27-245" aria-hidden="true" tabindex="-1"></a><span class="st">    ax = Axis(fig[1,1];</span></span>
-<span id="cb27-246"><a href="#cb27-246" aria-hidden="true" tabindex="-1"></a><span class="st">        title = "Modèle de Rosenzweig MacArthur</span><span class="ch">\n</span><span class="st"> ",</span></span>
-<span id="cb27-247"><a href="#cb27-247" aria-hidden="true" tabindex="-1"></a><span class="st">        xlabel = "temps",</span></span>
-<span id="cb27-248"><a href="#cb27-248" aria-hidden="true" tabindex="-1"></a><span class="st">        ylabel = "densités",</span></span>
-<span id="cb27-249"><a href="#cb27-249" aria-hidden="true" tabindex="-1"></a><span class="st">    )</span></span>
-<span id="cb27-250"><a href="#cb27-250" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-251"><a href="#cb27-251" aria-hidden="true" tabindex="-1"></a><span class="st">    # plot solution</span></span>
-<span id="cb27-252"><a href="#cb27-252" aria-hidden="true" tabindex="-1"></a><span class="st">    lines!(ax, sol_rma.t, sol_rma[1,:]; lw = 2, label = "proies")</span></span>
-<span id="cb27-253"><a href="#cb27-253" aria-hidden="true" tabindex="-1"></a><span class="st">    lines!(ax, sol_rma.t,  sol_rma[2,:]; lw = 2, label = "prédateurs")</span></span>
-<span id="cb27-254"><a href="#cb27-254" aria-hidden="true" tabindex="-1"></a><span class="st">    axislegend(; position = :lt)</span></span>
-<span id="cb27-255"><a href="#cb27-255" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-256"><a href="#cb27-256" aria-hidden="true" tabindex="-1"></a><span class="st">    return fig</span></span>
-<span id="cb27-257"><a href="#cb27-257" aria-hidden="true" tabindex="-1"></a><span class="st">end</span></span>
-<span id="cb27-258"><a href="#cb27-258" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
-<span id="cb27-259"><a href="#cb27-259" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-260"><a href="#cb27-260" aria-hidden="true" tabindex="-1"></a>Finalement on exécute cette fonction pour tracer la simulation :</span>
-<span id="cb27-263"><a href="#cb27-263" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb27-264"><a href="#cb27-264" aria-hidden="true" tabindex="-1"></a><span class="st">#| output: true</span></span>
-<span id="cb27-265"><a href="#cb27-265" aria-hidden="true" tabindex="-1"></a><span class="st">#| label: fig-rma-time</span></span>
-<span id="cb27-266"><a href="#cb27-266" aria-hidden="true" tabindex="-1"></a><span class="st">#| fig-cap: Simulation des trajectoires du modèle de Rosenzweig MacArthur</span></span>
-<span id="cb27-267"><a href="#cb27-267" aria-hidden="true" tabindex="-1"></a><span class="st">plot_rma(iniv, prma, ptime)</span></span>
-<span id="cb27-268"><a href="#cb27-268" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
-<span id="cb27-269"><a href="#cb27-269" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-270"><a href="#cb27-270" aria-hidden="true" tabindex="-1"></a><span class="co">### Diagramme de bifurcations</span></span>
-<span id="cb27-271"><a href="#cb27-271" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-272"><a href="#cb27-272" aria-hidden="true" tabindex="-1"></a>Nous calculons ici <span class="ot">le</span> diagramme de bifurcations : les asymptotiques des prédateurs <span class="dt">$y</span>^*$ en fonction de <span class="dt">$K</span><span class="wa">$.</span></span>
-<span id="cb27-273"><a href="#cb27-273" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-274"><a href="#cb27-274" aria-hidden="true" tabindex="-1"></a><span class="co">#### Équilibres</span></span>
-<span id="cb27-275"><a href="#cb27-275" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-276"><a href="#cb27-276" aria-hidden="true" tabindex="-1"></a>Il n<span class="ot">'</span><span class="ss">y a pas besoin de simulation ici puisque les lieux des équilibres sont facilement calculables analytiquement (cf. cette [page](pop_interactions2.qmd)).</span></span>
-<span id="cb27-277"><a href="#cb27-277" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-278"><a href="#cb27-278" aria-hidden="true" tabindex="-1"></a><span class="ss">Nous définissons une fonction qui prend les paramètres du modèle et renvoit des tuples définissant les différentes branches d</span><span class="ot">'</span>équilibres <span class="wa">$(K</span>, <span class="ot">y</span>^<span class="ot">*</span>)$ (avec en <span class="ot">`</span><span class="st">kwarg</span><span class="ot">`</span> un <span class="ot">`</span><span class="st">Kmax</span><span class="ot">`</span> et un <span class="ot">`</span><span class="st">Kstep</span><span class="ot">`</span> avec des valeurs par défaut).</span>
-<span id="cb27-279"><a href="#cb27-279" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-282"><a href="#cb27-282" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb27-283"><a href="#cb27-283" aria-hidden="true" tabindex="-1"></a><span class="st">#| output: false</span></span>
-<span id="cb27-284"><a href="#cb27-284" aria-hidden="true" tabindex="-1"></a><span class="st">function eqy_rma(p::ParRma; Kmax::Real = 8.0, Kstep::Real = 0.1)</span></span>
-<span id="cb27-285"><a href="#cb27-285" aria-hidden="true" tabindex="-1"></a><span class="st">    (; r, c, h, b, m) = p # deconstruct p (K is useless since it is varied)</span></span>
-<span id="cb27-286"><a href="#cb27-286" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-287"><a href="#cb27-287" aria-hidden="true" tabindex="-1"></a><span class="st">    # define bifurcation K values</span></span>
-<span id="cb27-288"><a href="#cb27-288" aria-hidden="true" tabindex="-1"></a><span class="st">    Ktrans = m*h/(b-m)</span></span>
-<span id="cb27-289"><a href="#cb27-289" aria-hidden="true" tabindex="-1"></a><span class="st">    Khopf = h+2*m*h/(b-m)</span></span>
-<span id="cb27-290"><a href="#cb27-290" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-291"><a href="#cb27-291" aria-hidden="true" tabindex="-1"></a><span class="st">    # drops an error if Kmax is too small</span></span>
-<span id="cb27-292"><a href="#cb27-292" aria-hidden="true" tabindex="-1"></a><span class="st">    if Kmax &lt; Khopf</span></span>
-<span id="cb27-293"><a href="#cb27-293" aria-hidden="true" tabindex="-1"></a><span class="st">        error("For a full computation of equilibria types, Kmax must be greater than </span><span class="dt">$Khopf</span><span class="st">")</span></span>
-<span id="cb27-294"><a href="#cb27-294" aria-hidden="true" tabindex="-1"></a><span class="st">    end</span></span>
-<span id="cb27-295"><a href="#cb27-295" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-296"><a href="#cb27-296" aria-hidden="true" tabindex="-1"></a><span class="st">    # y equilibria</span></span>
-<span id="cb27-297"><a href="#cb27-297" aria-hidden="true" tabindex="-1"></a><span class="st">    # below transcritical : only y=0</span></span>
-<span id="cb27-298"><a href="#cb27-298" aria-hidden="true" tabindex="-1"></a><span class="st">    Krg1 = 0:Kstep:Ktrans</span></span>
-<span id="cb27-299"><a href="#cb27-299" aria-hidden="true" tabindex="-1"></a><span class="st">    y01 = ones(length(Krg1)).*0     # broadcasting</span></span>
-<span id="cb27-300"><a href="#cb27-300" aria-hidden="true" tabindex="-1"></a><span class="st">    eqs1 = (Krg = Krg1, y0 = y01, yco = nothing)</span></span>
+<span id="cb27-243"><a href="#cb27-243" aria-hidden="true" tabindex="-1"></a><span class="st">    return sol_rma</span></span>
+<span id="cb27-244"><a href="#cb27-244" aria-hidden="true" tabindex="-1"></a><span class="st">end</span></span>
+<span id="cb27-245"><a href="#cb27-245" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-246"><a href="#cb27-246" aria-hidden="true" tabindex="-1"></a><span class="dt">@time</span><span class="st"> sim_rma(iniv, prma, ptime);</span></span>
+<span id="cb27-247"><a href="#cb27-247" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
+<span id="cb27-248"><a href="#cb27-248" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-249"><a href="#cb27-249" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
+<span id="cb27-250"><a href="#cb27-250" aria-hidden="true" tabindex="-1"></a>La macro <span class="ot">`</span><span class="dt">@time</span><span class="ot">`</span> renvoit <span class="ot">le</span> temps (et qqes éléments sur la computation) mis pour calculer la commande qui la suit, ici la simulation.</span>
+<span id="cb27-251"><a href="#cb27-251" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb27-252"><a href="#cb27-252" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-253"><a href="#cb27-253" aria-hidden="true" tabindex="-1"></a>Une fois la fonction précompilée à la première exécution, la performance est incomparable (<span class="dv">4</span> ordres de grandeur plus rapide sur la fonction <span class="ot">`</span><span class="st">sim_rma()</span><span class="ot">`</span>) :</span>
+<span id="cb27-254"><a href="#cb27-254" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-257"><a href="#cb27-257" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb27-258"><a href="#cb27-258" aria-hidden="true" tabindex="-1"></a><span class="st">#| output: true</span></span>
+<span id="cb27-259"><a href="#cb27-259" aria-hidden="true" tabindex="-1"></a><span class="dt">@time</span><span class="st"> sim_rma(iniv, prma2, ptime);</span></span>
+<span id="cb27-260"><a href="#cb27-260" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
+<span id="cb27-261"><a href="#cb27-261" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-262"><a href="#cb27-262" aria-hidden="true" tabindex="-1"></a><span class="co">### Solution contre le temps</span></span>
+<span id="cb27-263"><a href="#cb27-263" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-264"><a href="#cb27-264" aria-hidden="true" tabindex="-1"></a>Finalement, on définit une fonction qui simule et produit un graphique de la solution contre <span class="ot">le</span> temps, avec pour arguments la condition initiale, les paramètres et les paramètres de temps :</span>
+<span id="cb27-267"><a href="#cb27-267" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb27-268"><a href="#cb27-268" aria-hidden="true" tabindex="-1"></a><span class="st">#| eval: true</span></span>
+<span id="cb27-269"><a href="#cb27-269" aria-hidden="true" tabindex="-1"></a><span class="st">function plot_rma(iniv::IniV, p::ParRma, pt::ParTime)</span></span>
+<span id="cb27-270"><a href="#cb27-270" aria-hidden="true" tabindex="-1"></a><span class="st">    # compute the simulation</span></span>
+<span id="cb27-271"><a href="#cb27-271" aria-hidden="true" tabindex="-1"></a><span class="st">    sol_rma = sim_rma(iniv, p, pt)</span></span>
+<span id="cb27-272"><a href="#cb27-272" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-273"><a href="#cb27-273" aria-hidden="true" tabindex="-1"></a><span class="st">    # initialize figure</span></span>
+<span id="cb27-274"><a href="#cb27-274" aria-hidden="true" tabindex="-1"></a><span class="st">    fig = Figure(; fontsize = 20)</span></span>
+<span id="cb27-275"><a href="#cb27-275" aria-hidden="true" tabindex="-1"></a><span class="st">    ax = Axis(fig[1,1];</span></span>
+<span id="cb27-276"><a href="#cb27-276" aria-hidden="true" tabindex="-1"></a><span class="st">        title = "Modèle de Rosenzweig MacArthur</span><span class="ch">\n</span><span class="st"> ",</span></span>
+<span id="cb27-277"><a href="#cb27-277" aria-hidden="true" tabindex="-1"></a><span class="st">        xlabel = "temps",</span></span>
+<span id="cb27-278"><a href="#cb27-278" aria-hidden="true" tabindex="-1"></a><span class="st">        ylabel = "densités",</span></span>
+<span id="cb27-279"><a href="#cb27-279" aria-hidden="true" tabindex="-1"></a><span class="st">    )</span></span>
+<span id="cb27-280"><a href="#cb27-280" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-281"><a href="#cb27-281" aria-hidden="true" tabindex="-1"></a><span class="st">    # plot solution</span></span>
+<span id="cb27-282"><a href="#cb27-282" aria-hidden="true" tabindex="-1"></a><span class="st">    lines!(ax, sol_rma.t, sol_rma[1,:]; lw = 2, label = "proies")</span></span>
+<span id="cb27-283"><a href="#cb27-283" aria-hidden="true" tabindex="-1"></a><span class="st">    lines!(ax, sol_rma.t,  sol_rma[2,:]; lw = 2, label = "prédateurs")</span></span>
+<span id="cb27-284"><a href="#cb27-284" aria-hidden="true" tabindex="-1"></a><span class="st">    axislegend(; position = :lt)</span></span>
+<span id="cb27-285"><a href="#cb27-285" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-286"><a href="#cb27-286" aria-hidden="true" tabindex="-1"></a><span class="st">    return fig</span></span>
+<span id="cb27-287"><a href="#cb27-287" aria-hidden="true" tabindex="-1"></a><span class="st">end</span></span>
+<span id="cb27-288"><a href="#cb27-288" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
+<span id="cb27-289"><a href="#cb27-289" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-290"><a href="#cb27-290" aria-hidden="true" tabindex="-1"></a>Finalement on exécute cette fonction pour tracer la simulation :</span>
+<span id="cb27-293"><a href="#cb27-293" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb27-294"><a href="#cb27-294" aria-hidden="true" tabindex="-1"></a><span class="st">#| output: true</span></span>
+<span id="cb27-295"><a href="#cb27-295" aria-hidden="true" tabindex="-1"></a><span class="st">#| label: fig-rma-time</span></span>
+<span id="cb27-296"><a href="#cb27-296" aria-hidden="true" tabindex="-1"></a><span class="st">#| fig-cap: Simulation des trajectoires du modèle de Rosenzweig MacArthur</span></span>
+<span id="cb27-297"><a href="#cb27-297" aria-hidden="true" tabindex="-1"></a><span class="st">plot_rma(iniv, prma, ptime)</span></span>
+<span id="cb27-298"><a href="#cb27-298" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
+<span id="cb27-299"><a href="#cb27-299" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-300"><a href="#cb27-300" aria-hidden="true" tabindex="-1"></a><span class="co">### Diagramme de bifurcations</span></span>
 <span id="cb27-301"><a href="#cb27-301" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-302"><a href="#cb27-302" aria-hidden="true" tabindex="-1"></a><span class="st">    # between transcritical and Hopf : y=0 and y&gt;0</span></span>
-<span id="cb27-303"><a href="#cb27-303" aria-hidden="true" tabindex="-1"></a><span class="st">    Krg2 = Ktrans:Kstep:Khopf</span></span>
-<span id="cb27-304"><a href="#cb27-304" aria-hidden="true" tabindex="-1"></a><span class="st">    y02 = ones(length(Krg2)).*0</span></span>
-<span id="cb27-305"><a href="#cb27-305" aria-hidden="true" tabindex="-1"></a><span class="st">    yco2 = [r/c*(h+m*h/(b-m))*(1-m*h/(b-m)/K) for K in Krg2]</span></span>
-<span id="cb27-306"><a href="#cb27-306" aria-hidden="true" tabindex="-1"></a><span class="st">    eqs2 = (Krg = Krg2, y0 = y02, yco = yco2)</span></span>
+<span id="cb27-302"><a href="#cb27-302" aria-hidden="true" tabindex="-1"></a>Nous calculons ici <span class="ot">le</span> diagramme de bifurcations : les asymptotiques des prédateurs <span class="dt">$y</span>^*$ en fonction de <span class="dt">$K</span><span class="wa">$.</span></span>
+<span id="cb27-303"><a href="#cb27-303" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-304"><a href="#cb27-304" aria-hidden="true" tabindex="-1"></a><span class="co">#### Équilibres</span></span>
+<span id="cb27-305"><a href="#cb27-305" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-306"><a href="#cb27-306" aria-hidden="true" tabindex="-1"></a>Il n<span class="ot">'</span><span class="ss">y a pas besoin de simulation ici puisque les lieux des équilibres sont facilement calculables analytiquement (cf. cette [page](pop_interactions2.qmd)).</span></span>
 <span id="cb27-307"><a href="#cb27-307" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-308"><a href="#cb27-308" aria-hidden="true" tabindex="-1"></a><span class="st">    # above Hopf : y=0 and y&gt;0</span></span>
-<span id="cb27-309"><a href="#cb27-309" aria-hidden="true" tabindex="-1"></a><span class="st">    Krg3 = Khopf:Kstep:Kmax</span></span>
-<span id="cb27-310"><a href="#cb27-310" aria-hidden="true" tabindex="-1"></a><span class="st">    y03 = ones(length(Krg3)).*0</span></span>
-<span id="cb27-311"><a href="#cb27-311" aria-hidden="true" tabindex="-1"></a><span class="st">    yco3 = [r/c*(h+m*h/(b-m))*(1-m*h/(b-m)/K) for K in Krg3]</span></span>
-<span id="cb27-312"><a href="#cb27-312" aria-hidden="true" tabindex="-1"></a><span class="st">    eqs3 = (Krg = Krg3, y0 = y03, yco = yco3)</span></span>
-<span id="cb27-313"><a href="#cb27-313" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-314"><a href="#cb27-314" aria-hidden="true" tabindex="-1"></a><span class="st">    return eqs1, eqs2, eqs3</span></span>
-<span id="cb27-315"><a href="#cb27-315" aria-hidden="true" tabindex="-1"></a><span class="st">end</span></span>
-<span id="cb27-316"><a href="#cb27-316" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
-<span id="cb27-317"><a href="#cb27-317" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-318"><a href="#cb27-318" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-319"><a href="#cb27-319" aria-hidden="true" tabindex="-1"></a><span class="co">#### Cycle limite</span></span>
+<span id="cb27-308"><a href="#cb27-308" aria-hidden="true" tabindex="-1"></a><span class="ss">Nous définissons une fonction qui prend les paramètres du modèle et renvoit des tuples définissant les différentes branches d</span><span class="ot">'</span>équilibres <span class="wa">$(K</span>, <span class="ot">y</span>^<span class="ot">*</span>)$ (avec en <span class="ot">`</span><span class="st">kwarg</span><span class="ot">`</span> un <span class="ot">`</span><span class="st">Kmax</span><span class="ot">`</span> et un <span class="ot">`</span><span class="st">Kstep</span><span class="ot">`</span> avec des valeurs par défaut).</span>
+<span id="cb27-309"><a href="#cb27-309" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-312"><a href="#cb27-312" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb27-313"><a href="#cb27-313" aria-hidden="true" tabindex="-1"></a><span class="st">#| output: false</span></span>
+<span id="cb27-314"><a href="#cb27-314" aria-hidden="true" tabindex="-1"></a><span class="st">function eqy_rma(p::ParRma; Kmax::Real = 8.0, Kstep::Real = 0.1)</span></span>
+<span id="cb27-315"><a href="#cb27-315" aria-hidden="true" tabindex="-1"></a><span class="st">    (; r, c, h, b, m) = p # deconstruct p (K is useless since it is varied)</span></span>
+<span id="cb27-316"><a href="#cb27-316" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-317"><a href="#cb27-317" aria-hidden="true" tabindex="-1"></a><span class="st">    # define bifurcation K values</span></span>
+<span id="cb27-318"><a href="#cb27-318" aria-hidden="true" tabindex="-1"></a><span class="st">    Ktrans = m*h/(b-m)</span></span>
+<span id="cb27-319"><a href="#cb27-319" aria-hidden="true" tabindex="-1"></a><span class="st">    Khopf = h+2*m*h/(b-m)</span></span>
 <span id="cb27-320"><a href="#cb27-320" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-321"><a href="#cb27-321" aria-hidden="true" tabindex="-1"></a>On définit une fonction qui renvoit un tuple contenant les valeurs de <span class="dt">$K</span>$ et les extremas du cycle limite apparaissant pour <span class="dt">$K</span> &gt; K_{hopf} = h+\frac{<span class="dv">2</span>mh}{b-m}<span class="wa">$.</span></span>
-<span id="cb27-322"><a href="#cb27-322" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-323"><a href="#cb27-323" aria-hidden="true" tabindex="-1"></a>La fonction prend pour argument les paramètres, et fait appel à la fonction <span class="ot">`</span><span class="st">sim_rma()</span><span class="ot">`</span> avec les méthodes <span class="ot">`</span><span class="st">final = true</span><span class="ot">`</span> (pour les transitoires) et <span class="ot">`</span><span class="st">final = false</span><span class="ot">`</span> (pour les extremas du cycle limite). Elle utilise aussi <span class="ot">le</span> constructeur supplémentaire pour les objets <span class="ot">`</span><span class="st">IniV</span><span class="ot">`</span>.</span>
-<span id="cb27-324"><a href="#cb27-324" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-321"><a href="#cb27-321" aria-hidden="true" tabindex="-1"></a><span class="st">    # drops an error if Kmax is too small</span></span>
+<span id="cb27-322"><a href="#cb27-322" aria-hidden="true" tabindex="-1"></a><span class="st">    if Kmax &lt; Khopf</span></span>
+<span id="cb27-323"><a href="#cb27-323" aria-hidden="true" tabindex="-1"></a><span class="st">        error("For a full computation of equilibria types, Kmax must be greater than </span><span class="dt">$Khopf</span><span class="st">")</span></span>
+<span id="cb27-324"><a href="#cb27-324" aria-hidden="true" tabindex="-1"></a><span class="st">    end</span></span>
 <span id="cb27-325"><a href="#cb27-325" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-328"><a href="#cb27-328" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb27-329"><a href="#cb27-329" aria-hidden="true" tabindex="-1"></a><span class="st">#| output: true</span></span>
-<span id="cb27-330"><a href="#cb27-330" aria-hidden="true" tabindex="-1"></a><span class="st">#| eval: true</span></span>
-<span id="cb27-331"><a href="#cb27-331" aria-hidden="true" tabindex="-1"></a><span class="st">function cy_rma(p::ParRma; Kmax::Float64 = 8.0, Kstep::Float64 = 0.01)</span></span>
-<span id="cb27-332"><a href="#cb27-332" aria-hidden="true" tabindex="-1"></a><span class="st">    # parameters and K range</span></span>
-<span id="cb27-333"><a href="#cb27-333" aria-hidden="true" tabindex="-1"></a><span class="st">    (; r, c, h, b, m) = p # deconstruct p (K is useless since it is varied)</span></span>
-<span id="cb27-334"><a href="#cb27-334" aria-hidden="true" tabindex="-1"></a><span class="st">    Khopf = h+2*m*h/(b-m)</span></span>
-<span id="cb27-335"><a href="#cb27-335" aria-hidden="true" tabindex="-1"></a><span class="st">    Krgh = Khopf-Kstep:Kstep:Kmax</span></span>
-<span id="cb27-336"><a href="#cb27-336" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-337"><a href="#cb27-337" aria-hidden="true" tabindex="-1"></a><span class="st">    # drops an error if Kmax is too small</span></span>
-<span id="cb27-338"><a href="#cb27-338" aria-hidden="true" tabindex="-1"></a><span class="st">    if Kmax &lt; Khopf</span></span>
-<span id="cb27-339"><a href="#cb27-339" aria-hidden="true" tabindex="-1"></a><span class="st">        error("For a computation of the limit cycle, Kmax must be greater than </span><span class="dt">$Khopf</span><span class="st">")</span></span>
-<span id="cb27-340"><a href="#cb27-340" aria-hidden="true" tabindex="-1"></a><span class="st">    end</span></span>
-<span id="cb27-341"><a href="#cb27-341" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-342"><a href="#cb27-342" aria-hidden="true" tabindex="-1"></a><span class="st">    # for storage</span></span>
-<span id="cb27-343"><a href="#cb27-343" aria-hidden="true" tabindex="-1"></a><span class="st">    ycmin = zero(Krgh)</span></span>
-<span id="cb27-344"><a href="#cb27-344" aria-hidden="true" tabindex="-1"></a><span class="st">    ycmax = zero(Krgh)</span></span>
-<span id="cb27-345"><a href="#cb27-345" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-346"><a href="#cb27-346" aria-hidden="true" tabindex="-1"></a><span class="st">    # initial value and time parameters</span></span>
-<span id="cb27-347"><a href="#cb27-347" aria-hidden="true" tabindex="-1"></a><span class="st">    iniv = IniV()</span></span>
-<span id="cb27-348"><a href="#cb27-348" aria-hidden="true" tabindex="-1"></a><span class="st">    ptime = ParTime()</span></span>
-<span id="cb27-349"><a href="#cb27-349" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-350"><a href="#cb27-350" aria-hidden="true" tabindex="-1"></a><span class="st">    # transient integration time</span></span>
-<span id="cb27-351"><a href="#cb27-351" aria-hidden="true" tabindex="-1"></a><span class="st">    ptrans = ParTime(tspan = (0.0, 8000.0))</span></span>
+<span id="cb27-326"><a href="#cb27-326" aria-hidden="true" tabindex="-1"></a><span class="st">    # y equilibria</span></span>
+<span id="cb27-327"><a href="#cb27-327" aria-hidden="true" tabindex="-1"></a><span class="st">    # below transcritical : only y=0</span></span>
+<span id="cb27-328"><a href="#cb27-328" aria-hidden="true" tabindex="-1"></a><span class="st">    Krg1 = 0:Kstep:Ktrans</span></span>
+<span id="cb27-329"><a href="#cb27-329" aria-hidden="true" tabindex="-1"></a><span class="st">    y01 = ones(length(Krg1)).*0     # broadcasting</span></span>
+<span id="cb27-330"><a href="#cb27-330" aria-hidden="true" tabindex="-1"></a><span class="st">    eqs1 = (Krg = Krg1, y0 = y01, yco = nothing)</span></span>
+<span id="cb27-331"><a href="#cb27-331" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-332"><a href="#cb27-332" aria-hidden="true" tabindex="-1"></a><span class="st">    # between transcritical and Hopf : y=0 and y&gt;0</span></span>
+<span id="cb27-333"><a href="#cb27-333" aria-hidden="true" tabindex="-1"></a><span class="st">    Krg2 = Ktrans:Kstep:Khopf</span></span>
+<span id="cb27-334"><a href="#cb27-334" aria-hidden="true" tabindex="-1"></a><span class="st">    y02 = ones(length(Krg2)).*0</span></span>
+<span id="cb27-335"><a href="#cb27-335" aria-hidden="true" tabindex="-1"></a><span class="st">    yco2 = [r/c*(h+m*h/(b-m))*(1-m*h/(b-m)/K) for K in Krg2]</span></span>
+<span id="cb27-336"><a href="#cb27-336" aria-hidden="true" tabindex="-1"></a><span class="st">    eqs2 = (Krg = Krg2, y0 = y02, yco = yco2)</span></span>
+<span id="cb27-337"><a href="#cb27-337" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-338"><a href="#cb27-338" aria-hidden="true" tabindex="-1"></a><span class="st">    # above Hopf : y=0 and y&gt;0</span></span>
+<span id="cb27-339"><a href="#cb27-339" aria-hidden="true" tabindex="-1"></a><span class="st">    Krg3 = Khopf:Kstep:Kmax</span></span>
+<span id="cb27-340"><a href="#cb27-340" aria-hidden="true" tabindex="-1"></a><span class="st">    y03 = ones(length(Krg3)).*0</span></span>
+<span id="cb27-341"><a href="#cb27-341" aria-hidden="true" tabindex="-1"></a><span class="st">    yco3 = [r/c*(h+m*h/(b-m))*(1-m*h/(b-m)/K) for K in Krg3]</span></span>
+<span id="cb27-342"><a href="#cb27-342" aria-hidden="true" tabindex="-1"></a><span class="st">    eqs3 = (Krg = Krg3, y0 = y03, yco = yco3)</span></span>
+<span id="cb27-343"><a href="#cb27-343" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-344"><a href="#cb27-344" aria-hidden="true" tabindex="-1"></a><span class="st">    return eqs1, eqs2, eqs3</span></span>
+<span id="cb27-345"><a href="#cb27-345" aria-hidden="true" tabindex="-1"></a><span class="st">end</span></span>
+<span id="cb27-346"><a href="#cb27-346" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
+<span id="cb27-347"><a href="#cb27-347" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-348"><a href="#cb27-348" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-349"><a href="#cb27-349" aria-hidden="true" tabindex="-1"></a><span class="co">#### Cycle limite</span></span>
+<span id="cb27-350"><a href="#cb27-350" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-351"><a href="#cb27-351" aria-hidden="true" tabindex="-1"></a>On définit une fonction qui renvoit un tuple contenant les valeurs de <span class="dt">$K</span>$ et les extremas du cycle limite apparaissant pour <span class="dt">$K</span> &gt; K_{hopf} = h+\frac{<span class="dv">2</span>mh}{b-m}<span class="wa">$.</span></span>
 <span id="cb27-352"><a href="#cb27-352" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-353"><a href="#cb27-353" aria-hidden="true" tabindex="-1"></a><span class="st">    for (i, Kh) in enumerate(Krgh)</span></span>
-<span id="cb27-354"><a href="#cb27-354" aria-hidden="true" tabindex="-1"></a><span class="st">        # construct parameter from p, with K = Kh of the loop</span></span>
-<span id="cb27-355"><a href="#cb27-355" aria-hidden="true" tabindex="-1"></a><span class="st">        prmabif = ParRma(r, Kh, c, h, b, m)</span></span>
-<span id="cb27-356"><a href="#cb27-356" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-357"><a href="#cb27-357" aria-hidden="true" tabindex="-1"></a><span class="st">        # simulate transient, get final state</span></span>
-<span id="cb27-358"><a href="#cb27-358" aria-hidden="true" tabindex="-1"></a><span class="st">        utr = sim_rma(iniv, prmabif, ptrans; final = true)[:,1]</span></span>
-<span id="cb27-359"><a href="#cb27-359" aria-hidden="true" tabindex="-1"></a><span class="st">        inivtr = IniV(utr) # construct new init value</span></span>
-<span id="cb27-360"><a href="#cb27-360" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-361"><a href="#cb27-361" aria-hidden="true" tabindex="-1"></a><span class="st">        # start from end of transient, simulate limit cycle</span></span>
-<span id="cb27-362"><a href="#cb27-362" aria-hidden="true" tabindex="-1"></a><span class="st">        sol_cyc = sim_rma(inivtr, prmabif, ptime)</span></span>
-<span id="cb27-363"><a href="#cb27-363" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-364"><a href="#cb27-364" aria-hidden="true" tabindex="-1"></a><span class="st">        # get min and max y along the cycle</span></span>
-<span id="cb27-365"><a href="#cb27-365" aria-hidden="true" tabindex="-1"></a><span class="st">        ycmin[i] = minimum(sol_cyc[2,:])</span></span>
-<span id="cb27-366"><a href="#cb27-366" aria-hidden="true" tabindex="-1"></a><span class="st">        ycmax[i] = maximum(sol_cyc[2,:])</span></span>
-<span id="cb27-367"><a href="#cb27-367" aria-hidden="true" tabindex="-1"></a><span class="st">    end</span></span>
-<span id="cb27-368"><a href="#cb27-368" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-369"><a href="#cb27-369" aria-hidden="true" tabindex="-1"></a><span class="st">    cycle = (Krg = Krgh, ycmin = ycmin, ycmax = ycmax)</span></span>
-<span id="cb27-370"><a href="#cb27-370" aria-hidden="true" tabindex="-1"></a><span class="st">    return cycle</span></span>
-<span id="cb27-371"><a href="#cb27-371" aria-hidden="true" tabindex="-1"></a><span class="st">end</span></span>
-<span id="cb27-372"><a href="#cb27-372" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-373"><a href="#cb27-373" aria-hidden="true" tabindex="-1"></a><span class="dt">@time</span><span class="st"> cy_rma(prma);</span></span>
-<span id="cb27-374"><a href="#cb27-374" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
+<span id="cb27-353"><a href="#cb27-353" aria-hidden="true" tabindex="-1"></a>La fonction prend pour argument les paramètres, et fait appel à la fonction <span class="ot">`</span><span class="st">sim_rma()</span><span class="ot">`</span> avec les méthodes <span class="ot">`</span><span class="st">final = true</span><span class="ot">`</span> (pour les transitoires) et <span class="ot">`</span><span class="st">final = false</span><span class="ot">`</span> (pour les extremas du cycle limite). Elle utilise aussi <span class="ot">le</span> constructeur supplémentaire pour les objets <span class="ot">`</span><span class="st">IniV</span><span class="ot">`</span>.</span>
+<span id="cb27-354"><a href="#cb27-354" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-355"><a href="#cb27-355" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-358"><a href="#cb27-358" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb27-359"><a href="#cb27-359" aria-hidden="true" tabindex="-1"></a><span class="st">#| output: true</span></span>
+<span id="cb27-360"><a href="#cb27-360" aria-hidden="true" tabindex="-1"></a><span class="st">#| eval: true</span></span>
+<span id="cb27-361"><a href="#cb27-361" aria-hidden="true" tabindex="-1"></a><span class="st">function cy_rma(p::ParRma; Kmax::Float64 = 8.0, Kstep::Float64 = 0.01)</span></span>
+<span id="cb27-362"><a href="#cb27-362" aria-hidden="true" tabindex="-1"></a><span class="st">    # parameters and K range</span></span>
+<span id="cb27-363"><a href="#cb27-363" aria-hidden="true" tabindex="-1"></a><span class="st">    (; r, c, h, b, m) = p # deconstruct p (K is useless since it is varied)</span></span>
+<span id="cb27-364"><a href="#cb27-364" aria-hidden="true" tabindex="-1"></a><span class="st">    Khopf = h+2*m*h/(b-m)</span></span>
+<span id="cb27-365"><a href="#cb27-365" aria-hidden="true" tabindex="-1"></a><span class="st">    Krgh = Khopf-Kstep:Kstep:Kmax</span></span>
+<span id="cb27-366"><a href="#cb27-366" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-367"><a href="#cb27-367" aria-hidden="true" tabindex="-1"></a><span class="st">    # drops an error if Kmax is too small</span></span>
+<span id="cb27-368"><a href="#cb27-368" aria-hidden="true" tabindex="-1"></a><span class="st">    if Kmax &lt; Khopf</span></span>
+<span id="cb27-369"><a href="#cb27-369" aria-hidden="true" tabindex="-1"></a><span class="st">        error("For a computation of the limit cycle, Kmax must be greater than </span><span class="dt">$Khopf</span><span class="st">")</span></span>
+<span id="cb27-370"><a href="#cb27-370" aria-hidden="true" tabindex="-1"></a><span class="st">    end</span></span>
+<span id="cb27-371"><a href="#cb27-371" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-372"><a href="#cb27-372" aria-hidden="true" tabindex="-1"></a><span class="st">    # for storage</span></span>
+<span id="cb27-373"><a href="#cb27-373" aria-hidden="true" tabindex="-1"></a><span class="st">    ycmin = zero(Krgh)</span></span>
+<span id="cb27-374"><a href="#cb27-374" aria-hidden="true" tabindex="-1"></a><span class="st">    ycmax = zero(Krgh)</span></span>
 <span id="cb27-375"><a href="#cb27-375" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-376"><a href="#cb27-376" aria-hidden="true" tabindex="-1"></a>Après précompilation, ce calcul est encore plus rapide :</span>
-<span id="cb27-379"><a href="#cb27-379" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb27-380"><a href="#cb27-380" aria-hidden="true" tabindex="-1"></a><span class="st">#| output: true</span></span>
-<span id="cb27-381"><a href="#cb27-381" aria-hidden="true" tabindex="-1"></a><span class="st">#| eval: true</span></span>
-<span id="cb27-382"><a href="#cb27-382" aria-hidden="true" tabindex="-1"></a><span class="dt">@time</span><span class="st"> cy_rma(prma2);</span></span>
-<span id="cb27-383"><a href="#cb27-383" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
-<span id="cb27-384"><a href="#cb27-384" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-385"><a href="#cb27-385" aria-hidden="true" tabindex="-1"></a>A titre d<span class="ot">'</span><span class="ss">exemple, la simulation sur cette [page](pop_interactions2.qmd) prenait de l</span><span class="ot">'</span>ordre de <span class="dv">20</span> fois plus longtemps pour un calcul similaire.</span>
+<span id="cb27-376"><a href="#cb27-376" aria-hidden="true" tabindex="-1"></a><span class="st">    # initial value and time parameters</span></span>
+<span id="cb27-377"><a href="#cb27-377" aria-hidden="true" tabindex="-1"></a><span class="st">    iniv = IniV()</span></span>
+<span id="cb27-378"><a href="#cb27-378" aria-hidden="true" tabindex="-1"></a><span class="st">    ptime = ParTime()</span></span>
+<span id="cb27-379"><a href="#cb27-379" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-380"><a href="#cb27-380" aria-hidden="true" tabindex="-1"></a><span class="st">    # transient integration time</span></span>
+<span id="cb27-381"><a href="#cb27-381" aria-hidden="true" tabindex="-1"></a><span class="st">    ptrans = ParTime(tspan = (0.0, 8000.0))</span></span>
+<span id="cb27-382"><a href="#cb27-382" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-383"><a href="#cb27-383" aria-hidden="true" tabindex="-1"></a><span class="st">    for (i, Kh) in enumerate(Krgh)</span></span>
+<span id="cb27-384"><a href="#cb27-384" aria-hidden="true" tabindex="-1"></a><span class="st">        # construct parameter from p, with K = Kh of the loop</span></span>
+<span id="cb27-385"><a href="#cb27-385" aria-hidden="true" tabindex="-1"></a><span class="st">        prmabif = ParRma(r, Kh, c, h, b, m)</span></span>
 <span id="cb27-386"><a href="#cb27-386" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-387"><a href="#cb27-387" aria-hidden="true" tabindex="-1"></a><span class="co">#### Représentation graphique</span></span>
-<span id="cb27-388"><a href="#cb27-388" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-389"><a href="#cb27-389" aria-hidden="true" tabindex="-1"></a>Finalement, nous définissons une fonction permettant de représenter <span class="ot">le</span> diagramme de bifurcations, qui fait appel aux fonctions <span class="ot">`</span><span class="st">eqy_rma()</span><span class="ot">`</span> et <span class="ot">`</span><span class="st">cy_rma()</span><span class="ot">`</span> définies ci<span class="ot">-d</span>essus :</span>
+<span id="cb27-387"><a href="#cb27-387" aria-hidden="true" tabindex="-1"></a><span class="st">        # simulate transient, get final state</span></span>
+<span id="cb27-388"><a href="#cb27-388" aria-hidden="true" tabindex="-1"></a><span class="st">        utr = sim_rma(iniv, prmabif, ptrans; final = true)[:,1]</span></span>
+<span id="cb27-389"><a href="#cb27-389" aria-hidden="true" tabindex="-1"></a><span class="st">        inivtr = IniV(utr) # construct new init value</span></span>
 <span id="cb27-390"><a href="#cb27-390" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-393"><a href="#cb27-393" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb27-394"><a href="#cb27-394" aria-hidden="true" tabindex="-1"></a><span class="st">function plot_bif_rma(p::ParRma; Kmax = 8.0, Kstep = 0.1)</span></span>
-<span id="cb27-395"><a href="#cb27-395" aria-hidden="true" tabindex="-1"></a><span class="st">    # initialize figure</span></span>
-<span id="cb27-396"><a href="#cb27-396" aria-hidden="true" tabindex="-1"></a><span class="st">    fig = Figure(; fontsize = 20)</span></span>
-<span id="cb27-397"><a href="#cb27-397" aria-hidden="true" tabindex="-1"></a><span class="st">    ax = Axis(fig[1,1];</span></span>
-<span id="cb27-398"><a href="#cb27-398" aria-hidden="true" tabindex="-1"></a><span class="st">        title = "Bifurcations du modèle de Rosenzweig MacArthur</span><span class="ch">\n</span><span class="st"> ",</span></span>
-<span id="cb27-399"><a href="#cb27-399" aria-hidden="true" tabindex="-1"></a><span class="st">        xlabel = "capacité de charge 𝐾",</span></span>
-<span id="cb27-400"><a href="#cb27-400" aria-hidden="true" tabindex="-1"></a><span class="st">        ylabel = "densités",</span></span>
-<span id="cb27-401"><a href="#cb27-401" aria-hidden="true" tabindex="-1"></a><span class="st">    )</span></span>
+<span id="cb27-391"><a href="#cb27-391" aria-hidden="true" tabindex="-1"></a><span class="st">        # start from end of transient, simulate limit cycle</span></span>
+<span id="cb27-392"><a href="#cb27-392" aria-hidden="true" tabindex="-1"></a><span class="st">        sol_cyc = sim_rma(inivtr, prmabif, ptime)</span></span>
+<span id="cb27-393"><a href="#cb27-393" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-394"><a href="#cb27-394" aria-hidden="true" tabindex="-1"></a><span class="st">        # get min and max y along the cycle</span></span>
+<span id="cb27-395"><a href="#cb27-395" aria-hidden="true" tabindex="-1"></a><span class="st">        ycmin[i] = minimum(sol_cyc[2,:])</span></span>
+<span id="cb27-396"><a href="#cb27-396" aria-hidden="true" tabindex="-1"></a><span class="st">        ycmax[i] = maximum(sol_cyc[2,:])</span></span>
+<span id="cb27-397"><a href="#cb27-397" aria-hidden="true" tabindex="-1"></a><span class="st">    end</span></span>
+<span id="cb27-398"><a href="#cb27-398" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-399"><a href="#cb27-399" aria-hidden="true" tabindex="-1"></a><span class="st">    cycle = (Krg = Krgh, ycmin = ycmin, ycmax = ycmax)</span></span>
+<span id="cb27-400"><a href="#cb27-400" aria-hidden="true" tabindex="-1"></a><span class="st">    return cycle</span></span>
+<span id="cb27-401"><a href="#cb27-401" aria-hidden="true" tabindex="-1"></a><span class="st">end</span></span>
 <span id="cb27-402"><a href="#cb27-402" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-403"><a href="#cb27-403" aria-hidden="true" tabindex="-1"></a><span class="st">    # plot equilibria</span></span>
-<span id="cb27-404"><a href="#cb27-404" aria-hidden="true" tabindex="-1"></a><span class="st">    eqs1, eqs2, eqs3 = eqy_rma(p; Kmax = Kmax, Kstep = Kstep)</span></span>
-<span id="cb27-405"><a href="#cb27-405" aria-hidden="true" tabindex="-1"></a><span class="st">    lines!(eqs1.Krg, eqs1.y0; color = Cycled(1), lw = 2, label = "branche stable")</span></span>
-<span id="cb27-406"><a href="#cb27-406" aria-hidden="true" tabindex="-1"></a><span class="st">    lines!(eqs2.Krg, eqs2.y0; color = Cycled(2), lw = 2, label = "branche instable")</span></span>
-<span id="cb27-407"><a href="#cb27-407" aria-hidden="true" tabindex="-1"></a><span class="st">    lines!(eqs2.Krg, eqs2.yco; color = Cycled(1), lw = 2)</span></span>
-<span id="cb27-408"><a href="#cb27-408" aria-hidden="true" tabindex="-1"></a><span class="st">    lines!(eqs3.Krg, eqs3.y0; color = Cycled(2), lw = 2)</span></span>
-<span id="cb27-409"><a href="#cb27-409" aria-hidden="true" tabindex="-1"></a><span class="st">    lines!(eqs3.Krg, eqs3.yco; color = Cycled(2), lw = 2)</span></span>
-<span id="cb27-410"><a href="#cb27-410" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-411"><a href="#cb27-411" aria-hidden="true" tabindex="-1"></a><span class="st">    # plot limit Cycle</span></span>
-<span id="cb27-412"><a href="#cb27-412" aria-hidden="true" tabindex="-1"></a><span class="st">    cycle = cy_rma(p; Kmax = Kmax) # we keep the default Kstep = 0.01 for accuracy</span></span>
-<span id="cb27-413"><a href="#cb27-413" aria-hidden="true" tabindex="-1"></a><span class="st">    lines!(cycle.Krg, cycle.ycmin; color = Cycled(3), lw=2, label = "cycle limite")</span></span>
-<span id="cb27-414"><a href="#cb27-414" aria-hidden="true" tabindex="-1"></a><span class="st">    lines!(cycle.Krg, cycle.ycmax; color = Cycled(3), lw=2)</span></span>
-<span id="cb27-415"><a href="#cb27-415" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-416"><a href="#cb27-416" aria-hidden="true" tabindex="-1"></a><span class="st">    axislegend(ax, position = :lt, labelsize = 14)</span></span>
-<span id="cb27-417"><a href="#cb27-417" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-418"><a href="#cb27-418" aria-hidden="true" tabindex="-1"></a><span class="st">    return fig</span></span>
-<span id="cb27-419"><a href="#cb27-419" aria-hidden="true" tabindex="-1"></a><span class="st">end</span></span>
-<span id="cb27-420"><a href="#cb27-420" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
-<span id="cb27-421"><a href="#cb27-421" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-422"><a href="#cb27-422" aria-hidden="true" tabindex="-1"></a>Ce qui donne :</span>
-<span id="cb27-423"><a href="#cb27-423" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-426"><a href="#cb27-426" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb27-427"><a href="#cb27-427" aria-hidden="true" tabindex="-1"></a><span class="st">#| output: true</span></span>
-<span id="cb27-428"><a href="#cb27-428" aria-hidden="true" tabindex="-1"></a><span class="st">#| label: fig-rma-bif</span></span>
-<span id="cb27-429"><a href="#cb27-429" aria-hidden="true" tabindex="-1"></a><span class="st">#| fig-cap: Diagramme de bifurcations du modèle de Rosenzweig MacArthur</span></span>
-<span id="cb27-430"><a href="#cb27-430" aria-hidden="true" tabindex="-1"></a><span class="st">plot_bif_rma(prma)</span></span>
-<span id="cb27-431"><a href="#cb27-431" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
+<span id="cb27-403"><a href="#cb27-403" aria-hidden="true" tabindex="-1"></a><span class="dt">@time</span><span class="st"> cy_rma(prma);</span></span>
+<span id="cb27-404"><a href="#cb27-404" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
+<span id="cb27-405"><a href="#cb27-405" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-406"><a href="#cb27-406" aria-hidden="true" tabindex="-1"></a>Après précompilation, ce calcul est encore plus rapide :</span>
+<span id="cb27-409"><a href="#cb27-409" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb27-410"><a href="#cb27-410" aria-hidden="true" tabindex="-1"></a><span class="st">#| output: true</span></span>
+<span id="cb27-411"><a href="#cb27-411" aria-hidden="true" tabindex="-1"></a><span class="st">#| eval: true</span></span>
+<span id="cb27-412"><a href="#cb27-412" aria-hidden="true" tabindex="-1"></a><span class="dt">@time</span><span class="st"> cy_rma(prma2);</span></span>
+<span id="cb27-413"><a href="#cb27-413" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
+<span id="cb27-414"><a href="#cb27-414" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-415"><a href="#cb27-415" aria-hidden="true" tabindex="-1"></a>A titre d<span class="ot">'</span><span class="ss">exemple, la simulation sur cette [page](pop_interactions2.qmd) prenait de l</span><span class="ot">'</span>ordre de <span class="dv">20</span> fois plus longtemps pour un calcul similaire.</span>
+<span id="cb27-416"><a href="#cb27-416" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-417"><a href="#cb27-417" aria-hidden="true" tabindex="-1"></a><span class="co">#### Représentation graphique</span></span>
+<span id="cb27-418"><a href="#cb27-418" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-419"><a href="#cb27-419" aria-hidden="true" tabindex="-1"></a>Finalement, nous définissons une fonction permettant de représenter <span class="ot">le</span> diagramme de bifurcations, qui fait appel aux fonctions <span class="ot">`</span><span class="st">eqy_rma()</span><span class="ot">`</span> et <span class="ot">`</span><span class="st">cy_rma()</span><span class="ot">`</span> définies ci<span class="ot">-d</span>essus :</span>
+<span id="cb27-420"><a href="#cb27-420" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-423"><a href="#cb27-423" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb27-424"><a href="#cb27-424" aria-hidden="true" tabindex="-1"></a><span class="st">function plot_bif_rma(p::ParRma; Kmax = 8.0, Kstep = 0.1)</span></span>
+<span id="cb27-425"><a href="#cb27-425" aria-hidden="true" tabindex="-1"></a><span class="st">    # initialize figure</span></span>
+<span id="cb27-426"><a href="#cb27-426" aria-hidden="true" tabindex="-1"></a><span class="st">    fig = Figure(; fontsize = 20)</span></span>
+<span id="cb27-427"><a href="#cb27-427" aria-hidden="true" tabindex="-1"></a><span class="st">    ax = Axis(fig[1,1];</span></span>
+<span id="cb27-428"><a href="#cb27-428" aria-hidden="true" tabindex="-1"></a><span class="st">        title = "Bifurcations du modèle de Rosenzweig MacArthur</span><span class="ch">\n</span><span class="st"> ",</span></span>
+<span id="cb27-429"><a href="#cb27-429" aria-hidden="true" tabindex="-1"></a><span class="st">        xlabel = "capacité de charge 𝐾",</span></span>
+<span id="cb27-430"><a href="#cb27-430" aria-hidden="true" tabindex="-1"></a><span class="st">        ylabel = "densités",</span></span>
+<span id="cb27-431"><a href="#cb27-431" aria-hidden="true" tabindex="-1"></a><span class="st">    )</span></span>
 <span id="cb27-432"><a href="#cb27-432" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-433"><a href="#cb27-433" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-434"><a href="#cb27-434" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-435"><a href="#cb27-435" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-436"><a href="#cb27-436" aria-hidden="true" tabindex="-1"></a><span class="co">### Organisation en modules</span></span>
-<span id="cb27-437"><a href="#cb27-437" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-438"><a href="#cb27-438" aria-hidden="true" tabindex="-1"></a>Avec cette écriture de programme exploitant au maximum des structs et des fonctions, il est facile de placer l<span class="ot">'</span><span class="ss">ensemble des définitions dans un module dans fichier séparé, et de créer un script principal qui appelle ce module et ne demande que quelques lignes pour effectuer les simulations présentées plus haut sur cette page.</span></span>
-<span id="cb27-439"><a href="#cb27-439" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-440"><a href="#cb27-440" aria-hidden="true" tabindex="-1"></a><span class="ss">Une telle architecture fichier/moudle/script principal est présentée sur [cette page](annexe_rma_module.qmd).</span></span>
-<span id="cb27-441"><a href="#cb27-441" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-442"><a href="#cb27-442" aria-hidden="true" tabindex="-1"></a><span class="ss">## Cas des modèles de plus grande dimension</span></span>
-<span id="cb27-443"><a href="#cb27-443" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-444"><a href="#cb27-444" aria-hidden="true" tabindex="-1"></a><span class="ss">Pour les modèles de plus grande dimension ($n&gt;8$), l</span><span class="ot">'</span>avantage en performance des static arrays n<span class="ot">'</span><span class="ss">est plus si net et la documentation de `DifferentialEquations.jl` recommande d</span><span class="ot">'</span>utiliser la version en place (is in place, IIP dans <span class="ot">le</span> jargon du <span class="kw">package</span>) de l<span class="ot">'</span><span class="ss">interface problem/solver du package.</span></span>
+<span id="cb27-433"><a href="#cb27-433" aria-hidden="true" tabindex="-1"></a><span class="st">    # plot equilibria</span></span>
+<span id="cb27-434"><a href="#cb27-434" aria-hidden="true" tabindex="-1"></a><span class="st">    eqs1, eqs2, eqs3 = eqy_rma(p; Kmax = Kmax, Kstep = Kstep)</span></span>
+<span id="cb27-435"><a href="#cb27-435" aria-hidden="true" tabindex="-1"></a><span class="st">    lines!(eqs1.Krg, eqs1.y0; color = Cycled(1), lw = 2, label = "branche stable")</span></span>
+<span id="cb27-436"><a href="#cb27-436" aria-hidden="true" tabindex="-1"></a><span class="st">    lines!(eqs2.Krg, eqs2.y0; color = Cycled(2), lw = 2, label = "branche instable")</span></span>
+<span id="cb27-437"><a href="#cb27-437" aria-hidden="true" tabindex="-1"></a><span class="st">    lines!(eqs2.Krg, eqs2.yco; color = Cycled(1), lw = 2)</span></span>
+<span id="cb27-438"><a href="#cb27-438" aria-hidden="true" tabindex="-1"></a><span class="st">    lines!(eqs3.Krg, eqs3.y0; color = Cycled(2), lw = 2)</span></span>
+<span id="cb27-439"><a href="#cb27-439" aria-hidden="true" tabindex="-1"></a><span class="st">    lines!(eqs3.Krg, eqs3.yco; color = Cycled(2), lw = 2)</span></span>
+<span id="cb27-440"><a href="#cb27-440" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-441"><a href="#cb27-441" aria-hidden="true" tabindex="-1"></a><span class="st">    # plot limit Cycle</span></span>
+<span id="cb27-442"><a href="#cb27-442" aria-hidden="true" tabindex="-1"></a><span class="st">    cycle = cy_rma(p; Kmax = Kmax) # we keep the default Kstep = 0.01 for accuracy</span></span>
+<span id="cb27-443"><a href="#cb27-443" aria-hidden="true" tabindex="-1"></a><span class="st">    lines!(cycle.Krg, cycle.ycmin; color = Cycled(3), lw=2, label = "cycle limite")</span></span>
+<span id="cb27-444"><a href="#cb27-444" aria-hidden="true" tabindex="-1"></a><span class="st">    lines!(cycle.Krg, cycle.ycmax; color = Cycled(3), lw=2)</span></span>
 <span id="cb27-445"><a href="#cb27-445" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-446"><a href="#cb27-446" aria-hidden="true" tabindex="-1"></a><span class="ss">Il s</span><span class="ot">'</span>agit ici de définir <span class="ot">le</span> modèle non pas comme renvoyant la dérivée en fonction de l<span class="ot">'</span><span class="ss">état, des paramètres et du temps, mais comme une fonction d</span><span class="ot">'</span>arguments la dérivée, l<span class="ot">'</span><span class="ss">état, les paramètres et le temps qui modifie en place la dérivée (et ne renvoie rien). Cela permet de muter un même objet dérivée `du` à chaque fois que le modèle est appelé, plutôt que de créer un nouvel objet dérivée `du` à chaque appel du modèle (c</span><span class="ot">'</span>est aussi dans <span class="ot">le</span> même esprit de ce qui est fait, différemment, avec les static arrays plus haut).</span>
+<span id="cb27-446"><a href="#cb27-446" aria-hidden="true" tabindex="-1"></a><span class="st">    axislegend(ax, position = :lt, labelsize = 14)</span></span>
 <span id="cb27-447"><a href="#cb27-447" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-448"><a href="#cb27-448" aria-hidden="true" tabindex="-1"></a>Typiquement ce type de modèle IIP (en place) <span class="ot">s'écrit:</span></span>
-<span id="cb27-449"><a href="#cb27-449" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-452"><a href="#cb27-452" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
-<span id="cb27-453"><a href="#cb27-453" aria-hidden="true" tabindex="-1"></a><span class="ot">function mod_rma!</span><span class="ch">(</span><span class="ot">du, u, p::ParRma, t</span><span class="ch">)</span></span>
-<span id="cb27-454"><a href="#cb27-454" aria-hidden="true" tabindex="-1"></a><span class="ot">    </span><span class="ch">(</span><span class="ot">; c, b, m</span><span class="ch">)</span><span class="ot"> = p     </span><span class="co"># get c, b, m from p</span></span>
-<span id="cb27-455"><a href="#cb27-455" aria-hidden="true" tabindex="-1"></a><span class="ot">    x = u</span><span class="ch">[</span><span class="bn">1</span><span class="ch">]</span><span class="ot">            </span><span class="co"># use x, y notations</span></span>
-<span id="cb27-456"><a href="#cb27-456" aria-hidden="true" tabindex="-1"></a><span class="ot">    y = u</span><span class="ch">[</span><span class="bn">2</span><span class="ch">]</span></span>
-<span id="cb27-457"><a href="#cb27-457" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-458"><a href="#cb27-458" aria-hidden="true" tabindex="-1"></a><span class="ot">    </span><span class="co"># in-place computation of du</span></span>
-<span id="cb27-459"><a href="#cb27-459" aria-hidden="true" tabindex="-1"></a><span class="ot">    du</span><span class="ch">[</span><span class="bn">1</span><span class="ch">]</span><span class="ot"> = logistic</span><span class="ch">(</span><span class="ot">x, p</span><span class="ch">)</span><span class="ot"> - c </span><span class="ch">*</span><span class="ot"> holling2</span><span class="ch">(</span><span class="ot">x,p</span><span class="ch">)</span><span class="ot"> </span><span class="ch">*</span><span class="ot"> y</span></span>
-<span id="cb27-460"><a href="#cb27-460" aria-hidden="true" tabindex="-1"></a><span class="ot">    du</span><span class="ch">[</span><span class="bn">2</span><span class="ch">]</span><span class="ot"> = b </span><span class="ch">*</span><span class="ot"> holling2</span><span class="ch">(</span><span class="ot">x, p</span><span class="ch">)</span><span class="ot"> </span><span class="ch">*</span><span class="ot"> y - m </span><span class="ch">*</span><span class="ot"> y</span></span>
-<span id="cb27-461"><a href="#cb27-461" aria-hidden="true" tabindex="-1"></a><span class="ot">    return nothing</span></span>
-<span id="cb27-462"><a href="#cb27-462" aria-hidden="true" tabindex="-1"></a><span class="ot">end</span></span>
-<span id="cb27-463"><a href="#cb27-463" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
+<span id="cb27-448"><a href="#cb27-448" aria-hidden="true" tabindex="-1"></a><span class="st">    return fig</span></span>
+<span id="cb27-449"><a href="#cb27-449" aria-hidden="true" tabindex="-1"></a><span class="st">end</span></span>
+<span id="cb27-450"><a href="#cb27-450" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
+<span id="cb27-451"><a href="#cb27-451" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-452"><a href="#cb27-452" aria-hidden="true" tabindex="-1"></a>Ce qui donne :</span>
+<span id="cb27-453"><a href="#cb27-453" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-456"><a href="#cb27-456" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb27-457"><a href="#cb27-457" aria-hidden="true" tabindex="-1"></a><span class="st">#| output: true</span></span>
+<span id="cb27-458"><a href="#cb27-458" aria-hidden="true" tabindex="-1"></a><span class="st">#| label: fig-rma-bif</span></span>
+<span id="cb27-459"><a href="#cb27-459" aria-hidden="true" tabindex="-1"></a><span class="st">#| fig-cap: Diagramme de bifurcations du modèle de Rosenzweig MacArthur</span></span>
+<span id="cb27-460"><a href="#cb27-460" aria-hidden="true" tabindex="-1"></a><span class="st">plot_bif_rma(prma)</span></span>
+<span id="cb27-461"><a href="#cb27-461" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
+<span id="cb27-462"><a href="#cb27-462" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-463"><a href="#cb27-463" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb27-464"><a href="#cb27-464" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-465"><a href="#cb27-465" aria-hidden="true" tabindex="-1"></a><span class="ot">La définition du problème d'</span><span class="ss">intégration et l</span><span class="ot">'</span>appel de solve est similaire aux autres méthodes, à ceci près que la condition initiale et la dérivée doit être mutable, ce qui <span class="ot">ne</span> permet pas (ou très difficilement) d<span class="ot">'</span><span class="ss">utiliser la méthode en dimension 1. En effet une déclaration `u0 = 1.0` ou `du = 3.0` n</span><span class="ot">'</span>est pas mutable^[alors que <span class="ot">`</span><span class="st">u0 = [1.0, 2.0]</span><span class="ot">`</span> ou <span class="ot">`</span><span class="st">du =[2.0, 3.0]</span><span class="ot">`</span> <span class="ot">le</span> sont. Plus sur la mutabilité dans les [Julia notes](https://m3g.github.io/JuliaNotes.jl/stable/immutable/).].</span>
+<span id="cb27-465"><a href="#cb27-465" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-466"><a href="#cb27-466" aria-hidden="true" tabindex="-1"></a><span class="co">### Organisation en modules</span></span>
+<span id="cb27-467"><a href="#cb27-467" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-468"><a href="#cb27-468" aria-hidden="true" tabindex="-1"></a>Avec cette écriture de programme exploitant au maximum des structs et des fonctions, il est facile de placer l<span class="ot">'</span><span class="ss">ensemble des définitions dans un module dans fichier séparé, et de créer un script principal qui appelle ce module et ne demande que quelques lignes pour effectuer les simulations présentées plus haut sur cette page.</span></span>
+<span id="cb27-469"><a href="#cb27-469" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-470"><a href="#cb27-470" aria-hidden="true" tabindex="-1"></a><span class="ss">Une telle architecture fichier/moudle/script principal est présentée sur [cette page](annexe_rma_module.qmd).</span></span>
+<span id="cb27-471"><a href="#cb27-471" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-472"><a href="#cb27-472" aria-hidden="true" tabindex="-1"></a><span class="ss">## Cas des modèles de plus grande dimension</span></span>
+<span id="cb27-473"><a href="#cb27-473" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-474"><a href="#cb27-474" aria-hidden="true" tabindex="-1"></a><span class="ss">Pour les modèles de plus grande dimension ($n&gt;8$), l</span><span class="ot">'</span>avantage en performance des static arrays n<span class="ot">'</span><span class="ss">est plus si net et la documentation de `DifferentialEquations.jl` recommande d</span><span class="ot">'</span>utiliser la version en place (is in place, IIP dans <span class="ot">le</span> jargon du <span class="kw">package</span>) de l<span class="ot">'</span><span class="ss">interface problem/solver du package.</span></span>
+<span id="cb27-475"><a href="#cb27-475" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-476"><a href="#cb27-476" aria-hidden="true" tabindex="-1"></a><span class="ss">Il s</span><span class="ot">'</span>agit ici de définir <span class="ot">le</span> modèle non pas comme renvoyant la dérivée en fonction de l<span class="ot">'</span><span class="ss">état, des paramètres et du temps, mais comme une fonction d</span><span class="ot">'</span>arguments la dérivée, l<span class="ot">'</span><span class="ss">état, les paramètres et le temps qui modifie en place la dérivée (et ne renvoie rien). Cela permet de muter un même objet dérivée `du` à chaque fois que le modèle est appelé, plutôt que de créer un nouvel objet dérivée `du` à chaque appel du modèle (c</span><span class="ot">'</span>est aussi dans <span class="ot">le</span> même esprit de ce qui est fait, différemment, avec les static arrays plus haut).</span>
+<span id="cb27-477"><a href="#cb27-477" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-478"><a href="#cb27-478" aria-hidden="true" tabindex="-1"></a>Typiquement ce type de modèle IIP (en place) <span class="ot">s'écrit:</span></span>
+<span id="cb27-479"><a href="#cb27-479" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-482"><a href="#cb27-482" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
+<span id="cb27-483"><a href="#cb27-483" aria-hidden="true" tabindex="-1"></a><span class="ot">function mod_rma!</span><span class="ch">(</span><span class="ot">du, u, p::ParRma, t</span><span class="ch">)</span></span>
+<span id="cb27-484"><a href="#cb27-484" aria-hidden="true" tabindex="-1"></a><span class="ot">    </span><span class="ch">(</span><span class="ot">; c, b, m</span><span class="ch">)</span><span class="ot"> = p     </span><span class="co"># get c, b, m from p</span></span>
+<span id="cb27-485"><a href="#cb27-485" aria-hidden="true" tabindex="-1"></a><span class="ot">    x = u</span><span class="ch">[</span><span class="bn">1</span><span class="ch">]</span><span class="ot">            </span><span class="co"># use x, y notations</span></span>
+<span id="cb27-486"><a href="#cb27-486" aria-hidden="true" tabindex="-1"></a><span class="ot">    y = u</span><span class="ch">[</span><span class="bn">2</span><span class="ch">]</span></span>
+<span id="cb27-487"><a href="#cb27-487" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-488"><a href="#cb27-488" aria-hidden="true" tabindex="-1"></a><span class="ot">    </span><span class="co"># in-place computation of du</span></span>
+<span id="cb27-489"><a href="#cb27-489" aria-hidden="true" tabindex="-1"></a><span class="ot">    du</span><span class="ch">[</span><span class="bn">1</span><span class="ch">]</span><span class="ot"> = logistic</span><span class="ch">(</span><span class="ot">x, p</span><span class="ch">)</span><span class="ot"> - c </span><span class="ch">*</span><span class="ot"> holling2</span><span class="ch">(</span><span class="ot">x,p</span><span class="ch">)</span><span class="ot"> </span><span class="ch">*</span><span class="ot"> y</span></span>
+<span id="cb27-490"><a href="#cb27-490" aria-hidden="true" tabindex="-1"></a><span class="ot">    du</span><span class="ch">[</span><span class="bn">2</span><span class="ch">]</span><span class="ot"> = b </span><span class="ch">*</span><span class="ot"> holling2</span><span class="ch">(</span><span class="ot">x, p</span><span class="ch">)</span><span class="ot"> </span><span class="ch">*</span><span class="ot"> y - m </span><span class="ch">*</span><span class="ot"> y</span></span>
+<span id="cb27-491"><a href="#cb27-491" aria-hidden="true" tabindex="-1"></a><span class="ot">    return nothing</span></span>
+<span id="cb27-492"><a href="#cb27-492" aria-hidden="true" tabindex="-1"></a><span class="ot">end</span></span>
+<span id="cb27-493"><a href="#cb27-493" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span>
+<span id="cb27-494"><a href="#cb27-494" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-495"><a href="#cb27-495" aria-hidden="true" tabindex="-1"></a><span class="ot">La définition du problème d'</span><span class="ss">intégration et l</span><span class="ot">'</span>appel de solve est similaire aux autres méthodes, à ceci près que la condition initiale et la dérivée doit être mutable, ce qui <span class="ot">ne</span> permet pas (ou très difficilement) d<span class="ot">'</span><span class="ss">utiliser la méthode en dimension 1. En effet une déclaration `u0 = 1.0` ou `du = 3.0` n</span><span class="ot">'</span>est pas mutable^[alors que <span class="ot">`</span><span class="st">u0 = [1.0, 2.0]</span><span class="ot">`</span> ou <span class="ot">`</span><span class="st">du =[2.0, 3.0]</span><span class="ot">`</span> <span class="ot">le</span> sont. Plus sur la mutabilité dans les [Julia notes](https://m3g.github.io/JuliaNotes.jl/stable/immutable/).].</span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

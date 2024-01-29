@@ -2,7 +2,34 @@
 title: "Graphiques animés avec `Makie.jl`"
 ---
 
-\
+<!-- load local julia environment (freeze package versions) -->
+
+```{julia}
+#| include: false
+#| eval: true
+#
+# this cell does not appear in the rendering, but is executed
+#
+# for reproducibility purposes, we load the local julia environment/project, containing
+#  [13f3f980] CairoMakie v0.11.6
+#  [a93c6f00] DataFrames v1.6.1
+#  [864edb3b] DataStructures v0.18.16
+#  [0c46a032] DifferentialEquations v7.12.0
+#  [e9467ef8] GLMakie v0.9.6
+#  [91a5bcdd] Plots v1.40.0
+#  [f27b6e38] Polynomials v4.0.6
+#  [90137ffa] StaticArrays v1.9.1
+#  [0c5d862f] Symbolics v5.16.1
+#
+# to share the environment, copy Project.toml and Manifest.toml files in some directory
+# `activate` the local environment
+# if necessary `instantiate` to get the correct package versions
+#
+# to check if some PackageName.jl is used from the local environment
+## Pkg.status("PackageName")
+using Pkg
+Pkg.activate(".")
+```
 
 Nous reprenons le modèle de Lotka Volterra, et testons les capacités de création de graphiques animés avec `Makie.jl`^[Il est aussi possible de créér sur le même modèle des [graphiques interactifs](https://gist.github.com/Datseris/4b9d25a3ddb3936d3b83d3037f8188dd)]. Ce document est largement inspiré par l'excellent [tutoriel](https://www.youtube.com/watch?v=L-gyDvhjzGQ) sur le double pendule chaotique par G. Datseris.
 
