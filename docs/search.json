@@ -221,14 +221,14 @@
     "href": "annexe_FisherKPP.html#packages",
     "title": "Fisher KPP with Julia",
     "section": "Packages",
-    "text": "Packages\nLet us first import the packages used for the simulation:\n\nusing MethodOfLines,\n      ModelingToolkit,\n      DomainSets,\n      OrdinaryDiffEq,\n      Plots,\n      LaTeXStrings"
+    "text": "Packages\nLet us first import the packages used for the simulation:\n\nusing MethodOfLines\nusing ModelingToolkit\nusing DomainSets\nusing OrdinaryDiffEq\nusing Plots\nusing LaTeXStrings"
   },
   {
     "objectID": "annexe_FisherKPP.html#model-definition",
     "href": "annexe_FisherKPP.html#model-definition",
     "title": "Fisher KPP with Julia",
     "section": "Model definition",
-    "text": "Model definition\nMethodsOfLines.jl makes use of ModelingToolkit.jl to symbolically define the model to integrate.\nLet us first define the time and space parameters:\n\n@parameters t x\n\nThe model parameters:\n\n@parameters r D\n\nNow the variable u(t,x):\n\n@variables u(..)\n\nAnd finally the derivatives:\n\nDt = Differential(t)\nDx = Differential(x)\nDxx = Differential(x)^2\n\nWe can now define the model symbolically through:\n\neq = Dt(u(t, x)) ~ r * u(t,x) * (1-u(t,x)) + D * Dxx(u(t,x))\n\n \\begin{equation}\n\\frac{\\mathrm{d}}{\\mathrm{d}t} u\\left( t, x \\right) = D \\frac{\\mathrm{d}^{2}}{\\mathrm{d}x^{2}} u\\left( t, x \\right) + r \\left( 1 - u\\left( t, x \\right) \\right) u\\left( t, x \\right)\n\\end{equation}"
+    "text": "Model definition\nMethodsOfLines.jl makes use of ModelingToolkit.jl to symbolically define the model to integrate.\nLet us first define the time and space parameters:\n\n@parameters t x\n\nThe model parameters:\n\n@parameters r D\n\nNow the variable u(t,x):\n\n@variables u(..)\n\nAnd finally the derivatives:\n\nDt = Differential(t)\nDx = Differential(x)\nDxx = Differential(x)^2\n\nWe can now define the model symbolically through:\n\neq = Dt(u(t, x)) ~ r * u(t,x) * (1-u(t,x)) + D * Dxx(u(t,x))\n\n \\begin{equation}\n\\frac{\\mathrm{d}}{\\mathrm{d}t} u\\left( t, x \\right) = D \\frac{\\mathrm{d}}{\\mathrm{d}x} \\frac{\\mathrm{d}}{\\mathrm{d}x} u\\left( t, x \\right) + r u\\left( t, x \\right) \\left( 1 - u\\left( t, x \\right) \\right)\n\\end{equation}"
   },
   {
     "objectID": "annexe_FisherKPP.html#domains-of-integration",
@@ -249,7 +249,7 @@
     "href": "annexe_FisherKPP.html#graphical-representation",
     "title": "Fisher KPP with Julia",
     "section": "Graphical representation",
-    "text": "Graphical representation\nWe retrieve the components of the solution for easier manipulation:\n\n\n\n\n\n\nWarning\n\n\n\nAt the present moment (Jan. 16 2024) the following code does not work with Julia 1.10 and MethodOfLines v0.10.4 because of an update in a julia symbolic package, see this post on Julia discourse. everything should go back to normal next update.\n\n\n\ngridx = sol.u\ngridt = sol.t\nsolu = sol[u(t,x)]\n\nAnd we plot the animation of the solution through time:\n\nanim = @animate for i in eachindex(gridt)\n    plot(gridx, solu[i, :],\n         xlabel = \"position \"*L\"$x$\",\n         ylabel = \"population density \"*L\"$u$\",\n         label = L\"$u(x,t)$\",\n         title = \"t=$(gridt[i])\")\nend\n\ngif(anim, \"fisherKPP.gif\", fps = 10)\n\n\n\nAnd that’s it !"
+    "text": "Graphical representation\nWe retrieve the components of the solution for easier manipulation:\n\ngridx = sol[x]\ngridt = sol[t]\nsolu = sol[u(t,x)]\n\nAnd we plot the animation of the solution through time:\n\nanim = @animate for i in eachindex(gridt)\n    plot(\n        gridx,\n        solu[i, :];\n        xlabel = \"position \"*L\"$x$\",\n        ylabel = \"population density \"*L\"$u$\",\n        label = L\"$u(x,t)$\",\n        title = \"t=$(gridt[i])\",\n    )\nend\n\ngif(anim, \"fisherKPP.gif\", fps = 10)\n\n\n\n\nAnd that’s it !"
   },
   {
     "objectID": "annexes.html",

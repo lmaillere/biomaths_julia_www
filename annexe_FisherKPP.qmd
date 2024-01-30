@@ -1,5 +1,42 @@
 # Fisher KPP with Julia
 
+
+
+<!-- load local julia environment (freeze package versions) -->
+
+```{julia}
+#| include: false
+#| eval: true
+#
+# this cell does not appear in the rendering, but is executed
+#
+# for reproducibility purposes, we load the local julia environment/project, containing
+#   [13f3f980] CairoMakie v0.11.6
+#   [a93c6f00] DataFrames v1.6.1
+#   [864edb3b] DataStructures v0.18.16
+#   [0c46a032] DifferentialEquations v7.12.0
+#   [5b8099bc] DomainSets v0.6.7
+#   [e9467ef8] GLMakie v0.9.6
+#   [b964fa9f] LaTeXStrings v1.3.1
+#   [94925ecb] MethodOfLines v0.10.6
+#   [961ee093] ModelingToolkit v8.75.0
+#   [1dea7af3] OrdinaryDiffEq v6.69.0
+#   [91a5bcdd] Plots v1.40.0
+#   [f27b6e38] Polynomials v4.0.6
+#   [90137ffa] StaticArrays v1.9.1
+#   [0c5d862f] Symbolics v5.16.1
+#
+# to share the environment, copy Project.toml and Manifest.toml files in some directory
+# `activate` the local environment
+# if necessary `instantiate` to get the correct package versions
+#
+# to check if some PackageName.jl is used from the local environment
+## Pkg.status("PackageName")
+using Pkg
+Pkg.activate(".")
+```
+
+
 This implementation of numerical solve of a reaction diffusion equation is based on the [presentation](https://www.youtube.com/watch?v=8gLhaWRYvfQ) of the package `MethodOfLines.jl` at JuliaCon 2022 by A. Jones.
 
 ## Fisher KPP equation
@@ -17,12 +54,12 @@ with $u(t,x)$ the population density at time $t$ and position $x$ (scaled to the
 Let us first import the packages used for the simulation:
 
 ```{julia}
-using MethodOfLines,
-      ModelingToolkit,
-      DomainSets,
-      OrdinaryDiffEq,
-      Plots,
-      LaTeXStrings
+using MethodOfLines
+using ModelingToolkit
+using DomainSets
+using OrdinaryDiffEq
+using Plots
+using LaTeXStrings
 ```
 
 ## Model definition
@@ -114,32 +151,27 @@ sol = solve(prob, Tsit5(), saveat = .1)
 
 We retrieve the components of the solution for easier manipulation:
 
-::: {.callout-warning}
-At the present moment (Jan. 16 2024) the following code does not work with Julia 1.10 and `MethodOfLines` v0.10.4
-because of an update in a julia symbolic package, see [this post](https://discourse.julialang.org/t/methodoflines/108387/4) on Julia discourse. everything should go back to normal next update.
-:::
-
 ```{julia}
-#| eval: false
-gridx = sol.u
-gridt = sol.t
+gridx = sol[x]
+gridt = sol[t]
 solu = sol[u(t,x)]
 ```
 
 And we plot the animation of the solution through time:
 ```{julia}
 #| output: true
-#| eval: false
 anim = @animate for i in eachindex(gridt)
-    plot(gridx, solu[i, :],
-         xlabel = "position "*L"$x$",
-         ylabel = "population density "*L"$u$",
-         label = L"$u(x,t)$",
-         title = "t=$(gridt[i])")
+    plot(
+        gridx,
+        solu[i, :];
+        xlabel = "position "*L"$x$",
+        ylabel = "population density "*L"$u$",
+        label = L"$u(x,t)$",
+        title = "t=$(gridt[i])",
+    )
 end
 
 gif(anim, "fisherKPP.gif", fps = 10)
 ```
-\
 
 And that's it !
