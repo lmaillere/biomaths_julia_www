@@ -95,7 +95,7 @@ julia> ]                   # package mode
 (@v1.10) pkg> instantiate  # installe les packages spécifiques
 ```
 
-Les packages sont alors installés dans la version spécifiée dans les fichiers `Project.toml` et `Manifest.toml` dans  l'environnement propre au répertoire `/Biomaths/`.
+Les packages sont alors installés dans la version spécifiée dans les fichiers `Project.toml` et `Manifest.toml` dans  l'environnement propre au répertoire `Biomaths/`.
 
 Par la suite, vos scripts/notebooks commenceront par:
 ```{julia}
