@@ -81,4 +81,32 @@ julia> ]   # package mode
 (@v1.10) pkg> add CairoMakie
 ```
 
+## Reproductibilité
+
+Au fil du temps les différents packages Julia changent de version, perdant parfois des fonctionnalités ou ayant une interface ou des commandes qui changent. Une manière d'assurer la reproductibilité d'un code est de figer la version des packages (et de Julia) utilisés en spécifiant un environnement/projet de travail. Cela génère deux fichiers `Project.toml` et `Manifest.toml` qui décrivent les versions spécifiques de Julia et des packages utilisés par le code lorsque le projet a été créé.
+
+Pour pouvoir utiliser le même environnement que celui utilisé ici, créez un répertoire de travail dans lequel vous placerez vos scripts/notebooks, mettons : `~/some/where/biomaths/` .
+
+Téléchargez et placez dans ce répertoire les fichiers [Project.toml](./Project.toml) et [Manifest.toml](./Manifest.toml). Ouvrez un terminal et démarrez Julia dans ce répertoire:
+```{julia}
+#| eval: false
+julia> ]                   # package mode
+(@v1.10) pkg> activate .   # active l'environnement de ./Project.toml
+(@v1.10) pkg> instantiate  # installe les packages spécifiques
+```
+
+Les packages sont alors installés dans la version spécifiée dans les fichiers `Project.toml` et `Manifest.toml` dans  l'environnement propre au répertoire `/Biomaths/`.
+
+Par la suite, vos scripts/notebooks commenceront par:
+```{julia}
+#| eval: false
+using Pkg         # utilise le gestionnaire de package
+Pkg.activate(".") # active l'environnement local
+```
+
+\
+
+Si pour vos projets ultérieurs, vous souhaitez créer votre propre environnement, vous pouvez consuter [cette page](https://pkgdocs.julialang.org/v1/environments/) de la documentation.
+
+
 [Allons-y !](pop_isolees.qmd)
