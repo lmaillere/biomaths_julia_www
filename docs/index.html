@@ -224,13 +224,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="installation-de-julia">Installation de Julia</h2>
 <p>La façon la plus simple d’installer <code>Julia</code> est d’utiliser <a href="https://github.com/JuliaLang/juliaup">juliaup</a>.</p>
 <div class="page-columns page-full"><p>Sur Linux, installez <code>curl</code> sur votre système<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Puis dans un terminal :</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;<code>sudo apt install curl</code> sur Ubuntu</p></li></div></div>
-<div class="cell" data-execution_count="1">
+<div class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>curl <span class="op">-</span>fsSL https<span class="op">://</span>install.julialang.org <span class="op">|</span> sh</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>et procédez à l’installation.</p>
 <p>Fermez et réouvrez votre terminal (ou rechargez votre fichier de préférences comme vous l’indique l’installateur de juliaup) pour pouvoir exécuter <code>Julia</code>.</p>
 <div class="page-columns page-full"><p>Puis, si vous souhaitez utiliser <code>Julia</code> dans un notebook <code>jupyter</code>, installez le package <code>IJulia</code> depuis Julia comme suit<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>:</p><div class="no-row-height column-margin column-container"><li id="fn2"><p><sup>2</sup>&nbsp;le profil utilisé doit semble-t-il être administrateur, et si il est tout nouvellement créé un redémarrage peut s’avérer nécessaire si vous rencontrez une erreur à l’exécution de <code>jupyterlab()</code> ci-dessous</p></li></div></div>
-<div class="cell" data-execution_count="2">
+<div class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>julia <span class="co"># executer julia dans un terminal</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>   _       _ <span class="fu">_</span>(_)_     <span class="op">|</span>  Documentation<span class="op">:</span> https<span class="op">://</span>docs.julialang.org</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  (_)     <span class="op">|</span> (_) (_)    <span class="op">|</span></span>
@@ -245,7 +245,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>(<span class="pp">@v1</span><span class="fl">.10</span>) pkg<span class="op">&gt;</span> build IJulia</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Si vous avez déjà <code>jupyterlab</code> installé, un noyau <code>Julia</code> est ensuite disponible. Sinon vous pouvez l’installer et le démarrer directement depuis Julia :</p>
-<div class="cell" data-execution_count="3">
+<div class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="im">using</span> <span class="bu">IJulia </span><span class="co"># tapez backspace d'abord</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>                    <span class="co"># pour sortir du package mode</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">jupyterlab</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -253,7 +253,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><br>
 </p>
 <p><code>Julia</code> a aussi un système de notebook propre <code>Pluto.jl</code>:</p>
-<div class="cell" data-execution_count="4">
+<div class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> ]   <span class="co"># package mode</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>(<span class="pp">@v1</span><span class="fl">.10</span>) pkg<span class="op">&gt;</span> add Pluto</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="im">using</span> <span class="bu">Pluto  </span><span class="co"># hit backspace first to exit package mode</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -266,7 +266,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="packages-utilisés">Packages utilisés</h2>
 <p>Nous allons utiliser différents package que je vous invite à installer avant de commencer (il est toujours possible de le faire en cours de route, mais cela peut prendre un certain temps selon la connexion internet et la machine).</p>
 <p>Pour cela, il faut lancer Julia, entrer dans le <em>package mode</em> en appuyant sur la touche <code>]</code>, puis installer les package via <code>add PackageName</code>:</p>
-<div class="cell" data-execution_count="5">
+<div class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> ]   <span class="co"># package mode</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>(<span class="pp">@v1</span><span class="fl">.10</span>) pkg<span class="op">&gt;</span> add Plots</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>(<span class="pp">@v1</span><span class="fl">.10</span>) pkg<span class="op">&gt;</span> add DifferentialEquations</span>
@@ -281,20 +281,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Au fil du temps les différents packages Julia changent de version, perdant parfois des fonctionnalités ou ayant une interface ou des commandes qui changent. Une manière d’assurer la reproductibilité d’un code est de figer la version des packages (et de Julia) utilisés en spécifiant un environnement/projet de travail. Cela génère deux fichiers <code>Project.toml</code> et <code>Manifest.toml</code> qui décrivent les versions spécifiques de Julia et des packages utilisés par le code lorsque le projet a été créé.</p>
 <p>Pour pouvoir utiliser le même environnement que celui utilisé ici, créez un répertoire de travail dans lequel vous placerez vos scripts/notebooks, mettons : <code>~/some/where/biomaths/</code> .</p>
 <p>Téléchargez et placez dans ce répertoire les fichiers <a href="./Project.toml">Project.toml</a> et <a href="./Manifest.toml">Manifest.toml</a>. Ouvrez un terminal et démarrez Julia dans ce répertoire:</p>
-<div class="cell" data-execution_count="6">
+<div class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> ]                   <span class="co"># package mode</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>(<span class="pp">@v1</span><span class="fl">.10</span>) pkg<span class="op">&gt;</span> activate .   <span class="co"># active l'environnement de ./Project.toml</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>(<span class="pp">@v1</span><span class="fl">.10</span>) pkg<span class="op">&gt;</span> instantiate  <span class="co"># installe les packages spécifiques</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Les packages sont alors installés dans la version spécifiée dans les fichiers <code>Project.toml</code> et <code>Manifest.toml</code> dans l’environnement spécifique au répertoire <code>/Biomaths/</code>.</p>
+<p>Les packages sont alors installés dans la version spécifiée dans les fichiers <code>Project.toml</code> et <code>Manifest.toml</code> dans l’environnement propre au répertoire <code>biomaths/</code>.</p>
 <p>Par la suite, vos scripts/notebooks commenceront par:</p>
-<div class="cell" data-execution_count="7">
+<div class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Pkg         </span><span class="co"># utilise le gestionnaire de package</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="bu">Pkg</span>.<span class="fu">activate</span>(<span class="st">"."</span>) <span class="co"># active l'environnement local</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><br>
 </p>
-<p>Si vous souhaitez créer votre propre environnement/projet, vous pouvez consuter <a href="https://pkgdocs.julialang.org/v1/environments/">cette page</a> de la documentation.</p>
+<p>Si pour vos projets ultérieurs, vous souhaitez créer votre propre environnement, vous pouvez consuter <a href="https://pkgdocs.julialang.org/v1/environments/">cette page</a> de la documentation.</p>
 <p><a href="./pop_isolees.html">Allons-y !</a></p>
 
 
@@ -685,7 +685,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb8-107"><a href="#cb8-107" aria-hidden="true" tabindex="-1"></a>(<span class="dt">@v1</span>.<span class="dv">10</span>) pkg&gt; instantiate  <span class="co"># installe les packages spécifiques</span></span>
 <span id="cb8-108"><a href="#cb8-108" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb8-109"><a href="#cb8-109" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-110"><a href="#cb8-110" aria-hidden="true" tabindex="-1"></a>Les packages sont alors installés dans la version spécifiée dans les fichiers <span class="in">`Project.toml`</span> et <span class="in">`Manifest.toml`</span> dans  l'environnement spécifique au répertoire <span class="in">`/Biomaths/`</span>.</span>
+<span id="cb8-110"><a href="#cb8-110" aria-hidden="true" tabindex="-1"></a>Les packages sont alors installés dans la version spécifiée dans les fichiers <span class="in">`Project.toml`</span> et <span class="in">`Manifest.toml`</span> dans  l'environnement propre au répertoire <span class="in">`biomaths/`</span>.</span>
 <span id="cb8-111"><a href="#cb8-111" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-112"><a href="#cb8-112" aria-hidden="true" tabindex="-1"></a>Par la suite, vos scripts/notebooks commenceront par:</span>
 <span id="cb8-115"><a href="#cb8-115" aria-hidden="true" tabindex="-1"></a><span class="in">```{julia}</span></span>
@@ -696,7 +696,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb8-120"><a href="#cb8-120" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-121"><a href="#cb8-121" aria-hidden="true" tabindex="-1"></a>\</span>
 <span id="cb8-122"><a href="#cb8-122" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-123"><a href="#cb8-123" aria-hidden="true" tabindex="-1"></a>Si vous souhaitez créer votre propre environnement/projet, vous pouvez consuter <span class="co">[</span><span class="ot">cette page</span><span class="co">](https://pkgdocs.julialang.org/v1/environments/)</span> de la documentation.</span>
+<span id="cb8-123"><a href="#cb8-123" aria-hidden="true" tabindex="-1"></a>Si pour vos projets ultérieurs, vous souhaitez créer votre propre environnement, vous pouvez consuter <span class="co">[</span><span class="ot">cette page</span><span class="co">](https://pkgdocs.julialang.org/v1/environments/)</span> de la documentation.</span>
 <span id="cb8-124"><a href="#cb8-124" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-125"><a href="#cb8-125" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-126"><a href="#cb8-126" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Allons-y !</span><span class="co">](pop_isolees.qmd)</span></span>
