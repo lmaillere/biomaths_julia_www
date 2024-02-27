@@ -77,7 +77,7 @@ On définit le modèle comme une fonction renvoyant la dérivée de $x$ en fonct
 ```{julia}
 function malthus(u, p, t)
     n, m = p                # unpacking
-    x = u[1]                # use x notation
+    x = u                # use x notation
     return dx = (n-m)x      # return derivative
 end
 ```
@@ -192,7 +192,7 @@ ainsi que le nouveau système dynamique :
 #| code-fold: true
 function logistic(u, p, t)
     r, K = p            # unpacking
-    x = u[1]            # use x notation
+    x = u            # use x notation
     return dx = r*x*(1-x/K)    # return derivative
 end
 ```
@@ -286,7 +286,7 @@ tspan_allee = (0.0, 3.0)
 
 function allee(u, p, t)
     r, K, epsilon = p        # unpacking
-    x = u[1]                 # use x notation
+    x = u                 # use x notation
     return dx = r*x*(x/epsilon - 1)*(1 - x/K)     # derivative
 end
 ```
