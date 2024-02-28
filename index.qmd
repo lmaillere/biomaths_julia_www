@@ -28,7 +28,7 @@ et procédez à l'installation.
 
 Fermez et réouvrez votre terminal (ou rechargez votre fichier de préférences comme vous l'indique l'installateur de juliaup) pour pouvoir exécuter `Julia`.
 
-Puis, si vous souhaitez utiliser `Julia` dans un notebook `jupyter`, installez le package `IJulia` depuis Julia comme suit^[le profil utilisé doit semble-t-il être administrateur, et si il est tout nouvellement créé un redémarrage peut s'avérer nécessaire si vous rencontrez une erreur à l'exécution de `jupyterlab()` ci-dessous]:
+Puis, si vous souhaitez utiliser `Julia` dans un notebook `jupyter`, installez le package `IJulia` depuis Julia comme suit^[si le profil est tout nouvellement, créé un redémarrage peut s'avérer nécessaire si vous rencontrez une erreur à l'exécution de `jupyterlab()` ci-dessous]:
 ```{julia}
 #| eval: false
 julia # executer julia dans un terminal
@@ -45,6 +45,8 @@ julia> ]  # package mode
 (@v1.10) pkg> build IJulia
 ```
 
+La première commande `add IJulia` peut prendre un peu de temps.
+
 Si vous avez déjà `jupyterlab` installé, un noyau `Julia` est ensuite disponible. Sinon vous pouvez l'installer et le démarrer directement depuis Julia :
 ```{julia}
 #| eval: false
@@ -54,6 +56,9 @@ julia> jupyterlab()
 ```
 \
 
+Julia vous propose alors d'installer jupyterlab via miniconda, ce que vous accepterez, et démarre ensuite jupyterlab dans votre navigateur.
+
+<!--
 `Julia` a aussi un système de notebook propre `Pluto.jl`:
 ```{julia}
 #| eval: false
@@ -61,9 +66,9 @@ julia> ]   # package mode
 (@v1.10) pkg> add Pluto
 julia> using Pluto  # hit backspace first to exit package mode
 ```
-\
+\ -->
 
-Enfin, une [extension Julia](https://www.julia-vscode.org/docs/stable/setup/) est disponible pour VScode/VScodium, un environnement de développement que je vous conseille.
+Une [extension Julia](https://www.julia-vscode.org/docs/stable/setup/) est par ailleurs disponible pour VScode/VScodium, un environnement de développement que je vous conseille et qui permet d'éditer les notebooks jupyter en dehors du navigateur.
 
 ## Packages utilisés
 
@@ -92,7 +97,7 @@ Téléchargez et placez dans ce répertoire les fichiers [Project.toml](./Projec
 #| eval: false
 julia> ]                   # package mode
 (@v1.10) pkg> activate .   # active l'environnement de ./Project.toml
-(@v1.10) pkg> instantiate  # installe les packages spécifiques
+(@v1.10) pkg> instantiate  # installe ou lie à l'environnement les packages spécifiques
 ```
 
 Les packages sont alors installés dans la version spécifiée dans les fichiers `Project.toml` et `Manifest.toml` dans  l'environnement propre au répertoire `biomaths/`.
