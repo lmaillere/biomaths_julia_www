@@ -284,7 +284,7 @@
     "href": "index.html#packages-utilisés",
     "title": "Introduction",
     "section": "Packages utilisés",
-    "text": "Packages utilisés\nNous allons utiliser différents package que je vous invite à installer avant de commencer (il est toujours possible de le faire en cours de route, mais cela peut prendre un certain temps selon la connexion internet et la machine).\nPour cela, il faut lancer Julia, entrer dans le package mode en appuyant sur la touche ], puis installer les package via add PackageName:\n\njulia&gt; ]   # package mode\n(@v1.10) pkg&gt; add Plots\n(@v1.10) pkg&gt; add DifferentialEquations\n(@v1.10) pkg&gt; add Dataframes\n(@v1.10) pkg&gt; add Polynomials\n(@v1.10) pkg&gt; add Symbolics\n(@v1.10) pkg&gt; add CairoMakie"
+    "text": "Packages utilisés\nNous allons utiliser différents package que je vous invite à installer avant de commencer (il est toujours possible de le faire en cours de route, mais cela peut prendre un certain temps selon la connexion internet et la machine).\nPour cela, il faut lancer Julia, entrer dans le package mode en appuyant sur la touche ], puis installer les package via add PackageName:\n\njulia&gt; ]   # package mode\n(@v1.10) pkg&gt; add Plots\n(@v1.10) pkg&gt; add DifferentialEquations\n(@v1.10) pkg&gt; add DataFrames\n(@v1.10) pkg&gt; add Polynomials\n(@v1.10) pkg&gt; add Symbolics\n(@v1.10) pkg&gt; add CairoMakie"
   },
   {
     "objectID": "annexe_swft_rma.html",

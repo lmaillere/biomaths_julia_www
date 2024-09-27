@@ -80,7 +80,7 @@ Pour cela, il faut lancer Julia, entrer dans le *package mode* en appuyant sur l
 julia> ]   # package mode
 (@v1.10) pkg> add Plots
 (@v1.10) pkg> add DifferentialEquations
-(@v1.10) pkg> add Dataframes
+(@v1.10) pkg> add DataFrames
 (@v1.10) pkg> add Polynomials
 (@v1.10) pkg> add Symbolics
 (@v1.10) pkg> add CairoMakie
