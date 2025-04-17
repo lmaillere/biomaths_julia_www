@@ -1,5 +1,6 @@
 ---
 title: "Populations isolées"
+engine: julia
 ---
 
 <!-- load local julia environment (freeze package versions) -->

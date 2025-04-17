@@ -1,5 +1,6 @@
 ---
 title: "Simulations multiples"
+engine: julia
 ---
 
 <!-- load local julia environment (freeze package versions) -->

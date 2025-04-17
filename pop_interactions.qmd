@@ -1,5 +1,6 @@
 ---
 title: "Populations en interaction (1)"
+engine: julia
 ---
 
 <!-- load local julia environment (freeze package versions) -->

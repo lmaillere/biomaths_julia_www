@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Matériel supplémentaire – Biomaths &amp; Julia</title>
+<title>Simuler un modèle semi-discret – Biomaths &amp; Julia</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -114,7 +114,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./annexes.html">Matériel supplémentaire</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">
+      Biomaths &amp; Julia
+      </li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -171,7 +173,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./annexes.html" class="sidebar-item-text sidebar-link active">
+  <a href="./annexes.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Matériel supplémentaire</span></a>
   </div>
 </li>
@@ -186,22 +188,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#pour-aller-plus-loin" id="toc-pour-aller-plus-loin" class="nav-link active" data-scroll-target="#pour-aller-plus-loin">Pour aller plus loin</a></li>
-  <li><a href="#annexes" id="toc-annexes" class="nav-link" data-scroll-target="#annexes">Annexes</a></li>
-  </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/lmaillere/biomaths_www/edit/main/annexes.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/lmaillere/biomaths_www/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title">Matériel supplémentaire</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<div class="quarto-title-block"><div><h1 class="title">Simuler un modèle semi-discret</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
 </div>
 
 
@@ -218,37 +213,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p><br>
-</p>
-<p>Les pages listées ici contiennent du matétiel supplémentaire pour compléments plus avancés :</p>
-<ul>
-<li><p><a href="./annexe_swift_rma.html">améliorer</a> la rapidité d’exécution des simulations en utilisant au maximum la définition de <code>struct</code> et de <code>function</code></p></li>
-<li><p><a href="./annexe_LV_makieplot.html">tracer</a> une jolie figure pour Lotka Volterra avec <code>Makie.jl</code></p></li>
-<li><p><a href="./annexe_positive.html">positivité</a>: simuler un modèle en forçant le shéma numérique à respecter sa positivité</p></li>
-<li><p><a href="./annexe_semi_discrete.html">semi-discret</a>: simuler un modèle semi-discret/impulsionnel via l’interface callback de <code>DifferentialEquations.jl</code></p></li>
-<li><p>réaliser des <a href="./annexe_LV_anim.html">graphiques animés</a> avec <code>Makie.jl</code>, un exemple sur Lotka Volterra</p></li>
-<li><p><a href="./annexe_FisherKPP.html">simuler</a> une équation de réaction-diffusion en une dimension : le modèle de Fisher-KPP</p></li>
-</ul>
-<section id="pour-aller-plus-loin" class="level2">
-<h2 class="anchored" data-anchor-id="pour-aller-plus-loin">Pour aller plus loin</h2>
-<p>Nous n’avons qu’effleuré l’utilisation de <code>Julia</code>, par exemple tout le code présenté est scripté et relativement peu de code est inclus dans des fonctions. Nous n’avons pas non plus abordé les types <code>struct</code> (à part dans cette <a href="./annexe_swift_rma.html">page</a>) et le <code>multiple dispatch</code> qui sont pourtant au coeur du fonctionnement, de l’efficacité, et de la versatilité de ce langage.</p>
-<p>Pour aller plus loin (et aussi revoir quelques bases !), vous pouvez par exemple vous référer à ces tutoriels:</p>
-<ul>
-<li><p>le cours <a href="https://computationalthinking.mit.edu/Fall23/">Introduction to computational thinking</a> du MIT (assez long)</p></li>
-<li><p>le workshop <a href="https://github.com/Datseris/Zero2Hero-JuliaWorkshop">Julia Zero-to-Hero</a> de Georges Datseris (plus direct)</p></li>
-</ul>
-</section>
-<section id="annexes" class="level2">
-<h2 class="anchored" data-anchor-id="annexes">Annexes</h2>
-<p>Pour tester d’autres interfaces d’intégration:</p>
-<ul>
-<li><a href="./annexe_integrator.html">utiliser</a> l’interface <code>integrator</code> de <code>DifferentialEquations.jl</code> ou la redéfinition de problèmes d’intégration via <code>remake</code></li>
-</ul>
 
 
 <!-- -->
 
-</section>
 
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a></div></div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -720,43 +688,10 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
 <div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Matériel supplémentaire"</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>\</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>Les pages listées ici contiennent du matétiel supplémentaire pour compléments plus avancés :</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">améliorer</span><span class="co">](annexe_swift_rma.qmd)</span> la rapidité d'exécution des simulations en utilisant au maximum la définition de <span class="in">`struct`</span> et de <span class="in">`function`</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">tracer</span><span class="co">](annexe_LV_makieplot.qmd)</span> une jolie figure pour Lotka Volterra avec <span class="in">`Makie.jl`</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">positivité</span><span class="co">](annexe_positive.qmd)</span>: simuler un modèle en forçant le shéma numérique à respecter sa positivité</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">semi-discret</span><span class="co">](annexe_semi_discrete.qmd)</span>: simuler un modèle semi-discret/impulsionnel via l'interface callback de <span class="in">`DifferentialEquations.jl`</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>réaliser des <span class="co">[</span><span class="ot">graphiques animés</span><span class="co">](annexe_LV_anim.qmd)</span> avec <span class="in">`Makie.jl`</span>, un exemple sur Lotka Volterra</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">simuler</span><span class="co">](annexe_FisherKPP.qmd)</span> une équation de réaction-diffusion en une dimension : le modèle de Fisher-KPP</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="fu">## Pour aller plus loin</span></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>Nous n'avons qu'effleuré l'utilisation de <span class="in">`Julia`</span>, par exemple tout le code présenté est scripté et relativement peu de code est inclus dans des fonctions. Nous n'avons pas non plus abordé les types <span class="in">`struct`</span> (à part dans cette <span class="co">[</span><span class="ot">page</span><span class="co">](annexe_swift_rma.qmd)</span>) et le <span class="in">`multiple dispatch`</span> qui sont pourtant au coeur du fonctionnement, de l'efficacité, et de la versatilité  de ce langage.</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>Pour aller plus loin (et aussi revoir quelques bases !), vous pouvez par exemple vous référer à ces tutoriels:</span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>le cours <span class="co">[</span><span class="ot">Introduction to computational thinking</span><span class="co">](https://computationalthinking.mit.edu/Fall23/)</span> du MIT (assez long)</span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>le workshop <span class="co">[</span><span class="ot">Julia Zero-to-Hero</span><span class="co">](https://github.com/Datseris/Zero2Hero-JuliaWorkshop)</span> de Georges Datseris (plus direct)</span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="fu">## Annexes</span></span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>Pour tester d'autres interfaces d'intégration:</span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="co">[</span><span class="ot">utiliser</span><span class="co">](annexe_integrator.qmd)</span> l'interface <span class="in">`integrator`</span> de <span class="in">`DifferentialEquations.jl`</span> ou la redéfinition de problèmes d'intégration via <span class="in">`remake`</span></span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Simuler un modèle semi-discret"</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="an">engine:</span><span class="co"> julia</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">
@@ -766,7 +701,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     </div>   
     <div class="nav-footer-center">
 <p>Copyright 2023, Ludovic Mailleret</p>
-<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/lmaillere/biomaths_www/edit/main/annexes.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/lmaillere/biomaths_www/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+<div class="toc-actions"><ul><li><a href="https://github.com/lmaillere/biomaths_www/edit/main/annexe_semi_discrete.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/lmaillere/biomaths_www/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>

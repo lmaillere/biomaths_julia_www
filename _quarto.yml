@@ -35,7 +35,8 @@ license: CC BY-NC
 
 bibliography: references.bib
 
-jupyter: julia-1.10
+# jupyter: julia-1.10
+
 
 execute:
  cache: true

@@ -1,5 +1,7 @@
-# Fisher KPP with Julia
-
+---
+title: "Fisher KPP with Julia"
+engine: julia
+---
 
 
 <!-- load local julia environment (freeze package versions) -->

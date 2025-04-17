@@ -1,5 +1,6 @@
 ---
 title: "Simulation améliorée"
+engine: julia
 ---
 <!-- load local julia environment (freeze package versions) -->
 

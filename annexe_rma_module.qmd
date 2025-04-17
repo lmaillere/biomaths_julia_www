@@ -1,5 +1,6 @@
 ---
 title: "Mon premier module"
+engine: julia
 ---
 
 ## Module `RmaMod.jl`

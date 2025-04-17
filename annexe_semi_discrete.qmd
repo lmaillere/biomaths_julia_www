@@ -1,0 +1,6 @@
+---
+title: "Simuler un modèle semi-discret"
+engine: julia
+---
+
+

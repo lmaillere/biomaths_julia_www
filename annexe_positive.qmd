@@ -1,0 +1,121 @@
+---
+title: "Respecter la positivité d'un modèle"
+engine: julia
+---
+
+
+## Modèle positif
+
+En dynamique de populations, les variables des modèles représentent des densités. Un modèle sera *bien posé* s'il assure la non-négativité de toutes les composantes des trajectoires issues de conditions initiales non-négatives (système positif).
+
+Il est assez facile de vérifier mathématiquement si un modèle est bien positif, en évaluant les dérivées de l'état sur les frontières de l'orthant positif $\mathbb{R}^n_+$. Cependant, *même si le modèle est bien posé*, des trajectoires peuvent se rapprocher très fortement des frontières de $\mathbb{R}^n_+$ et parfois entraîner une instabilité numérique et l'apparition de trajectoires simulées qui ne respectent pas la positivité. Certains schémas numériques permettent de respecter la contrainte de positivité par construction pour certaines classes de modèles (e.g. @blanes2022positivity).
+
+Avec `DifferentialEquations.jl`, il est possible d'ajouter une contrainte d'appartenance à un domaine (comme e.g. $\mathbb{R}^n_+$) que le résultat de l'intégration par le schéma numérique doit vérifier à chaque itération; si la contrainte n'est pas respectée, alors le pas d'intégration est diminué. Cette méthode est valable pour tous les schémas numériques disponibles.
+
+### Modèle de Bauch (2005)
+
+Le Modèle de @bauch2005imitation analyse les interactions entre dynamique des épidémies et comportement individuel de vaccination, sur la base d'un modèle de type SIR. Le modèle s'écrit:
+$$\left\{\begin{array}{l}
+\dot S = \mu (1-x) - \beta S I - \mu S,\\
+\dot I = \beta S I - \gamma I - \mu I,\\
+\dot x = k x (1-x)(\omega I - 1),
+\end{array}\right.
+$$
+avec $S$ et $I$ les densités d'invidus susceptibles et infectés; les paramètres $\mu,~\beta,~\gamma$ sont associés respectivement aux processus de naissance/mortalité, transmission et guérison.
+
+La variable $x$ représente la proportion d'individus vaccinés à la naissance. Cette proportion suit une dynamique d'imitation, qui tend à augmenter la couverture vaccinale des nouveaux nés lorsque la prévalence de la maladie est plus forte, avec $k$ la vitesse d'ajustement et $\omega$ un paramètre de sensibilité à la dangerosité de la maladie.
+
+Il est facile de vérifier la positivité de ce modèle ($\dot z_i\geq 0,~\forall i$), néanmoins les simulations  présentent une instabilité numérique, susceptible de générer des trajectoires négatives.
+
+### Simulations
+
+#### Simulation sans contrainte particulière sur l'état
+
+Si l'on ne prend pas de précautions, les simulations peuvent générer des trajectoires négatives^[cf. à ce propos la légende de la figure 3 dans @bauch2005imitation, (2.10) et (2.12) devant y être respectivement comprises comme (2.11) et (2.10).].
+
+Nous reprenons ici pour partie les paramètres de @bauch2005imitation, dans un objectif illustratif.
+
+```{julia}
+#| include: false
+#| eval: true
+#
+# this cell does not appear in the rendering, but is executed
+#
+# for reproducibility purposes, we load the local julia environment/project, containing
+#  [13f3f980] CairoMakie v0.11.6
+#  [a93c6f00] DataFrames v1.6.1
+#  [864edb3b] DataStructures v0.18.16
+#  [0c46a032] DifferentialEquations v7.12.0
+#  [e9467ef8] GLMakie v0.9.6
+#  [91a5bcdd] Plots v1.40.0
+#  [f27b6e38] Polynomials v4.0.6
+#  [90137ffa] StaticArrays v1.9.1
+#  [0c5d862f] Symbolics v5.16.1
+#
+# to share the environment, copy Project.toml and Manifest.toml files in some directory
+# `activate` the local environment
+# if necessary `instantiate` to get the correct package versions
+#
+# to check if some PackageName.jl is used from the local environment
+## Pkg.status("PackageName")
+using Pkg
+Pkg.activate(".")
+```
+
+```{julia}
+# paramètres
+μ = 1/(365*50)
+γ = 0.1
+k = 0.001
+ω = 6000
+β = 10*(μ + γ)
+param = [μ, γ, k, ω, β]
+
+# horizon temporel
+tmax = 365*200
+tspan = (0.0, tmax)
+tstep = 0.1
+```
+
+Définissons les équations du modèle:
+```{julia}
+# modèle
+function imit_vacc(etat, param, t)
+    μ, γ, k, ω, β = param
+
+    S = etat[1]
+    I = etat[2]
+    x = etat[3]
+
+    dS = μ*(1-x) - β*S*I - μ*S
+    dI = β*S*I - γ*I - μ*I
+    dx = k*x*(1-x)*(ω*I-1)
+
+    return [dS, dI, dx]
+end
+```
+
+Et intégrons depuis une condition initiale, en utilisant la méthode usuelle de `DifferentialEquations.jl` (avec le shema numérique `Rodas4P()`).
+
+```{julia}
+using DifferentialEquations
+
+# conditions initiales
+S0 = 0.05
+I0 = 0.0001
+x0 = 0.95
+etat0 = [S0, I0, x0]
+
+# probleme aux conditions initiales
+tosim = ODEProblem(
+    imit_vacc,
+    etat0,
+    tspan,
+    param,
+    saveat = 1,
+)
+
+# intégration
+tol = 1e-9
+sol = solve(tosim, Rodas4P(), reltol = tol, abstol = tol);
+```

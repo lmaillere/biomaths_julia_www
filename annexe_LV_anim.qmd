@@ -1,5 +1,6 @@
 ---
 title: "Graphiques animés avec `Makie.jl`"
+engine: julia
 ---
 
 <!-- load local julia environment (freeze package versions) -->
