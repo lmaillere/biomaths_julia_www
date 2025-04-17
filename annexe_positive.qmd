@@ -98,6 +98,7 @@ end
 Et intégrons depuis une condition initiale, en utilisant la méthode usuelle de `DifferentialEquations.jl` (avec le shema numérique `Rodas4P()`).
 
 ```{julia}
+#| output: false
 using DifferentialEquations
 
 # conditions initiales
@@ -116,6 +117,145 @@ tosim = ODEProblem(
 )
 
 # intégration
-tol = 1e-9
-sol = solve(tosim, Rodas4P(), reltol = tol, abstol = tol);
+tol = 1e-10
+sol = solve(tosim, Rodas4P(), reltol = tol, abstol = tol)
+```
+
+Une représentation graphique montre que la positivité des variables n'est pas respectée par l'intégration numérique.
+
+```{julia}
+#| output: true
+#| code-fold: true
+# représentation graphique
+using CairoMakie
+
+# figure setup
+fig1 = Figure()
+
+ax1 = Axis(
+    fig1[1, 1],
+    xlabel = "temps",
+    ylabel = "densités de populations",
+)
+
+ax2 = Axis(
+    fig1[1, 2],
+    xlabel = "temps",
+    ylabel = "taux de vaccination",
+)
+
+# plots
+lines!(
+    ax1,
+    sol.t,
+    sol[1,:];
+    linewidth = 2,
+    label = L"$S$",
+)
+
+lines!(
+    ax1,
+    sol.t,
+    sol[2,:];
+    linewidth = 2,
+    label = L"$I$",
+)
+
+axislegend(ax1, position = :rc)
+
+lines!(
+    ax2,
+    sol.t,
+    sol[3,:];
+    linewidth = 2,
+    label = L"$x$",
+)
+
+axislegend(ax2, position = :rc)
+
+# titre général en ligne 0
+Label(fig1[0, :], "Simulation sans contrainte de positivité", fontsize = 20)
+
+fig1
+```
+
+En fait, on constate que les simulations ne respectent pas le domaine de définition des variables; ici le nombre d'individus infectés $I$ diverge vers $-\infty$ tandis que le nombre d'individus susceptibles $S$ diverge vers $+\infty$, alors que ces deux variables sont mathématiquement contraintes au domaine $[0,1]$.
+
+#### Simulation avec contrainte de positivité
+
+Il est possible d'imposer aux solvers de `DifferentialEquations.jl` de respecter l'appartenance des variables à un domaine spécifique à chaque pas de temps, via un kwarg `isoutofdomain` passé à `solve()`. Cet argument est assigné à une fonction qui renvoie `true` ou `false` selon que l'état est ou pas dans le domaine souhaité. Si la contrainte n'est pas respectée, le pas de temps d'intégration du solver est réduit.
+
+On commence par définir une fonction qui renvoie `false` quand l'état a toutes ses composantes positives, et `true` sinon. Cette fonction est réalisée sur la base de la fonction `any()` et d'une fonction anonyme qui teste la positivité:
+
+```{julia}
+function isnotpositive(u, par, t)
+    return any(z -> z < 0, u)
+end
+```
+
+Et on passe cet argument pour l'intégration numérique:
+
+```{julia}
+#| output: false
+sol_constr = solve(
+    tosim,
+    Rodas4P(),
+    reltol = tol,
+    abstol = tol,
+    isoutofdomain = isnotpositive, # contrainte sur l'état
+)
+```
+
+Le résultat de l'intégration (même schéma numérique, mêmes tolérances, même horizon temporel) permet d'obtenir le cycle limite attendu dans ce cas (@bauch2005imitation):
+
+```{julia}
+#| output: true
+#| code-fold: true
+# représentation graphique
+fig2 = Figure()
+
+ax1 = Axis(
+    fig2[1, 1],
+    xlabel = "temps",
+    ylabel = "densités de populations",
+)
+
+ax2 = Axis(
+    fig2[1, 2],
+    xlabel = "temps",
+    ylabel = "taux de vaccination",
+)
+
+lines!(
+    ax1,
+    sol_constr.t,
+    sol_constr[1,:];
+    linewidth = 2,
+    label = L"$S$",
+)
+
+lines!(
+    ax1,
+    sol_constr.t,
+    sol_constr[2,:];
+    linewidth = 2,
+    label = L"$I$",
+)
+
+axislegend(ax1, position = :rc)
+
+lines!(
+    ax2,
+    sol_constr.t,
+    sol_constr[3,:];
+    linewidth = 2,
+    label = L"$x$",
+)
+
+axislegend(ax2, position = :rc)
+
+# titre général en ligne 0
+Label(fig2[0, :], "Simulation avec contrainte de positivité", fontsize = 20)
+
+fig2
 ```
