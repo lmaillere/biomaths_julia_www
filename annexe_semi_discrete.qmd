@@ -1,12 +1,12 @@
 ---
-title: "Simuler un modèle impulsionnel ou semi-discret"
+title: "Simuler un modèle semi-discret"
 engine: julia
 ---
 
 
 ## Modèles semi-discrets
 
-Les modèles semi-discrets ont des applications larges en sciences de la vie (@mailleret2009note). Ils décrivent des variables à dynamiques continues la plupart du temps, perturbées par des évènements discrets à certains moments $\tau_k$:
+Les modèles semi-discrets (ou impulsionnels) ont des applications larges en sciences de la vie (@mailleret2009note). Ils décrivent des variables à dynamiques continues la plupart du temps, perturbées par des évènements discrets à certains moments $\tau_k$:
 
 $$
 \left\{\begin{array}{l}
@@ -377,7 +377,7 @@ parintro2 = ParamIntro(T = 1.0)
 plotsquab(etat0, parsquab, parintro2, partime)
 ```
 
-### Nota : pulses dépendant de l'état
+## Nota : pulses dépendant de l'état
 
 Dans les exemple ci-dessus, les composantes discrètes (pulses) des modèles ne sont pas dépendantes de l'état (ou du temps). Si c'est le cas, il faudra modifier la fonction qui définit ce qu'il se passe au callback.
 

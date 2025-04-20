@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Simuler un modèle impulsionnel ou semi-discret – Biomaths &amp; Julia</title>
+<title>Simuler un modèle semi-discret – Biomaths &amp; Julia</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -269,8 +269,8 @@ window.Quarto = {
   <li><a href="#fonction-dintégration-numérique" id="toc-fonction-dintégration-numérique" class="nav-link" data-scroll-target="#fonction-dintégration-numérique">fonction d’intégration numérique</a></li>
   <li><a href="#représentation-graphique" id="toc-représentation-graphique" class="nav-link" data-scroll-target="#représentation-graphique">représentation graphique</a></li>
   <li><a href="#résultats" id="toc-résultats" class="nav-link" data-scroll-target="#résultats">résultats</a></li>
-  <li><a href="#nota-pulses-dépendant-de-létat" id="toc-nota-pulses-dépendant-de-létat" class="nav-link" data-scroll-target="#nota-pulses-dépendant-de-létat">Nota : pulses dépendant de l’état</a></li>
   </ul></li>
+  <li><a href="#nota-pulses-dépendant-de-létat" id="toc-nota-pulses-dépendant-de-létat" class="nav-link" data-scroll-target="#nota-pulses-dépendant-de-létat">Nota : pulses dépendant de l’état</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/lmaillere/biomaths_www/edit/main/annexe_semi_discrete.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/lmaillere/biomaths_www/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -279,7 +279,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title">Simuler un modèle impulsionnel ou semi-discret</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<div class="quarto-title-block"><div><h1 class="title">Simuler un modèle semi-discret</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
 </div>
 
 
@@ -298,7 +298,7 @@ window.Quarto = {
 
 <section id="modèles-semi-discrets" class="level2">
 <h2 class="anchored" data-anchor-id="modèles-semi-discrets">Modèles semi-discrets</h2>
-<p>Les modèles semi-discrets ont des applications larges en sciences de la vie (<span class="citation" data-cites="mailleret2009note">Mailleret and Lemesle (<a href="#ref-mailleret2009note" role="doc-biblioref">2009</a>)</span>). Ils décrivent des variables à dynamiques continues la plupart du temps, perturbées par des évènements discrets à certains moments <span class="math inline">\tau_k</span>:</p>
+<p>Les modèles semi-discrets (ou impulsionnels) ont des applications larges en sciences de la vie (<span class="citation" data-cites="mailleret2009note">Mailleret and Lemesle (<a href="#ref-mailleret2009note" role="doc-biblioref">2009</a>)</span>). Ils décrivent des variables à dynamiques continues la plupart du temps, perturbées par des évènements discrets à certains moments <span class="math inline">\tau_k</span>:</p>
 <p><span class="math display">
 \left\{\begin{array}{l}
 \dot x = f(x),\\
@@ -635,8 +635,9 @@ y(nT^+) = y(nT) + \mu T.
 </div>
 </div>
 </section>
-<section id="nota-pulses-dépendant-de-létat" class="level3">
-<h3 class="anchored" data-anchor-id="nota-pulses-dépendant-de-létat">Nota : pulses dépendant de l’état</h3>
+</section>
+<section id="nota-pulses-dépendant-de-létat" class="level2">
+<h2 class="anchored" data-anchor-id="nota-pulses-dépendant-de-létat">Nota : pulses dépendant de l’état</h2>
 <p>Dans les exemple ci-dessus, les composantes discrètes (pulses) des modèles ne sont pas dépendantes de l’état (ou du temps). Si c’est le cas, il faudra modifier la fonction qui définit ce qu’il se passe au callback.</p>
 <p>Ainsi pour un modèle avec prélèvements impulsionnels du type (<span class="math inline">E</span> étant l’effort de prélèvement):</p>
 <p><span class="math display">
@@ -655,7 +656,6 @@ x(nT^+) = e^{-ET} x(nT)
 <!-- -->
 
 
-</section>
 </section>
 
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
@@ -1138,14 +1138,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
 <div class="sourceCode" id="cb17" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Simuler un modèle impulsionnel ou semi-discret"</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Simuler un modèle semi-discret"</span></span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="an">engine:</span><span class="co"> julia</span></span>
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
 <span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="fu">## Modèles semi-discrets</span></span>
 <span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>Les modèles semi-discrets ont des applications larges en sciences de la vie (@mailleret2009note). Ils décrivent des variables à dynamiques continues la plupart du temps, perturbées par des évènements discrets à certains moments $\tau_k$:</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>Les modèles semi-discrets (ou impulsionnels) ont des applications larges en sciences de la vie (@mailleret2009note). Ils décrivent des variables à dynamiques continues la plupart du temps, perturbées par des évènements discrets à certains moments $\tau_k$:</span>
 <span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>\left<span class="sc">\{</span>\begin{array}{l}</span>
@@ -1516,7 +1516,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb17-409"><a href="#cb17-409" aria-hidden="true" tabindex="-1"></a><span class="in">plotsquab(etat0, parsquab, parintro2, partime)</span></span>
 <span id="cb17-410"><a href="#cb17-410" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb17-411"><a href="#cb17-411" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-412"><a href="#cb17-412" aria-hidden="true" tabindex="-1"></a><span class="fu">### Nota : pulses dépendant de l'état</span></span>
+<span id="cb17-412"><a href="#cb17-412" aria-hidden="true" tabindex="-1"></a><span class="fu">## Nota : pulses dépendant de l'état</span></span>
 <span id="cb17-413"><a href="#cb17-413" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-414"><a href="#cb17-414" aria-hidden="true" tabindex="-1"></a>Dans les exemple ci-dessus, les composantes discrètes (pulses) des modèles ne sont pas dépendantes de l'état (ou du temps). Si c'est le cas, il faudra modifier la fonction qui définit ce qu'il se passe au callback.</span>
 <span id="cb17-415"><a href="#cb17-415" aria-hidden="true" tabindex="-1"></a></span>
