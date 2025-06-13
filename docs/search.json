@@ -428,7 +428,7 @@
     "href": "annexes.html#pour-aller-plus-loin",
     "title": "Matériel supplémentaire",
     "section": "Pour aller plus loin",
-    "text": "Pour aller plus loin\nNous n’avons qu’effleuré l’utilisation de Julia, par exemple tout le code présenté est scripté et relativement peu de code est inclus dans des fonctions. Nous n’avons pas non plus abordé les types struct (à part dans cette page) et le multiple dispatch qui sont pourtant au coeur du fonctionnement, de l’efficacité, et de la versatilité de ce langage.\nPour aller plus loin (et aussi revoir quelques bases !), vous pouvez par exemple vous référer à ces tutoriels:\n\nle cours Introduction to computational thinking du MIT (assez long)\nle workshop Julia Zero-to-Hero de Georges Datseris (plus direct)",
+    "text": "Pour aller plus loin\nNous n’avons qu’effleuré l’utilisation de Julia, par exemple tout le code présenté est scripté et relativement peu de code est inclus dans des fonctions. Nous n’avons pas non plus abordé les types struct (à part dans cette page) et le multiple dispatch qui sont pourtant au coeur du fonctionnement, de l’efficacité, et de la versatilité de ce langage.\nPour aller plus loin (et aussi revoir quelques bases !), vous pouvez par exemple vous référer à ces tutoriels:\n\nle cours Introduction to computational thinking du MIT (assez long)\nle workshop Julia Zero-to-Hero de Georges Datseris (plus direct).",
     "crumbs": [
       "Matériel supplémentaire"
     ]

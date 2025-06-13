@@ -28,7 +28,7 @@ Pour aller plus loin (et aussi revoir quelques bases !), vous pouvez par exemple
 
 - le cours [Introduction to computational thinking](https://computationalthinking.mit.edu/Fall23/) du MIT (assez long)
 
-- le workshop [Julia Zero-to-Hero](https://github.com/Datseris/Zero2Hero-JuliaWorkshop) de Georges Datseris (plus direct)
+- le workshop [Julia Zero-to-Hero](https://github.com/Datseris/Zero2Hero-JuliaWorkshop) de Georges Datseris (plus direct).
 
 
 ## Annexes
