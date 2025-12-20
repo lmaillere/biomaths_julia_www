@@ -12,15 +12,6 @@ engine: julia
 # this cell does not appear in the rendering, but is executed
 #
 # for reproducibility purposes, we load the local julia environment/project, containing
-#  [13f3f980] CairoMakie v0.11.6
-#  [a93c6f00] DataFrames v1.6.1
-#  [864edb3b] DataStructures v0.18.16
-#  [0c46a032] DifferentialEquations v7.12.0
-#  [e9467ef8] GLMakie v0.9.6
-#  [91a5bcdd] Plots v1.40.0
-#  [f27b6e38] Polynomials v4.0.6
-#  [90137ffa] StaticArrays v1.9.1
-#  [0c5d862f] Symbolics v5.16.1
 #
 # to share the environment, copy Project.toml and Manifest.toml files in some directory
 # `activate` the local environment
@@ -47,6 +38,9 @@ $$
 \end{array}
 \right.
 $$ {#eq-tordeuse-yvar}
+
+
+
 
 Il faut ajuster un peu la manière de coder pour prendre en compte ces deux dimensions. Commençons par les paramètres divers.
 ```{julia}
@@ -136,7 +130,8 @@ plot!(
     label = "oiseaux \$y/2\$",
 )
 ```
-\
+
+
 
 On observe ici des *bifurcations dynamiques* avec le passage de la population de tordeuse d'une branche d'équilibre stable à l'autre, qui créé un comportement de type cycle d'hysteresis.
 
@@ -219,6 +214,7 @@ plot!(
 )
 ```
 
+
 On trace sur ce diagramme la trajectoire simulée plus haut :
 ```{julia}
 #| output: true
@@ -232,6 +228,7 @@ plot!(
     label = "trajectoire",
 )
 ```
+
 
 ## Le modèle proie-prédateur de Lotka et Volterra {#sec-lv}
 
@@ -311,6 +308,7 @@ plot!(
     label = "prédateurs",
 )
 ```
+
 
 ### Espace d'état
 
@@ -426,6 +424,7 @@ plot!(
 display(figplan)
 ```
 
+
 ### Intégrale première
 
 Nous illustrons en 3D l'intégrale première du modèle et superposons la trajectoire simulée plus haut sur ce graphique. L'intégrale première s'écrit :
@@ -444,9 +443,11 @@ end
 
 Pour tracer le graphique en 3D, nous utilisons le backend `plotly`.
 
+
+
 ```{julia}
 #| output: true
-plotly()
+#plotlyjs()
 
 # x, y
 xsurf = 0.2:0.1:3.0
@@ -458,7 +459,7 @@ zsurf = [int_prem(x, y, par_lovo) for x in xsurf, y in ysurf]
 zplane = [int_prem(x0, y0, par_lovo) for x in xsurf, y in ysurf]
 
 # on trace H(x0, y0)
-figsurf = plot(
+figsurf = surface(
     xsurf,
     ysurf,
     zplane; # array de taille length(xsurf) x length(ysurf)
@@ -469,14 +470,14 @@ figsurf = plot(
 )
 
 # l'intégrale première H(x,y)
-plot!(
+surface!(
     figsurf,
     xsurf,
     ysurf,
     zsurf; # array de taille length(xsurf) x length(ysurf)
     st=:surface,
     alpha = .6,
-    camera = (30, 10),
+    camera = (30, 15),
     color = :viridis, # colormap
     xlabel = "proies",
     ylabel = "prédateurs",
@@ -498,3 +499,5 @@ plot!(
 \
 
 Allons plus loin en étudiant le modèle de Rosenzweig MacArthur, [par ici](pop_interactions2.qmd).
+
+-->
