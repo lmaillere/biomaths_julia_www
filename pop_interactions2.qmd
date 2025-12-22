@@ -317,24 +317,26 @@ scatter!(ax23, eq_coex[1], eq_coex[2]; color = Cycled(4))
 Pour tracer le champs de vecteurs, nous créons deux vecteurs de coordonnées `x` et `y`, et calculons par compréhension de liste des matrices de taille correspondante indiquant les composantes `x` et `y` des vecteurs vitesse. Les vecteurs de coordonnées et les matrices de composante des vitesses sont ensuite passées comme argument à la fonction `arrows`.
 
 ```{julia}
+#| output: true
 # champs de vecteur
 scale = 10           # il faut mettre à l'échelle sinon on voit rien
-xrange = range(1, 10, length=11)
-yrange = range(1. ,10, length=11)
+xrange = range(1, 10, length=8)
+yrange = range(1. ,10, length=8)
 
 # composantes des vecteurs vitesses par compréhension de liste
 derx = [rma([x y], par_rma, 0)[1]/scale for x in xrange, y in yrange]
 dery = [rma([x y], par_rma, 0)[2]/scale for x in xrange, y in yrange]
 
 # champs de vecteurs
-arrows!(
+arrows2d!(
     ax23,
     xrange,          # coordonnée x du début d'une flèche
     yrange,          # coordonnée y du début d'une flèche
     derx,            # x fin de la flèche (relativement au debut)
     dery;            # y fin de la flèche (relativement au debut)
     color = :lightgray,
-    arrowsize = 10,
+    tipwidth = 8,
+    shaftwidth = 1,
 )
 ```
 
@@ -349,9 +351,6 @@ Dans les compréhensions de listes à plusieurs variables/itérateurs, la syntax
 
 et enfin la trajectoire :
 ```{julia}
-#| output: true
-#| label: fig-rma-pplane
-#| fig-cap: Une figure plus complexe avec `Makie.jl`
 # trajectoire dans le plan de phase
 lines!(
     ax23,
@@ -366,9 +365,6 @@ lines!(
 # ajuste l'espacement des colonnes et lignes
 colgap!(fig2.layout, 20)
 rowgap!(fig2.layout, 20)
-
-# affiche la figure
-fig2
 ```
 
 On peut sauvegarder la figure dans différents formats (e.g. png, pdf)
@@ -377,6 +373,8 @@ On peut sauvegarder la figure dans différents formats (e.g. png, pdf)
 save("rma_fig.png", fig2)
 save("rma_fig.pdf", fig2)
 ```
+
+![Une jolie figure pour le modèle de Rosenzweig MacArthur avec cycle limite](rma_fig.png){#fig-rma}
 
 ### Diagramme de bifurcations
 
