@@ -9,19 +9,6 @@ engine: julia
 #| include: false
 #| eval: true
 #
-# this cell does not appear in the rendering, but is executed
-#
-# for reproducibility purposes, we load the local julia environment/project, containing
-#  [13f3f980] CairoMakie v0.11.6
-#  [a93c6f00] DataFrames v1.6.1
-#  [864edb3b] DataStructures v0.18.16
-#  [0c46a032] DifferentialEquations v7.12.0
-#  [e9467ef8] GLMakie v0.9.6
-#  [91a5bcdd] Plots v1.40.0
-#  [f27b6e38] Polynomials v4.0.6
-#  [90137ffa] StaticArrays v1.9.1
-#  [0c5d862f] Symbolics v5.16.1
-#
 # to share the environment, copy Project.toml and Manifest.toml files in some directory
 # `activate` the local environment
 # if necessary `instantiate` to get the correct package versions
@@ -135,7 +122,16 @@ yrange = range(0, 2.75, length=11)
 derx = [lovo([x y], par_lovo, 0)[1]/scale for x in xrange, y in yrange]
 dery = [lovo([x y], par_lovo, 0)[2]/scale for x in xrange, y in yrange]
 
-arrows!(ax2, xrange, yrange, derx, dery; color = :lightgray, arrowsize = 10)
+arrows2d!(
+    ax2,
+    xrange,
+    yrange,
+    derx,
+    dery;
+    color = :lightgray,
+    tipwidth = 8,
+    shaftwidth = 1,
+    )
 
 # nullclines
 lines!(
@@ -145,7 +141,7 @@ lines!(
     color = Cycled(2),
     linewidth = 2,
     label = L"$\dot{x}$ nullcline",
-)
+    )
 
 lines!(ax2, [0 for y in yrange], yrange; linewidth = 2, color = Cycled(2))
 
@@ -172,8 +168,10 @@ ylims!(ax2, -0.1, 2.75)
 
 axislegend(ax2; position = :rt, labelsize = 12, padding = (5,5,0,0), rowgap = -5)
 
-fig
+save("LV_makieplot.png", fig)
 ```
+
+![](LV_makieplot.png){}
 
 Finalement on complète le troisième panel avec la représentation 3D, en commencant par redéfinir l'intégrale première
 
@@ -238,7 +236,9 @@ rowgap!(fig.layout, 10)
 # titre général en ligne 0
 supertitle = Label(fig[0, :], "Modèle de Lotka Volterra", fontsize = 30)
 
-fig
+save("LV_makieplot_full.png", fig)
 ```
+
+![Une jolie figure pour le modèle de Lotka Volterra](LV_makieplot_full.png){#fig-LV_makieplot}
 
 et voilà !
