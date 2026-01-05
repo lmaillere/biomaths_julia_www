@@ -185,9 +185,7 @@ end
 
 
 ```{julia}
-#| output: true
-#| label: fig-LV-complex
-#| fig-cap: Figure illustrant le comportement du modèle de Lotka Volterra
+#| output: false
 # système d'axe 3D en première colonne de panel c, avec réglage de la caméra
 ax3 = Axis3(
        panelc[1, 1];
