@@ -210,7 +210,7 @@ hplane = [int_prem(x0, y0, par_lovo) for x in xsurf, y in ysurf]
 hs = surface!(ax3, xsurf, ysurf, hsurf; alpha=.5)
 surface!(ax3, xsurf, ysurf, hplane; color = fill(:red, 100, 100), alpha = .3)
 
-# ajout de la trajectoire simulée
+# ajout de la trajectoire  simulée
 lines!(
     ax3,
     sol_lovo[1,:],
