@@ -8,7 +8,7 @@ Ces pages proposent une introduction à la simulation d'équations différentiel
 Ces pages sont structurées comme suit :
 
 - la section sur les [populations isolées](pop_isolees.qmd) introduit les bases en dimension 1 (modèle de Malthus, modèle logistique et effets Allee)
-
+juli
 - la section sur les [populations exploitées](pop_exploitees.qmd) introduit les diagrammes de bifurcations (prélèvements et effets Allee, interactions insectes-oiseaux)
 
 - la section sur les [populations en interaction](pop_interactions.qmd) introduit la dimension 2, notamment via les représentations dans l'espace d'état, et traite des interactions entre populations sous l'angle des modèles proies-prédateurs (modèle de Lotka Volterra et [modèle de Rosenzweig MacArthur](pop_interactions2.qmd))
@@ -92,7 +92,9 @@ Au fil du temps les différents packages Julia changent de version, perdant parf
 
 Pour pouvoir utiliser le même environnement que celui utilisé ici, créez un répertoire de travail dans lequel vous placerez vos scripts/notebooks, mettons : `~/some/where/biomaths/` .
 
-Téléchargez et placez dans ce répertoire les fichiers [Project.toml](./Project.toml) et [Manifest.toml](./Manifest.toml). Ouvrez un terminal et démarrez Julia dans ce répertoire:
+Téléchargez et placez dans ce répertoire les fichiers [Project.toml](./Project.toml).
+ <!-- et [Manifest.toml](./Manifest.toml). -->
+ Ouvrez un terminal et démarrez Julia dans ce répertoire:
 ```{julia}
 #| eval: false
 julia> ]                   # package mode
